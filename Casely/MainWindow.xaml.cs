@@ -11,6 +11,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using CaselyData;
+
 
 namespace Casely {
     /// <summary>
@@ -20,5 +22,36 @@ namespace Casely {
         public MainWindow() {
             InitializeComponent();
         }
+
+        private void btnAddCase_Click(object sender, RoutedEventArgs e) {
+            PathCase pc = new PathCase();
+            pc.CaseNumber = txtCaseNumber.Text;
+            pc.Service = cmbService.Text;
+            CaseEntry ce = new CaseEntry();
+            Staff s = new Staff();
+            s.FullName = cmbAuthor.Text;
+            ce.Author = s;
+            ce.Comment = txtComment.Text;
+            ce.TumorSynoptic = txtComment.Text;
+            PartEntry p = new PartEntry();
+            p.TimeString = DateTime.Now.ToShortTimeString();
+            p.DateString = DateTime.Now.ToShortDateString();
+            p.Part = "A";
+            
+
+        }
+
+        /// <summary>
+        /// Parses the SoftPath result textfield and outputs the parts
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        private List<PartEntry> parseResult(string result) {
+            List<PartEntry> parts = new List<PartEntry>();
+            return parts;
+        }
+
+       
     }
+   
 }
