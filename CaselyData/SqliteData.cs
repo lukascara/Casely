@@ -23,8 +23,18 @@ namespace CaselyData {
         public string Gross { get; set; }
         public string TumorSynoptic { get; set; }
         public string Comment { get; set; }
-        public string Date { get; set; }
-        public string Time { get; set; }
+        public string DateString { get; set; }
+        public string TimeString { get; set; }
+        public DateTime DateTimeObject {
+            get {
+                return DateTime.Parse(DateString + " " + TimeString);
+            }
+            set {
+                DateString = value.ToShortDateString();
+
+                TimeString = value.TimeOfDay.ToString();
+            }
+        }
         public Staff Author { get; set; }
         public List<PartEntry> ListPartEntry { get; set; }
     }
@@ -42,7 +52,8 @@ namespace CaselyData {
                 return DateTime.Parse(DateString + " " + TimeString);
             }
             set {
-                DateString = value.Date.ToString();
+                DateString = value.ToShortDateString();
+
                 TimeString = value.TimeOfDay.ToString();
             }
         }
@@ -54,6 +65,26 @@ namespace CaselyData {
     }
 
     public class SqliteDataAcces {
+        public static string DbConnectionString {
+            get { return @"C: \Users\Lukas_and_Carlie\source\repos\Casely\casely_test.db"; }
+        }
+
+        /// <summary>
+        /// Inserts a new pathology case into the database.
+        /// Case number must be unique. If not unique, insertion will be ignored by sqlite database.
+        /// </summary>
+        /// <param name="pc"></param>
+        public static void InsertNewPathCase(PathCase pathCase) {
+            using (var cn = new SQLiteConnection(DbConnectionString)) {
+                var sql = @"INSERT INTO path_case (case_number, service) VALUES (@CaseNumber, Service);";
+                var result = cn.Execute(sql, new { pathCase });
+            }
+        }
+
+        public static void InsertNewParts(PathCase pc, List<PartEntry> parts) {
+
+        }
+
         public static List<PartEntry> getParts(string Id) {
             List<PartEntry> parts = new List<PartEntry>();
             PartEntry p1 = new PartEntry();
@@ -79,6 +110,7 @@ namespace CaselyData {
             return parts;
         }
     }
+
     
 
 }

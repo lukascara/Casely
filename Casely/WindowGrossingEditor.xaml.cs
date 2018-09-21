@@ -21,8 +21,24 @@ namespace Casely {
     public partial class GrossingEditor : Window {
 
         ObservableCollection<PartEntry> listCaseParts;
+        CaseEntry caseEntry;
+        public GrossingEditor(CaseEntry caseEntry) {
+            listCaseParts = new ObservableCollection<PartEntry>(SqliteDataAcces.getParts("1"));
+            this.caseEntry = caseEntry;
+            
+            InitializeComponent();
+            loadParts();
+        }
+
         public GrossingEditor() {
             listCaseParts = new ObservableCollection<PartEntry>(SqliteDataAcces.getParts("1"));
+            
+            this.caseEntry = new CaseEntry() {
+                Author = new Staff() { FullName = "Default" },
+                DateTimeObject = DateTime.Now,
+                Id = 1
+
+            };
 
             InitializeComponent();
             loadParts();
@@ -31,12 +47,11 @@ namespace Casely {
 
         public void loadParts() {
             foreach(var p in listCaseParts) {
-                int insertIndex = wpPartLastIndex();
-                wpParts.Children.Insert(insertIndex,new UCPartEntry(p));
+                wpParts.Children.Add(new UCPartEntry(p));
             }
         }
 
-        /// <summary>
+       /* /// <summary>
         /// Gets the index after the last UCPart control.
         /// This allows us to place UCcontrols above the buttons for add, etc. visually.
         /// </summary>
@@ -44,38 +59,45 @@ namespace Casely {
             int lastUCPartIndex = 0;
             for (int i = 0; i< wpParts.Children.Count; i++) {
                 if (!(wpParts.Children[i] is UCPartEntry)) {
-                    lastUCPartIndex = i > 1 ? wpParts.Children.Count - 2 : 0;
+                    lastUCPartIndex = i - 1;
+                    break;
                 }
             }
             return lastUCPartIndex;
-        }
+        }*/
 
         public void addPart() {
-            UCPartEntry lastPart = wpParts.Children[-1] as UCPartEntry;
-            char lstParLetter = lastPart.tbPart.Text.Length != 0 ? lastPart.tbPart.Text[0] : 'A';
-            lstParLetter++;
-            UCPartEntry newPart = new UCPartEntry(new PartEntry {
-                Part = (lstParLetter++).ToString(),
-                Author = lastPart.partEntry.Author,
-                DateTimeObject = lastPart.dtTime.Value.Value,
-                Specimen = lastPart.tbSpecimen.Text,
-                Procedure = lastPart.tbProcedure.Text
-            });
-            wpParts.Children.Insert(wpPartLastIndex(), newPart);
+            if (wpParts.Children.Count > 1) {
+                UCPartEntry lastPart = wpParts.Children[wpParts.Children.Count-1] as UCPartEntry;
+                char lstParLetter = lastPart.tbPart.Text.Length != 0 ? lastPart.tbPart.Text[0] : 'A';
+                lstParLetter++;
+                UCPartEntry newPart = new UCPartEntry(new PartEntry {
+                    Part = (lstParLetter++).ToString(),
+                    Author = lastPart.partEntry.Author,
+                    DateTimeObject = lastPart.dtTime.Value.Value,
+                    Specimen = lastPart.tbSpecimen.Text,
+                    Procedure = lastPart.tbProcedure.Text
+                });
+                wpParts.Children.Add(newPart);
+            } else {
+                UCPartEntry newPart = new UCPartEntry(new PartEntry {
+                    Part = "A",
+                    Author = caseEntry.Author,
+                    DateTimeObject = caseEntry.DateTimeObject,
+                    Specimen = "",
+                    Procedure = ""
+                });
+                wpParts.Children.Add(newPart);
+            }
+            
         }
 
         private void Button_Click(object sender, RoutedEventArgs e) {
-            PartEntry p2 = new PartEntry();
-            var a2 = new Staff();
-            a2.FullName = "Lukas Cara";
-            p2.Author = a2;
-            p2.DateString = "11/09/2018";
-            p2.TimeString = "2:00PM";
-            p2.Specimen = "Ovary222";
-            p2.Procedure = "Salpingectomy";
-            p2.Part = "C";
-            listCaseParts.Add(p2);
-            wpParts.Children.Insert(3,new UCPartEntry(p2));
+            addPart();
+
+        }
+
+        private void btnSubmit_Click(object sender, RoutedEventArgs e) {
 
         }
     }

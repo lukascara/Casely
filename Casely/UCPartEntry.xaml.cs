@@ -33,5 +33,16 @@ namespace Casely {
             partEntry = part;
         }
 
+        private void tbPart_GotFocus(object sender, RoutedEventArgs e) {
+            tbPart.SelectAll();
+        }
+
+        private void tbSpecimen_GotFocus(object sender, RoutedEventArgs e) {
+            tbSpecimen.SelectAll();
+        }
+
+        private void tbProcedure_GotFocus(object sender, RoutedEventArgs e) {
+            tbProcedure.SelectAll();
+        }
     }
 }

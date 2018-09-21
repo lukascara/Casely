@@ -14,11 +14,11 @@
             <ColumnDefinition Width="203*"/>
         </Grid.ColumnDefinitions>
         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Part" Margin="0,7.04,0,6.404" Width="20.657" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin"/>
-        <TextBox x:Name="tbPart" Text="{Binding Part, Mode=TwoWay}" Margin="0,0,3.936,6.404" TextWrapping="Wrap" HorizontalAlignment="Right" Width="17.382" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin"/>
+        <TextBox x:Name="tbPart" Text="{Binding Part, Mode=TwoWay}" Margin="0,0,3.936,6.404" TextWrapping="Wrap" HorizontalAlignment="Right" Width="17.382" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin" GotFocus="tbPart_GotFocus"/>
         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Specimen" Margin="14.093,7.04,0,6.404" Grid.Column="1" Width="56.557" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin"  />
-        <TextBox x:Name="tbSpecimen" Text="{Binding Specimen, Mode=TwoWay}" Margin="70.65,0,7.439,6.404" TextWrapping="Wrap" Grid.Column="1" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin" />
+        <TextBox x:Name="tbSpecimen" Text="{Binding Specimen, Mode=TwoWay}" Margin="70.65,0,7.439,6.404" TextWrapping="Wrap" Grid.Column="1" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin" GotFocus="tbSpecimen_GotFocus" />
         <TextBlock TextWrapping="Wrap" Text="Procedure" Margin="4.621,7.04,18.448,6.404" Grid.Column="2" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin" />
-        <TextBox x:Name="tbProcedure" Text="{Binding Procedure, Mode=TwoWay}" Margin="63.612,0,10,6.404" TextWrapping="Wrap" Grid.Column="2" d:LayoutOverrides="HorizontalAlignment, TopMargin, BottomMargin"/>
+        <TextBox x:Name="tbProcedure" Text="{Binding Procedure, Mode=TwoWay}" Margin="63.612,0,10,6.404" TextWrapping="Wrap" Grid.Column="2" d:LayoutOverrides="HorizontalAlignment, TopMargin, BottomMargin" GotFocus="tbProcedure_GotFocus"/>
 
         <xctk:DateTimePicker Format="Custom" FormatString="MM/dd/yy hh:mm tt" x:Name="dtTime" Value="{Binding DateTimeObject}" Grid.Column="3" Margin="10,0,9.352,6.404" d:LayoutOverrides="TopMargin, BottomMargin"/>
 

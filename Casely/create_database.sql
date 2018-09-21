@@ -1,6 +1,5 @@
 ﻿CREATE TABLE `path_case` (
-	`id`	INTEGER,
-	`case_number`	TEXT,
+	`case_number`	TEXT NOT NULL PRIMARY KEY UNIQUE,
 	`service`	TEXT
 );
 
@@ -30,9 +29,9 @@ CREATE TABLE IF NOT EXISTS `part_entry` (
 	`diagnosis`	TEXT,
 	`date`	TEXT,
 	`time`	TEXT,
-	`case_entry_id` INTEGER,
+	`path_case` INTEGER,
 	FOREIGN KEY(author_id) REFERENCES staff(id),
-	FOREIGN KEY(case_entry_id) REFERENCES case_entry(id)
+	FOREIGN KEY(path_case_id) REFERENCES path_case(id)
 );
 
 CREATE TABLE IF NOT EXISTS `staff` (
