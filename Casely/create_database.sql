@@ -1,5 +1,5 @@
 ﻿CREATE TABLE `path_case` (
-	`case_number`	TEXT NOT NULL PRIMARY KEY UNIQUE,
+	`case_number`	TEXT NOT NULL PRIMARY KEY UNIQUE ON CONFLICT INGORE,
 	`service`	TEXT
 );
 

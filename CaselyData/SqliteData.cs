@@ -73,7 +73,7 @@ namespace CaselyData {
         /// Inserts a new pathology case into the database.
         /// Case number must be unique. If not unique, insertion will be ignored by sqlite database.
         /// </summary>
-        /// <param name="pc"></param>
+        /// <param name="pathCase"></param>
         public static void InsertNewPathCase(PathCase pathCase) {
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 var sql = @"INSERT INTO path_case (case_number, service) VALUES (@CaseNumber, Service);";
@@ -81,8 +81,10 @@ namespace CaselyData {
             }
         }
 
-        public static void InsertNewParts(PathCase pc, List<PartEntry> parts) {
-
+        public static void InsertNewParts(PathCase pathCase, List<PartEntry> parts) {
+            using (var cn = new SQLiteConnection(DbConnectionString)) {
+                var sql = @"INSERT INTO"
+            }
         }
 
         public static List<PartEntry> getParts(string Id) {
