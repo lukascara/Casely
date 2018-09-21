@@ -7,38 +7,11 @@
         xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid" x:Class="Casely.GrossingEditor"
         mc:Ignorable="d"
         Title="GrossingEditor" Height="450" Width="800">
-    <Window.Resources>
-        <CollectionViewSource x:Key="ItemCollectionViewSource"  CollectionViewType="ListCollectionView"/>
-    </Window.Resources>
+  
     <Grid>
-        <DataGrid Margin="10,59,10,10" DataContext="{StaticResource ItemCollectionViewSource}"
-             ItemsSource="{Binding}"
-             AutoGenerateColumns="False">
-            <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Part" Width="SizeToHeader"  IsReadOnly="True">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBox Text="{Binding Path=Part}"></TextBox>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Specimen" Width="SizeToCells" IsReadOnly="True">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBox Text="{Binding Path=Specimen}"></TextBox>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Procedure" Width="SizeToCells" IsReadOnly="True">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBox Text="{Binding Path=Procedure}"></TextBox>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
-
-
+        <StackPanel CanVerticallyScroll="True" x:Name="wpParts" Margin="10,53,10,10" Background="#FFEBFBFF">
+           
+            <Button Width="50" Click="Button_Click">Add</Button>
+        </StackPanel>
     </Grid>
 </Window>

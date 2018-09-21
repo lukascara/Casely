@@ -17,6 +17,10 @@ namespace CaselyData {
     }
     public class CaseEntry {
         public int Id { get; set; }
+        public string Interpretation { get; set; }
+        public string Material { get; set; }
+        public string Microscopic { get; set; }
+        public string Gross { get; set; }
         public string TumorSynoptic { get; set; }
         public string Comment { get; set; }
         public string Date { get; set; }
@@ -27,11 +31,7 @@ namespace CaselyData {
 
     public class PartEntry {
         public string Id { get; set; }
-        public string Interpretation { get; set; }
-        public string Material { get; set; }
         public Staff Author { get; set; }
-        public string Microscopic { get; set; }
-        public string Gross { get; set; }
         public string Part { get; set; }
         public string Procedure { get; set; }
         public string Specimen { get; set; }
@@ -63,13 +63,19 @@ namespace CaselyData {
             p1.DateString = "11/09/2018";
             p1.TimeString = "2:00PM";
             p1.Specimen = "Ovary";
-            p1.Interpretation = "";
-            p1.Material = "blahbla";
-            p1.Microscopic = "";
             p1.Procedure = "Salpingectomy";
             p1.Part = "A";
-            parts.Add(p1)
-;
+            parts.Add(p1);
+            PartEntry p2 = new PartEntry();
+            var a2 = new Staff();
+            a2.FullName = "Lukas Cara";
+            p2.Author = a1;
+            p2.DateString = "11/09/2018";
+            p2.TimeString = "2:00PM";
+            p2.Specimen = "Ovary222";
+            p2.Procedure = "Salpingectomy";
+            p2.Part = "B";
+            parts.Add(p2);
             return parts;
         }
     }

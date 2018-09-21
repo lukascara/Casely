@@ -10,6 +10,10 @@ CREATE TABLE IF NOT EXISTS `case_entry` (
 	`comment`	TEXT,
 	`date`	TEXT,
 	`time`	TEXT,
+	`material` TEXT,
+	`interpretation` TEXT,
+	`gross` TEXT,
+	`microscopic`	TEXT,
 	`author_id`	INTEGER,
 	`path_case_id`	INTEGER NOT NULL,
 	FOREIGN KEY(author_id) REFERENCES staff(id),
@@ -19,11 +23,7 @@ CREATE TABLE IF NOT EXISTS `case_entry` (
 
 CREATE TABLE IF NOT EXISTS `part_entry` (
 	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-	`interpretation`	TEXT,
-	`material`	Text,
 	`author_id`	INTEGER,
-	`microscopic`	TEXT,
-	`gross`	TEXT,
 	`part`	TEXT,
 	`procedure`	TEXT,
 	`specimen`	TEXT,

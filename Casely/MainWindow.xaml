@@ -13,26 +13,27 @@
             <RowDefinition Height="107*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="89*"/>
-            <ColumnDefinition Width="109*"/>
+            <ColumnDefinition Width="381*"/>
+            <ColumnDefinition Width="116*"/>
+            <ColumnDefinition Width="295*"/>
         </Grid.ColumnDefinitions>
-        <TextBox x:Name="txtInterpretation" Margin="10,21.951,18.287,8.555" TextWrapping="Wrap" Grid.Row="1" AcceptsReturn="True" VerticalScrollBarVisibility="Visible"/>
-        <TextBox x:Name="txtResultEntry" Margin="10,27.115,18.287,10" TextWrapping="Wrap"  Grid.Row="2" AcceptsReturn="True" VerticalScrollBarVisibility="Visible"/>
-        <TextBox x:Name="txtTumorSynoptic" Margin="3.348,27.115,10,10" TextWrapping="Wrap" Grid.Column="1" Grid.Row="2" AcceptsReturn="True" VerticalScrollBarVisibility="Visible"/>
-        <TextBox x:Name="txtComment" Margin="3.348,21.951,10,8.555" TextWrapping="Wrap" Grid.Column="1" Grid.Row="1" AcceptsReturn="True" VerticalScrollBarVisibility="Visible"/>
-        <TextBlock HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" Text="Interpretation" VerticalAlignment="Top" Height="16.951" Width="102.983" Grid.Row="1"/>
-        <TextBlock HorizontalAlignment="Left" Margin="10,5,0,0" TextWrapping="Wrap" Text="Result Entry" Width="102.983" Height="22.115" VerticalAlignment="Top" Grid.Row="2"/>
-        <TextBlock HorizontalAlignment="Left" Margin="10,5,0,0" TextWrapping="Wrap" Text="Tumor Synoptic" Width="102.983" Height="22.043" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1"/>
-        <TextBlock HorizontalAlignment="Left" Margin="3.348,4.073,0,0" TextWrapping="Wrap" Text="Comment" Width="102.983" Height="12.878" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
-        <Button x:Name="btnAddCase" Content="Add" Grid.Column="1" HorizontalAlignment="Right" Margin="0,2,10,9.04" Width="75" Click="btnAddCase_Click"/>
-        <TextBlock Margin="10,8.04,0,7" TextWrapping="Wrap" Text="Author" HorizontalAlignment="Left" Width="36.59"/>
-        <TextBlock Margin="173.59,7.01,217.287,8.03" TextWrapping="Wrap" Text="Service" d:LayoutOverrides="Height" Grid.Column="1"/>
-        <ComboBox x:Name="cmbAuthor" HorizontalAlignment="Left" Margin="51.59,3.08,0,6.92" Width="120" IsEditable="True"/>
-        <ComboBox x:Name="cmbService" HorizontalAlignment="Right" Margin="0,0.96,92.287,9.04" Width="120" IsEditable="True" Grid.Column="1"/>
-        <TextBlock Margin="0,7.01,127,8.03" TextWrapping="Wrap" Text="Case#" HorizontalAlignment="Right" Width="45.123" />
-        <TextBox x:Name="txtCaseNumber" HorizontalAlignment="Right" Margin="0,1,18.287,7" TextWrapping="Wrap" Width="120"/>
-        <TextBlock Margin="0,7.01,0,8.03" TextWrapping="Wrap" Text="Process" HorizontalAlignment="Left" d:LayoutOverrides="Height" Grid.Column="1" Width="36.59"/>
-        <ComboBox x:Name="cmbProcess" HorizontalAlignment="Left" Margin="44.938,3.16,0,6.84" Width="120" IsEditable="True" d:LayoutOverrides="Height" Grid.Column="1">
+        <TextBox x:Name="txtInterpretation" Margin="10,22,18,9" TextWrapping="Wrap" Grid.Row="1" AcceptsReturn="True" VerticalScrollBarVisibility="Visible"/>
+        <TextBox x:Name="txtResultEntry" Margin="10,27,18,10" TextWrapping="Wrap"  Grid.Row="2" AcceptsReturn="True" VerticalScrollBarVisibility="Visible"/>
+        <TextBox x:Name="txtTumorSynoptic" Margin="3,27,10,10" TextWrapping="Wrap" Grid.Column="1" Grid.Row="2" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" Grid.ColumnSpan="2"/>
+        <TextBox x:Name="txtComment" Margin="3,27,10,9" TextWrapping="Wrap" Grid.Column="1" Grid.Row="1" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" Grid.ColumnSpan="2"/>
+        <TextBlock HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" Text="Interpretation" VerticalAlignment="Top" Height="17" Width="103" Grid.Row="1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="10,5,0,0" TextWrapping="Wrap" Text="Result Entry" Width="103" Height="22" VerticalAlignment="Top" Grid.Row="2"/>
+        <TextBlock HorizontalAlignment="Left" Margin="10,5,0,0" TextWrapping="Wrap" Text="Tumor Synoptic" Width="103" Height="22" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1"/>
+        <TextBlock HorizontalAlignment="Left" Margin="3,4,0,0" TextWrapping="Wrap" Text="Comment" Width="103" Height="13" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <Button x:Name="btnAddCase" Content="Add" Grid.Column="2" HorizontalAlignment="Right" Margin="0,2,111,152" Width="75" Click="btnAddCase_Click" Grid.Row="1"/>
+        <TextBlock Margin="10,8,0,7" TextWrapping="Wrap" Text="Author" HorizontalAlignment="Left" Width="37"/>
+        <TextBlock Margin="179,7,86,8" TextWrapping="Wrap" Text="Service" Grid.Column="2"/>
+        <ComboBox x:Name="cmbAuthor" HorizontalAlignment="Left" Margin="52,3,0,7" Width="120" IsEditable="True"/>
+        <ComboBox x:Name="cmbService" HorizontalAlignment="Right" Margin="0,3,10,7" Width="79" IsEditable="True" Grid.Column="2"/>
+        <TextBlock Margin="0,7,127,8" TextWrapping="Wrap" Text="Case#" HorizontalAlignment="Right" Width="45" />
+        <TextBox x:Name="txtCaseNumber" HorizontalAlignment="Right" Margin="0,1,18,7" TextWrapping="Wrap" Width="120"/>
+        <TextBlock Margin="63,7,0,8" TextWrapping="Wrap" Text="Process" HorizontalAlignment="Left" Grid.Column="1" Width="50"/>
+        <ComboBox x:Name="cmbProcess" HorizontalAlignment="Left" Margin="0,3,0,7" Width="120" IsEditable="True" Grid.Column="2">
             <ComboBoxItem Content="Grossing"/>
             <ComboBoxItem Content="Signout"/>
         </ComboBox>
