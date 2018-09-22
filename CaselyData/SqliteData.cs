@@ -10,10 +10,8 @@ using System.ComponentModel;
 
 namespace CaselyData {
     public class PathCase {
-        public int Id { get; set; }
         public string CaseNumber { get; set; }
         public string Service { get; set; }
-        public List<CaseEntry> ListCaseEntry { get; set; }
     }
     public class CaseEntry {
         public int Id { get; set; }
@@ -35,16 +33,18 @@ namespace CaselyData {
                 TimeString = value.TimeOfDay.ToString();
             }
         }
-        public Staff Author { get; set; }
+        public string AuthorFullName { get; set; }
         public List<PartEntry> ListPartEntry { get; set; }
     }
 
     public class PartEntry {
         public string Id { get; set; }
-        public Staff Author { get; set; }
+        public string CaseNumber { get; set; }
+        public string AuthorFullName { get; set; }
         public string Part { get; set; }
         public string Procedure { get; set; }
         public string Specimen { get; set; }
+        public string Diagnosis { get; set; }
         public string DateString { get; set; }
         public string TimeString { get; set; }
         public DateTime DateTimeObject {
@@ -65,8 +65,55 @@ namespace CaselyData {
     }
 
     public class SqliteDataAcces {
+
+        public static void InsertNewParts(List<PartEntry> parts, PathCase pathCase) {
+            using (var cn = new SQLiteConnection(DbConnectionString)) {
+                var sql = @"INSERT INTO path_case (case_number, service)
+                             VALUES (@CaseNumber, @Service);";
+                cn.Execute(sql, pathCase);
+                sql = @"INSERT INTO part_entry (author_full_name, part, procedure,
+                            specimen, diagnosis, date, time, case_number)
+                            VALUES (@AuthorFullName, @Part, @Procedure, @Specimen, @Diagnosis, @DateString, 
+                                    @TimeString, @CaseNumber);" ;
+                cn.Execute(sql, parts);
+            }
+        }
+
+        public static List<Staff> GetListStaff() {
+            var sql = @"SELECT full_name, role FROM staff;";
+            using (var cn = new SQLiteConnection(DbConnectionString)) {
+                var output = cn.Query<Staff>(sql, new DynamicParameters()).ToList();
+                return output;
+            }
+        }
+
+        public static List<string> GetListStaffFullNames() {
+            var sql = @"SELECT full_name FROM staff;";
+            using (var cn = new SQLiteConnection(DbConnectionString)) {
+                var output = cn.Query<string>(sql, new DynamicParameters()).ToList();
+                return output;
+            }
+        }
+
+        public static List<string> GetListProcedure() {
+            var sql = @"SELECT procedure FROM procedure;";
+            using (var cn = new SQLiteConnection(DbConnectionString)) {
+                var output = cn.Query<string>(sql, new DynamicParameters()).ToList();
+                return output;
+            }
+        }
+
+        public static List<string> GetListSpecimen() {
+            var sql = @"SELECT specimen FROM specimen;";
+            using (var cn = new SQLiteConnection(DbConnectionString)) {
+                var output = cn.Query<string>(sql, new DynamicParameters()).ToList();
+                return output;
+            }
+        }
+
+
         public static string DbConnectionString {
-            get { return @"C: \Users\Lukas_and_Carlie\source\repos\Casely\casely_test.db"; }
+            get { return @"Data Source = C:\Users\Lukas_and_Carlie\source\repos\Casely\Casely.db"; }
         }
 
         /// <summary>
@@ -81,18 +128,12 @@ namespace CaselyData {
             }
         }
 
-        public static void InsertNewParts(PathCase pathCase, List<PartEntry> parts) {
-            using (var cn = new SQLiteConnection(DbConnectionString)) {
-                var sql = @"INSERT INTO"
-            }
-        }
+       
 
         public static List<PartEntry> getParts(string Id) {
             List<PartEntry> parts = new List<PartEntry>();
             PartEntry p1 = new PartEntry();
-            var a1 = new Staff();
-            a1.FullName = "Lukas Cara";
-            p1.Author = a1;
+            p1.AuthorFullName = "Lukas Cara";
             p1.DateString = "11/09/2018";
             p1.TimeString = "2:00PM";
             p1.Specimen = "Ovary";
@@ -100,9 +141,7 @@ namespace CaselyData {
             p1.Part = "A";
             parts.Add(p1);
             PartEntry p2 = new PartEntry();
-            var a2 = new Staff();
-            a2.FullName = "Lukas Cara";
-            p2.Author = a1;
+            p2.AuthorFullName = "Lukas Cara";
             p2.DateString = "11/09/2018";
             p2.TimeString = "2:00PM";
             p2.Specimen = "Ovary222";

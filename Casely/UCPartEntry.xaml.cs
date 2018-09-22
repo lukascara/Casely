@@ -31,6 +31,16 @@ namespace Casely {
             InitializeComponent();
             this.DataContext = part;
             partEntry = part;
+            
+        }
+
+        public UCPartEntry(PartEntry part, List<string> suggestSpecimens, List<string> suggestProcedure) {
+            InitializeComponent();
+            this.DataContext = part;
+            partEntry = part;
+            tbProcedure.ItemsSource = suggestProcedure;
+            tbSpecimen.ItemsSource = suggestSpecimens;
+
         }
 
         private void tbPart_GotFocus(object sender, RoutedEventArgs e) {
@@ -38,11 +48,11 @@ namespace Casely {
         }
 
         private void tbSpecimen_GotFocus(object sender, RoutedEventArgs e) {
-            tbSpecimen.SelectAll();
+          //  tbSpecimen.();
         }
 
         private void tbProcedure_GotFocus(object sender, RoutedEventArgs e) {
-            tbProcedure.SelectAll();
+          //  tbProcedure.SelectAll();
         }
     }
 }

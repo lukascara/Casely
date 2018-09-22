@@ -22,32 +22,40 @@ namespace Casely {
 
         ObservableCollection<PartEntry> listCaseParts;
         CaseEntry caseEntry;
+        List<string> suggestSpecimen;
+        List<string> suggestedProcedure;
+
         public GrossingEditor(CaseEntry caseEntry) {
             listCaseParts = new ObservableCollection<PartEntry>(SqliteDataAcces.getParts("1"));
             this.caseEntry = caseEntry;
-            
+            loadSuggestions();
             InitializeComponent();
             loadParts();
         }
 
         public GrossingEditor() {
             listCaseParts = new ObservableCollection<PartEntry>(SqliteDataAcces.getParts("1"));
-            
+           
             this.caseEntry = new CaseEntry() {
-                Author = new Staff() { FullName = "Default" },
+                AuthorFullName = "Default" ,
                 DateTimeObject = DateTime.Now,
                 Id = 1
 
             };
-
+            loadSuggestions();
             InitializeComponent();
             loadParts();
+        }
+
+        public void loadSuggestions() {
+            suggestSpecimen = new List<string>(SqliteDataAcces.GetListSpecimen());
+            suggestedProcedure = new List<string>(SqliteDataAcces.GetListProcedure());
         }
 
 
         public void loadParts() {
             foreach(var p in listCaseParts) {
-                wpParts.Children.Add(new UCPartEntry(p));
+                wpParts.Children.Add(new UCPartEntry(p, suggestSpecimen, suggestedProcedure));
             }
         }
 
@@ -73,20 +81,20 @@ namespace Casely {
                 lstParLetter++;
                 UCPartEntry newPart = new UCPartEntry(new PartEntry {
                     Part = (lstParLetter++).ToString(),
-                    Author = lastPart.partEntry.Author,
+                    AuthorFullName = lastPart.partEntry.AuthorFullName,
                     DateTimeObject = lastPart.dtTime.Value.Value,
                     Specimen = lastPart.tbSpecimen.Text,
                     Procedure = lastPart.tbProcedure.Text
-                });
+                }, suggestSpecimen, suggestedProcedure);
                 wpParts.Children.Add(newPart);
             } else {
                 UCPartEntry newPart = new UCPartEntry(new PartEntry {
                     Part = "A",
-                    Author = caseEntry.Author,
+                    AuthorFullName = caseEntry.AuthorFullName,
                     DateTimeObject = caseEntry.DateTimeObject,
                     Specimen = "",
                     Procedure = ""
-                });
+                }, suggestSpecimen,suggestedProcedure);
                 wpParts.Children.Add(newPart);
             }
             
@@ -98,7 +106,28 @@ namespace Casely {
         }
 
         private void btnSubmit_Click(object sender, RoutedEventArgs e) {
+            List<PartEntry> partsToAdd = new List<PartEntry>();
+            foreach(var p in wpParts.Children) {
+                if(p is UCPartEntry) {
+                    var pt = (UCPartEntry)p;
+                    PartEntry newPart = new PartEntry() {
+                        Part = pt.partEntry.Part,
+                        Procedure = pt.partEntry.Procedure,
+                        Specimen = pt.partEntry.Specimen,
+                        AuthorFullName = cmbStaff.Text,
+                        DateString = pt.partEntry.DateString,
+                        TimeString = pt.partEntry.TimeString,
+                        CaseNumber = txtCaseNumber.Text
+                    };
+                    partsToAdd.Add(newPart);
+                }
+            }
+            SqliteDataAcces.InsertNewParts(partsToAdd, new PathCase() { CaseNumber = txtCaseNumber.Text, Service = cbService.Text });
+            this.Close();
+        }
 
+        private void wpParts_Loaded(object sender, RoutedEventArgs e) {
+            cmbStaff.ItemsSource = SqliteDataAcces.GetListStaffFullNames();
         }
     }
 }

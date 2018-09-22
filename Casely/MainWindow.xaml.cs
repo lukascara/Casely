@@ -28,9 +28,7 @@ namespace Casely {
             pc.CaseNumber = txtCaseNumber.Text;
             pc.Service = cmbService.Text;
             CaseEntry ce = new CaseEntry();
-            Staff s = new Staff();
-            s.FullName = cmbAuthor.Text;
-            ce.Author = s;
+            ce.AuthorFullName = cmbAuthor.Text;
             ce.Comment = txtComment.Text;
             ce.TumorSynoptic = txtComment.Text;
             PartEntry p = new PartEntry();
