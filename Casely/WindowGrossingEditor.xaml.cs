@@ -60,20 +60,6 @@ namespace Casely {
             }
         }
 
-       /* /// <summary>
-        /// Gets the index after the last UCPart control.
-        /// This allows us to place UCcontrols above the buttons for add, etc. visually.
-        /// </summary>
-        private int wpPartLastIndex() {
-            int lastUCPartIndex = 0;
-            for (int i = 0; i< wpParts.Children.Count; i++) {
-                if (!(wpParts.Children[i] is UCPartEntry)) {
-                    lastUCPartIndex = i - 1;
-                    break;
-                }
-            }
-            return lastUCPartIndex;
-        }*/
 
         public void addPart() {
             if (wpParts.Children.Count > 1) {
@@ -82,7 +68,7 @@ namespace Casely {
                 lstParLetter++;
                 UCPartEntry newPart = new UCPartEntry(new PartEntry {
                     Part = (lstParLetter++).ToString(),
-                    DateTimeObject = DateTime.Now,
+                    DateTimeCreatedObject = DateTime.Now,
                     Specimen = lastPart.tbSpecimen.Text,
                     Procedure = lastPart.tbProcedure.Text
                 }, suggestSpecimen, suggestedProcedure);
@@ -90,7 +76,7 @@ namespace Casely {
             } else {
                 UCPartEntry newPart = new UCPartEntry(new PartEntry {
                     Part = "A",
-                    DateTimeObject = DateTime.Now,
+                    DateTimeCreatedObject = DateTime.Now,
                     Specimen = "",
                     Procedure = ""
                 }, suggestSpecimen,suggestedProcedure);
@@ -106,7 +92,9 @@ namespace Casely {
 
         private void btnSubmit_Click(object sender, RoutedEventArgs e) {
             List<PartEntry> partsToAdd = new List<PartEntry>();
-            foreach(var p in wpParts.Children) {
+            // get the current date and time to save the same modified time for all parts being added to the database
+            DateTime currentTime = DateTime.Now;
+            foreach (var p in wpParts.Children) {
                 if(p is UCPartEntry) {
                     var pt = (UCPartEntry)p;
                     PartEntry newPart = new PartEntry() {
@@ -114,8 +102,10 @@ namespace Casely {
                         Procedure = pt.partEntry.Procedure,
                         Specimen = pt.partEntry.Specimen,
                         AuthorFullName = cmbStaff.Text,
-                        DateString = pt.partEntry.DateString,
-                        TimeString = pt.partEntry.TimeString,
+                        DateCreatedString = pt.dtTime.Value.GetValueOrDefault().ToShortDateString(),
+                        TimeCreatedString = pt.dtTime.Value.GetValueOrDefault().ToShortTimeString(),
+                        DateModifiedString = currentTime.ToShortDateString(),
+                        TimeModifiedString = currentTime.ToShortTimeString(),
                         CaseNumber = txtCaseNumber.Text
                     };
                     partsToAdd.Add(newPart);

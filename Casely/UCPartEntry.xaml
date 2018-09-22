@@ -20,7 +20,7 @@
         <TextBlock TextWrapping="Wrap" Text="Procedure" Margin="4.621,7.04,18.448,6.404" Grid.Column="2" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin" />
         <ComboBox x:Name="tbProcedure" IsEditable="True" Text="{Binding Procedure, Mode=TwoWay}" Margin="63.612,0,10,6.404" Grid.Column="2" d:LayoutOverrides="HorizontalAlignment, TopMargin, BottomMargin" GotFocus="tbProcedure_GotFocus"/>
 
-        <xctk:DateTimePicker Format="Custom" FormatString="MM/dd/yy hh:mm tt" x:Name="dtTime" Value="{Binding DateTimeObject}" Grid.Column="3" Margin="10,0,9.352,6.404" d:LayoutOverrides="TopMargin, BottomMargin"/>
+        <xctk:DateTimePicker Format="Custom" FormatString="MM/dd/yy hh:mm tt" x:Name="dtTime" Value="{Binding DateTimeCreatedObject}" Grid.Column="3" Margin="10,0,9.352,6.404" d:LayoutOverrides="TopMargin, BottomMargin"/>
 
     </Grid>
 </UserControl>

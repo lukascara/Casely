@@ -32,8 +32,8 @@ namespace Casely {
             ce.Comment = txtComment.Text;
             ce.TumorSynoptic = txtComment.Text;
             PartEntry p = new PartEntry();
-            p.TimeString = DateTime.Now.ToShortTimeString();
-            p.DateString = DateTime.Now.ToShortDateString();
+            p.TimeCreatedString = DateTime.Now.ToShortTimeString();
+            p.DateCreatedString = DateTime.Now.ToShortDateString();
             p.Part = "A";
             
 

@@ -21,16 +21,28 @@ namespace CaselyData {
         public string Gross { get; set; }
         public string TumorSynoptic { get; set; }
         public string Comment { get; set; }
-        public string DateString { get; set; }
-        public string TimeString { get; set; }
-        public DateTime DateTimeObject {
+        public string DateCreatedString { get; set; }
+        public string TimeCreatedString { get; set; }
+        public string TimeModifiedString { get; set; }
+        public string DateModifiedString { get; set; }
+        public DateTime DateTimeCreatedObject {
             get {
-                return DateTime.Parse(DateString + " " + TimeString);
+                return DateTime.Parse(DateCreatedString + " " + TimeCreatedString);
             }
             set {
-                DateString = value.ToShortDateString();
+                DateCreatedString = value.ToShortDateString();
 
-                TimeString = value.TimeOfDay.ToString();
+                TimeCreatedString = value.TimeOfDay.ToString();
+            }
+        }
+        public DateTime DateTimeModifiedObject {
+            get {
+                return DateTime.Parse(DateCreatedString + " " + TimeCreatedString);
+            }
+            set {
+                DateModifiedString = value.ToShortDateString();
+
+                TimeModifiedString = value.TimeOfDay.ToString();
             }
         }
         public string AuthorFullName { get; set; }
@@ -45,16 +57,28 @@ namespace CaselyData {
         public string Procedure { get; set; }
         public string Specimen { get; set; }
         public string Diagnosis { get; set; }
-        public string DateString { get; set; }
-        public string TimeString { get; set; }
-        public DateTime DateTimeObject {
+        public string DateCreatedString { get; set; }
+        public string TimeCreatedString { get; set; }
+        public string TimeModifiedString { get; set; }
+        public string DateModifiedString { get; set; }
+        public DateTime DateTimeCreatedObject {
             get {
-                return DateTime.Parse(DateString + " " + TimeString);
+                return DateTime.Parse(DateCreatedString + " " + TimeCreatedString);
             }
             set {
-                DateString = value.ToShortDateString();
+                DateCreatedString = value.ToShortDateString();
 
-                TimeString = value.TimeOfDay.ToString();
+                TimeCreatedString = value.TimeOfDay.ToString();
+            }
+        }
+        public DateTime DateTimeModifiedObject {
+            get {
+                return DateTime.Parse(DateCreatedString + " " + TimeCreatedString);
+            }
+            set {
+                DateModifiedString = value.ToShortDateString();
+
+                TimeModifiedString = value.TimeOfDay.ToString();
             }
         }
     }
@@ -66,15 +90,15 @@ namespace CaselyData {
 
     public class SqliteDataAcces {
 
-        public static void InsertNewParts(List<PartEntry> parts, PathCase pathCase) {
+        public static void InsertNewParts(List<PartEntry> parts, PathCase pathCase) {          
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 var sql = @"INSERT INTO path_case (case_number, service)
                              VALUES (@CaseNumber, @Service);";
                 cn.Execute(sql, pathCase);
                 sql = @"INSERT INTO part_entry (author_full_name, part, procedure,
-                            specimen, diagnosis, date, time, case_number)
-                            VALUES (@AuthorFullName, @Part, @Procedure, @Specimen, @Diagnosis, @DateString, 
-                                    @TimeString, @CaseNumber);" ;
+                            specimen, diagnosis, date_created, time_created,date_modified, time_modified, case_number)
+                            VALUES (@AuthorFullName, @Part, @Procedure, @Specimen, @Diagnosis, @DateCreatedString, 
+                                    @TimeCreatedString,@DateModifiedString,@TimeModifiedString, @CaseNumber);";
                 cn.Execute(sql, parts);
             }
         }
@@ -83,7 +107,8 @@ namespace CaselyData {
             var sql = @"SELECT author_full_name AS AuthorFullName, 
                             part, procedure,
                             specimen, diagnosis, 
-                            date AS DateString, time AS TimeString,
+                            date_created AS DateCreatedString, time_created AS TimeCreatedString,
+                            date_modified AS DateModifiedString, time_modified AS TimeModifiedString,
                             case_number AS CaseNumber 
                             FROM part_entry WHERE CaseNumber = @case_number;";
             using (var cn = new SQLiteConnection(DbConnectionString)) {
@@ -149,16 +174,16 @@ namespace CaselyData {
             List<PartEntry> parts = new List<PartEntry>();
             PartEntry p1 = new PartEntry();
             p1.AuthorFullName = "Lukas Cara";
-            p1.DateString = "11/09/2018";
-            p1.TimeString = "2:00PM";
+            p1.DateCreatedString = "11/09/2018";
+            p1.TimeCreatedString = "2:00PM";
             p1.Specimen = "Ovary";
             p1.Procedure = "Salpingectomy";
             p1.Part = "A";
             parts.Add(p1);
             PartEntry p2 = new PartEntry();
             p2.AuthorFullName = "Lukas Cara";
-            p2.DateString = "11/09/2018";
-            p2.TimeString = "2:00PM";
+            p2.DateCreatedString = "11/09/2018";
+            p2.TimeCreatedString = "2:00PM";
             p2.Specimen = "Ovary222";
             p2.Procedure = "Salpingectomy";
             p2.Part = "B";
