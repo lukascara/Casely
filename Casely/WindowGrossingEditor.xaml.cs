@@ -18,30 +18,22 @@ namespace Casely {
     /// <summary>
     /// Interaction logic for GrossingEditor.xaml
     /// </summary>
-    public partial class GrossingEditor : Window {
+    public partial class WindowGrossingEditor : Window {
 
-        ObservableCollection<PartEntry> listCaseParts;
-        CaseEntry caseEntry;
+     
         List<string> suggestSpecimen;
         List<string> suggestedProcedure;
+        private bool hasCaseNumberChanged = false;
 
-        public GrossingEditor(CaseEntry caseEntry) {
-            listCaseParts = new ObservableCollection<PartEntry>(SqliteDataAcces.getParts("1"));
-            this.caseEntry = caseEntry;
+        public WindowGrossingEditor(CaseEntry caseEntry) {
             loadSuggestions();
             InitializeComponent();
             loadParts();
         }
 
-        public GrossingEditor() {
-            listCaseParts = new ObservableCollection<PartEntry>(SqliteDataAcces.getParts("1"));
+        public WindowGrossingEditor() {
            
-            this.caseEntry = new CaseEntry() {
-                AuthorFullName = "Default" ,
-                DateTimeObject = DateTime.Now,
-                Id = 1
-
-            };
+            
             loadSuggestions();
             InitializeComponent();
             loadParts();
@@ -54,7 +46,16 @@ namespace Casely {
 
 
         public void loadParts() {
-            foreach(var p in listCaseParts) {
+            
+            List<PartEntry> listPartEntry = SqliteDataAcces.getListPartEntry(txtCaseNumber.Text);
+            // clear old UC controls
+            foreach (var p in wpParts.Children) {
+               if (p is UCPartEntry) {
+                    wpParts.Children.Remove((UCPartEntry)p);
+                }
+            }
+            // create new ones from the partEntry loaded from the database
+            foreach (var p in listPartEntry) {
                 wpParts.Children.Add(new UCPartEntry(p, suggestSpecimen, suggestedProcedure));
             }
         }
@@ -81,8 +82,7 @@ namespace Casely {
                 lstParLetter++;
                 UCPartEntry newPart = new UCPartEntry(new PartEntry {
                     Part = (lstParLetter++).ToString(),
-                    AuthorFullName = lastPart.partEntry.AuthorFullName,
-                    DateTimeObject = lastPart.dtTime.Value.Value,
+                    DateTimeObject = DateTime.Now,
                     Specimen = lastPart.tbSpecimen.Text,
                     Procedure = lastPart.tbProcedure.Text
                 }, suggestSpecimen, suggestedProcedure);
@@ -90,8 +90,7 @@ namespace Casely {
             } else {
                 UCPartEntry newPart = new UCPartEntry(new PartEntry {
                     Part = "A",
-                    AuthorFullName = caseEntry.AuthorFullName,
-                    DateTimeObject = caseEntry.DateTimeObject,
+                    DateTimeObject = DateTime.Now,
                     Specimen = "",
                     Procedure = ""
                 }, suggestSpecimen,suggestedProcedure);
@@ -128,6 +127,17 @@ namespace Casely {
 
         private void wpParts_Loaded(object sender, RoutedEventArgs e) {
             cmbStaff.ItemsSource = SqliteDataAcces.GetListStaffFullNames();
+        }
+
+
+        private void txtCaseNumber_LostFocus(object sender, RoutedEventArgs e) {
+            if (hasCaseNumberChanged == true) {
+                loadParts();
+            }
+        }
+
+        private void txtCaseNumber_TextChanged(object sender, TextChangedEventArgs e) {
+            hasCaseNumberChanged = true;
         }
     }
 }

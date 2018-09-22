@@ -79,6 +79,21 @@ namespace CaselyData {
             }
         }
 
+        public static List<PartEntry> getListPartEntry(string case_number) {
+            var sql = @"SELECT author_full_name AS AuthorFullName, 
+                            part, procedure,
+                            specimen, diagnosis, 
+                            date AS DateString, time AS TimeString,
+                            case_number AS CaseNumber 
+                            FROM part_entry WHERE CaseNumber = @case_number;";
+            using (var cn = new SQLiteConnection(DbConnectionString)) {
+                DynamicParameters dp = new DynamicParameters();
+                dp.Add("@case_number", case_number, System.Data.DbType.String);
+                var output = cn.Query<PartEntry>(sql, dp).ToList();
+                return output;
+            }
+        }
+
         public static List<Staff> GetListStaff() {
             var sql = @"SELECT full_name, role FROM staff;";
             using (var cn = new SQLiteConnection(DbConnectionString)) {

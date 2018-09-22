@@ -31,7 +31,7 @@ namespace Casely {
             InitializeComponent();
             this.DataContext = part;
             partEntry = part;
-            
+                        
         }
 
         public UCPartEntry(PartEntry part, List<string> suggestSpecimens, List<string> suggestProcedure) {
