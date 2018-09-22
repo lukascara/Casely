@@ -8,7 +8,7 @@
         Title="Casely" Height="450" Width="800">
     <Grid>
         <Button x:Name="btnGrossing" Content="Grossing" Margin="240.177,80.63,267.988,0" Height="111.527" VerticalAlignment="Top" Click="btnGrossing_Click"/>
-        <Button x:Name="btnSignout" Content="Signout" Margin="240.177,197.157,267.988,100.678"/>
+        <Button x:Name="btnSignout" Content="Signout" Margin="240.177,197.157,267.988,100.678" Click="btnSignout_Click"/>
         <TextBlock HorizontalAlignment="Left" Margin="263.47,47.906,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="275.804" Text="What would you like to track today?" FontSize="14"/>
 
     </Grid>

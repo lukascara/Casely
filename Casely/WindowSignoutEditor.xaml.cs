@@ -18,25 +18,32 @@ namespace Casely {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window {
-        public MainWindow() {
+    public partial class WindowReportEditor : Window {
+        public WindowReportEditor() {
             InitializeComponent();
+            cmbAuthor.ItemsSource = SqliteDataAcces.GetListStaffFullNames();
         }
 
         private void btnAddCase_Click(object sender, RoutedEventArgs e) {
+            if (txtCaseNumber.Text.Trim() == "") {
+                MessageBox.Show("Please enter a case number");
+            }
             PathCase pc = new PathCase();
             pc.CaseNumber = txtCaseNumber.Text;
             pc.Service = cmbService.Text;
             CaseEntry ce = new CaseEntry();
+            DateTime currentTime = DateTime.Now;
             ce.AuthorFullName = cmbAuthor.Text;
+            ce.CaseNumber = txtCaseNumber.Text;
+            ce.Interpretation = txtInterpretation.Text;
+            ce.Result = txtResultEntry.Text;
             ce.Comment = txtComment.Text;
-            ce.TumorSynoptic = txtComment.Text;
-            PartEntry p = new PartEntry();
-            p.TimeCreatedString = DateTime.Now.ToShortTimeString();
-            p.DateCreatedString = DateTime.Now.ToShortDateString();
-            p.Part = "A";
-            
-
+            ce.TumorSynoptic = txtTumorSynoptic.Text;
+            ce.DateCreatedString = dtCreated.Value.GetValueOrDefault().ToShortDateString();
+            ce.TimeCreatedString = dtCreated.Value.GetValueOrDefault().ToShortTimeString();
+            ce.DateModifiedString = currentTime.ToShortDateString();
+            ce.TimeModifiedString = currentTime.ToShortTimeString();
+            SqliteDataAcces.ParseInsertCaseEntry(ce, pc);
         }
 
         /// <summary>

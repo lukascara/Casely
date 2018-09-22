@@ -26,5 +26,11 @@ namespace Casely {
             ge.Show();
 
         }
+
+        private void btnSignout_Click(object sender, RoutedEventArgs e) {
+            WindowReportEditor wn = new WindowReportEditor();
+            wn.ShowInTaskbar = false;
+            wn.ShowDialog();
+        }
     }
 }

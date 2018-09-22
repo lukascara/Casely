@@ -47,7 +47,7 @@ namespace Casely {
 
         public void loadParts() {
             
-            List<PartEntry> listPartEntry = SqliteDataAcces.getListPartEntry(txtCaseNumber.Text);
+            List<PartEntry> listPartEntry = SqliteDataAcces.GetListPartEntryLatestVersion(txtCaseNumber.Text);
             // clear old UC controls
             foreach (var p in wpParts.Children) {
                if (p is UCPartEntry) {

@@ -15,8 +15,11 @@ namespace CaselyData {
     }
     public class CaseEntry {
         public int Id { get; set; }
+        public string CaseNumber { get; set; }
         public string Interpretation { get; set; }
+        public string Result { get; set; }
         public string Material { get; set; }
+        public string History { get; set; }
         public string Microscopic { get; set; }
         public string Gross { get; set; }
         public string TumorSynoptic { get; set; }
@@ -73,7 +76,7 @@ namespace CaselyData {
         }
         public DateTime DateTimeModifiedObject {
             get {
-                return DateTime.Parse(DateCreatedString + " " + TimeCreatedString);
+                return DateTime.Parse(DateModifiedString + " " + TimeModifiedString);
             }
             set {
                 DateModifiedString = value.ToShortDateString();
@@ -90,7 +93,7 @@ namespace CaselyData {
 
     public class SqliteDataAcces {
 
-        public static void InsertNewParts(List<PartEntry> parts, PathCase pathCase) {          
+        public static void InsertNewParts(List<PartEntry> parts, PathCase pathCase) {
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 var sql = @"INSERT INTO path_case (case_number, service)
                              VALUES (@CaseNumber, @Service);";
@@ -103,17 +106,95 @@ namespace CaselyData {
             }
         }
 
-        public static List<PartEntry> getListPartEntry(string case_number) {
+        public static void InsertNewCaseEntry(CaseEntry ce, PathCase pathCase) {
+            using (var cn = new SQLiteConnection(DbConnectionString)) {
+                var sql = @"INSERT INTO path_case (case_number, service)
+                             VALUES (@CaseNumber, @Service);";
+                cn.Execute(sql, pathCase);
+                sql = @"INSERT INTO case_entry (author_full_name, case_number, date_created, time_created, date_modified,
+                                                time_modified, tumor_synoptic, comment, result, material, history, interpretation, gross, microscopic)
+                            VALUES (@AuthorFullName, @CaseNumber,  @DateCreatedString, 
+                                    @TimeCreatedString,@DateModifiedString,@TimeModifiedString,@TumorSynoptic, @Comment, @Result, @Material, @History, 
+                                    @Interpretation, @Gross, @Microscopic);";
+                cn.Execute(sql, ce);
+            }
+        }
+
+        public static List<PartEntry> GetListPartEntryLatestVersion(string caseNumber) {
+            List<PartEntry> parts = getListPartEntry(caseNumber);
+            DateTime latestDateTimeModified = (from latestTimeModified in parts
+                                               orderby latestTimeModified.DateTimeModifiedObject descending
+                                               select latestTimeModified.DateTimeModifiedObject).FirstOrDefault();
+            List<PartEntry> latestPartEntry = new List<PartEntry>();
+            if (latestDateTimeModified != null) {
+                latestPartEntry = (from p in parts.ToList<PartEntry>()
+                                   where p.DateTimeModifiedObject.Equals(latestDateTimeModified)
+                                   select p).ToList();
+            }
+            return latestPartEntry;
+        }
+
+        
+
+        public static void ParseInsertCaseEntry(CaseEntry caseEntry, PathCase pathCase) {
+            List<string> sectionWords = new List<string> { "MATERIAL:", "HISTORY:","GROSS:", "MICROSCOPIC:" };
+            bool endOfResult = false;
+            var linesPathResult = caseEntry.Result.Trim().Replace("\r","").Split('\n');
+            int i = 0;
+            while ( i < linesPathResult.Length) {
+                if (endOfResult) { break; } // we have reached the end of the result. this skips the microscopic dictation portion of report.
+                var curLine = linesPathResult[i].Trim();
+                var l = "";
+                // Reads through result and adds the text from each section to the appropriate CaseEntry property.
+                switch (curLine) {
+                    case "MATERIAL:":
+                        // continue adding text until next section is reached
+                        do {
+                            l = linesPathResult[++i];
+                            caseEntry.Material += l + "\n";
+                        } while (sectionWords.IndexOf(linesPathResult[i + 1]) == -1);
+                        break;
+                    case "HISTORY:":
+                        do {
+                            l = linesPathResult[++i];
+                            caseEntry.History += l + "\n";
+                        } while (sectionWords.IndexOf(linesPathResult[i+1]) == -1);
+                        break;
+                    case "GROSS:":
+                        do {
+                            l = linesPathResult[++i];
+                            caseEntry.Gross += l + "\n";
+                        } while (sectionWords.IndexOf(linesPathResult[i + 1]) == -1);
+                        break;
+                    case "MICROSCOPIC:":
+                        // will continue parssing until the last line of the report is reached
+                        do {
+                            l = linesPathResult[++i];
+                            caseEntry.Microscopic += l + "\n";
+                        } while (!(l.StartsWith("Microscopic Dictator ID")));
+                        endOfResult = true;
+                        break;                   
+                    default:
+                        // just in case nothing matches. Safety measure to at least continue to increment.
+                        i++;
+                        break;
+                }
+                i++;
+            }
+            InsertNewCaseEntry(caseEntry, pathCase);
+        }
+
+        public static List<PartEntry> getListPartEntry(string caseNumber) {
             var sql = @"SELECT author_full_name AS AuthorFullName, 
                             part, procedure,
                             specimen, diagnosis, 
                             date_created AS DateCreatedString, time_created AS TimeCreatedString,
                             date_modified AS DateModifiedString, time_modified AS TimeModifiedString,
                             case_number AS CaseNumber 
-                            FROM part_entry WHERE CaseNumber = @case_number;";
+                            FROM part_entry WHERE CaseNumber = @caseNumber;";
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 DynamicParameters dp = new DynamicParameters();
-                dp.Add("@case_number", case_number, System.Data.DbType.String);
+                dp.Add("@caseNumber", caseNumber, System.Data.DbType.String);
                 var output = cn.Query<PartEntry>(sql, dp).ToList();
                 return output;
             }
@@ -168,7 +249,7 @@ namespace CaselyData {
             }
         }
 
-       
+
 
         public static List<PartEntry> getParts(string Id) {
             List<PartEntry> parts = new List<PartEntry>();
@@ -192,6 +273,6 @@ namespace CaselyData {
         }
     }
 
-    
+
 
 }

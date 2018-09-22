@@ -18,6 +18,7 @@ namespace CaselyData {
             Microscopic
         }
 
+      
     //    public static Tokenizer<PathReportToken> Instance { get; } =
     //       new TokenizerBuilder<PathReportToken>()
     //        .Ignore(Span.WhiteSpace)

@@ -2,23 +2,26 @@
 
 CREATE TABLE `path_case` (
 	`case_number`	TEXT NOT NULL UNIQUE PRIMARY KEY ON CONFLICT IGNORE,
-	`service`	TEXT
+	`service`	TEXT,
+	`is_signed_out` INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS `case_entry` (
-	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-	`tumor_synoptic`	TEXT,
-	`comment`	TEXT,
+	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,	
+	`author_full_name`	TEXT,
+	`case_number`	TEXT NOT NULL,
 	`date_created`	TEXT,
 	`time_created`	TEXT,
 	`date_modified`	TEXT,
 	`time_modified`	TEXT,
+	`tumor_synoptic`	TEXT,
+	`comment`	TEXT,
+	`result` TEXT,
 	`material` TEXT,
+	`history` TEXT,
 	`interpretation` TEXT,
 	`gross` TEXT,
 	`microscopic`	TEXT,
-	`author_full_name`	TEXT,
-	`case_number`	TEXT NOT NULL,
 	FOREIGN KEY(case_number) REFERENCES path_case(case_number)
 
 );
