@@ -23,13 +23,18 @@ namespace Casely {
 
         private void btnGrossing_Click(object sender, RoutedEventArgs e) {
             WindowGrossingEditor ge = new WindowGrossingEditor();
-            ge.Show();
+            ge.ShowDialog();
 
         }
 
         private void btnSignout_Click(object sender, RoutedEventArgs e) {
             WindowReportEditor wn = new WindowReportEditor();
             wn.ShowInTaskbar = false;
+            wn.ShowDialog();
+        }
+
+        private void btnCompare_Click(object sender, RoutedEventArgs e) {
+            WindowCompareReports wn = new WindowCompareReports();
             wn.ShowDialog();
         }
     }

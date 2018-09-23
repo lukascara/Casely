@@ -21,7 +21,7 @@ namespace Casely {
     public partial class WindowReportEditor : Window {
         public WindowReportEditor() {
             InitializeComponent();
-            cmbAuthor.ItemsSource = SqliteDataAcces.GetListStaffFullNames();
+
         }
 
         private void btnAddCase_Click(object sender, RoutedEventArgs e) {
@@ -40,10 +40,16 @@ namespace Casely {
             ce.Comment = txtComment.Text;
             ce.TumorSynoptic = txtTumorSynoptic.Text;
             ce.DateCreatedString = dtCreated.Value.GetValueOrDefault().ToShortDateString();
-            ce.TimeCreatedString = dtCreated.Value.GetValueOrDefault().ToShortTimeString();
+            ce.TimeCreatedString = dtCreated.Value.GetValueOrDefault().ToLongTimeString();
             ce.DateModifiedString = currentTime.ToShortDateString();
-            ce.TimeModifiedString = currentTime.ToShortTimeString();
+            ce.TimeModifiedString = currentTime.ToLongTimeString();
             SqliteDataAcces.ParseInsertCaseEntry(ce, pc);
+            txtInterpretation.Text = "";
+            txtComment.Text = "";
+            txtResultEntry.Text = "";
+            txtTumorSynoptic.Text = "";
+            txtCaseNumber.Text = "SMP-18-";
+            MessageBox.Show("Case Added");
         }
 
         /// <summary>
@@ -56,7 +62,10 @@ namespace Casely {
             return parts;
         }
 
-       
+        private void Window_Loaded(object sender, RoutedEventArgs e) {
+            cmbAuthor.ItemsSource = SqliteDataAcces.GetListStaffFullNames();
+            dtCreated.Value = DateTime.Now;
+        }
     }
    
 }

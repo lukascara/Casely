@@ -50,6 +50,10 @@ namespace CaselyData {
         }
         public string AuthorFullName { get; set; }
         public List<PartEntry> ListPartEntry { get; set; }
+
+        public string PrettyVersion() {
+            return $"{AuthorFullName} ({DateModifiedString})";
+        }
     }
 
     public class PartEntry {
@@ -196,6 +200,30 @@ namespace CaselyData {
                 DynamicParameters dp = new DynamicParameters();
                 dp.Add("@caseNumber", caseNumber, System.Data.DbType.String);
                 var output = cn.Query<PartEntry>(sql, dp).ToList();
+                return output;
+            }
+        }
+
+        public static List<CaseEntry> getListCaseEntry(string caseNumber) {
+            var sql = @"SELECT id,
+	author_full_name AS AuthorFullName,
+	case_number AS CaseNumber,
+	date_created AS DateCreatedString,
+	time_created AS TimeCreatedString,
+	date_modified AS DateModifiedString,
+	time_modified AS TimeModifiedString,
+	tumor_synoptic AS TumorSynoptic,
+	comment,
+	result,
+	material,
+	history,
+	interpretation,
+	gross,
+	microscopic FROM case_entry WHERE case_number = @caseNumber;";
+            using (var cn = new SQLiteConnection(DbConnectionString)) {
+                DynamicParameters dp = new DynamicParameters();
+                dp.Add("@caseNumber", caseNumber, System.Data.DbType.String);
+                var output = cn.Query<CaseEntry>(sql, dp).ToList();
                 return output;
             }
         }

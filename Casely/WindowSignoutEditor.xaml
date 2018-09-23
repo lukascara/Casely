@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Casely"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" x:Class="Casely.WindowReportEditor"
         mc:Ignorable="d"
-        Title="Report Editor" Height="450" Width="800">
+        Title="Report Editor" Height="450" Width="800" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="31"/>
@@ -30,9 +30,13 @@
         <TextBlock Margin="10,8,0,7" TextWrapping="Wrap" Text="Author" HorizontalAlignment="Left" Width="37" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin"/>
         <TextBlock Margin="3,7,0,8" TextWrapping="Wrap" Text="Service" Grid.Column="1" HorizontalAlignment="Left" Width="54.49"/>
         <ComboBox x:Name="cmbAuthor" HorizontalAlignment="Left" Margin="52,3,0,7" Width="120" IsEditable="True" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin"/>
-        <ComboBox x:Name="cmbService" Margin="51,3,0,7" IsEditable="True" Grid.Column="1" d:LayoutOverrides="TopMargin, BottomMargin"/>
+        <ComboBox x:Name="cmbService" Margin="51,3,0,7" IsEditable="True" Grid.Column="1" d:LayoutOverrides="TopMargin, BottomMargin">
+            <ComboBoxItem Content="Routine"/>
+            <ComboBoxItem Content="Frozen"/>
+            <ComboBoxItem Content="Biopsy"/>
+        </ComboBox>
         <TextBlock Margin="0,7,127,8" TextWrapping="Wrap" Text="Case#" HorizontalAlignment="Right" Width="45" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin" />
-        <TextBox x:Name="txtCaseNumber" HorizontalAlignment="Right" Margin="0,1,18,7" TextWrapping="Wrap" Width="120" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin" Text="SMP-18"/>
-        <xctk:DateTimePicker Format="Custom" FormatString="MM/dd/yy hh:mm tt" x:Name="dtCreated" Value="{Binding DateTimeCreatedObject}" Grid.Column="2" Margin="13.725,1,124.61,7"/>
+        <TextBox x:Name="txtCaseNumber" HorizontalAlignment="Right" Margin="0,1,18,7" TextWrapping="Wrap" Width="120" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin" Text="SMP-18-"/>
+        <xctk:DateTimePicker Format="Custom" FormatString="MM/dd/yy hh:mm tt" x:Name="dtCreated" Grid.Column="2" Margin="13.725,1,124.61,7"/>
     </Grid>
 </Window>

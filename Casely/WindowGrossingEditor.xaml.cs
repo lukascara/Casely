@@ -103,9 +103,9 @@ namespace Casely {
                         Specimen = pt.partEntry.Specimen,
                         AuthorFullName = cmbStaff.Text,
                         DateCreatedString = pt.dtTime.Value.GetValueOrDefault().ToShortDateString(),
-                        TimeCreatedString = pt.dtTime.Value.GetValueOrDefault().ToShortTimeString(),
+                        TimeCreatedString = pt.dtTime.Value.GetValueOrDefault().ToLongTimeString(),
                         DateModifiedString = currentTime.ToShortDateString(),
-                        TimeModifiedString = currentTime.ToShortTimeString(),
+                        TimeModifiedString = currentTime.ToLongTimeString(),
                         CaseNumber = txtCaseNumber.Text
                     };
                     partsToAdd.Add(newPart);
