@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using CaselyData;
 
 namespace Casely
 {
@@ -22,6 +23,14 @@ namespace Casely
         public WindowDiagnosis()
         {
             InitializeComponent();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e) {
+            DateTime startDate = DateTime.Now.AddDays(-Double.Parse(txtDaysToLoad.Text));
+            DateTime endDate = DateTime.Now;
+            foreach (var s in SqliteDataAcces.GetListCaseNumbersPastDays(startDate)) {
+                cmbCaseNumber.Items.Add(s);
+            }
         }
     }
 }

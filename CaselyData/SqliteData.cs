@@ -7,6 +7,8 @@ using System.Data.SQLite;
 using Dapper;
 using System.Diagnostics;
 using System.ComponentModel;
+using System.Reflection;
+using System.IO;
 
 namespace CaselyData {
     public class PathCase {
@@ -139,6 +141,16 @@ namespace CaselyData {
             return latestPartEntry;
         }
 
+        public static List<string> GetListCaseNumbersPastDays(DateTime startDate) {
+            var sql = @"SELECT DISTINCT case_number
+                            FROM part_entry WHERE date_created >= @startDate";
+            using (var cn = new SQLiteConnection(DbConnectionString)) {
+                DynamicParameters dp = new DynamicParameters();
+                dp.Add("@startDate", startDate.ToString("yyyy-MM-dd"), System.Data.DbType.String);
+                var output = cn.Query<string>(sql, dp).ToList();
+                return output;
+            }
+        }
         
 
         public static void ParseInsertCaseEntry(CaseEntry caseEntry, PathCase pathCase) {
@@ -263,7 +275,11 @@ namespace CaselyData {
 
 
         public static string DbConnectionString {
-            get { return @"Data Source = C:\Users\Lukas_and_Carlie\source\repos\Casely\Casely.db"; }
+           
+            get {
+                var path = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+                var dbPath = Path.Combine(path, "Casely.db");
+                return @"Data Source = "+dbPath; }
         }
 
         /// <summary>
@@ -300,7 +316,99 @@ namespace CaselyData {
             parts.Add(p2);
             return parts;
         }
+
+
+        string sqlCreateDatabase = @"
+CREATE TABLE `path_case` (
+	`case_number`	TEXT NOT NULL UNIQUE PRIMARY KEY ON CONFLICT IGNORE,
+	`service`	TEXT,
+	`is_signed_out` INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS `case_entry` (
+	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,	
+	`author_full_name`	TEXT,
+	`case_number`	TEXT NOT NULL,
+	`date_created`	TEXT,
+	`time_created`	TEXT,
+	`date_modified`	TEXT,
+	`time_modified`	TEXT,
+	`tumor_synoptic`	TEXT,
+	`comment`	TEXT,
+	`result` TEXT,
+	`material` TEXT,
+	`history` TEXT,
+	`interpretation` TEXT,
+	`gross` TEXT,
+	`microscopic`	TEXT,
+	FOREIGN KEY(case_number) REFERENCES path_case(case_number)
+
+);
+
+CREATE TABLE IF NOT EXISTS `part_entry` (
+	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+	`author_full_name`	TEXT,
+	`part`	TEXT,
+	`procedure`	TEXT,
+	`specimen`	TEXT,
+	`diagnosis`	TEXT,
+	`date_created`	TEXT,
+	`time_created`	TEXT,
+	`date_modified`	TEXT,
+	`time_modified`	TEXT,
+	`case_number` TEXT NOT NULL,
+	`grossed_by_full_name` TEXT,
+	FOREIGN KEY(case_number) REFERENCES path_case(case_number)
+);
+
+CREATE TABLE IF NOT EXISTS `staff` (
+	`full_name`	TEXT UNIQUE PRIMARY KEY ON CONFLICT IGNORE,
+	`role`	TEXT
+);
+
+CREATE TABLE IF NOT EXISTS `diagnosis` (
+	`diagnosis`	TEXT UNIQUE PRIMARY KEY ON CONFLICT IGNORE
+);
+
+CREATE TABLE IF NOT EXISTS `specimen` (
+	`specimen`	TEXT UNIQUE PRIMARY KEY ON CONFLICT IGNORE
+);
+
+CREATE TABLE IF NOT EXISTS `procedure` (
+	`procedure`	TEXT UNIQUE PRIMARY KEY ON CONFLICT IGNORE
+);
+
+CREATE TRIGGER IF NOT EXISTS insert_part_entry_author AFTER INSERT  ON part_entry
+BEGIN
+INSERT INTO staff (full_name) VALUES (new.author_full_name);
+END;
+
+
+CREATE TRIGGER IF NOT EXISTS insert_case_entry_author AFTER INSERT  ON case_entry
+BEGIN
+INSERT INTO staff (full_name) VALUES (new.author_full_name);
+END;
+
+CREATE TRIGGER IF NOT EXISTS insert_part_entry_diagnosis AFTER INSERT  ON part_entry
+BEGIN
+INSERT INTO diagnosis (diagnosis) VALUES (new.diagnosis);
+END;
+
+CREATE TRIGGER IF NOT EXISTS insrt_part_entry_specimen AFTER  INSERT ON part_entry
+BEGIN
+INSERT INTO specimen (specimen) VALUES (new.specimen);
+END;
+
+
+CREATE TRIGGER IF NOT EXISTS insert_part_entry_procedure AFTER INSERT  ON part_entry
+BEGIN
+INSERT INTO procedure(procedure) VALUES (new.procedure);
+END;
+";
+
     }
+
+
 
 
 

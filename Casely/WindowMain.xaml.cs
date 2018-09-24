@@ -11,6 +11,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Data.SQLite;
+using CaselyData;
+using System.IO;
 
 namespace Casely {
     /// <summary>
@@ -39,8 +42,17 @@ namespace Casely {
         }
 
         private void btnDiagnosis_Click(object sender, RoutedEventArgs e) {
-          
+            WindowDiagnosis wn = new WindowDiagnosis();
+            wn.ShowDialog();
         }
 
+        private void MenuItem_Click(object sender, RoutedEventArgs e) {
+            
+                
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e) {
+                        
+        }
     }
 }
