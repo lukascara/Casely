@@ -1,6 +1,4 @@
-﻿PRAGMA foreign_keys = ON;
-
-CREATE TABLE `path_case` (
+﻿CREATE TABLE `path_case` (
 	`case_number`	TEXT NOT NULL UNIQUE PRIMARY KEY ON CONFLICT IGNORE,
 	`service`	TEXT,
 	`is_signed_out` INTEGER
@@ -38,6 +36,7 @@ CREATE TABLE IF NOT EXISTS `part_entry` (
 	`date_modified`	TEXT,
 	`time_modified`	TEXT,
 	`case_number` TEXT NOT NULL,
+	`grossed_by_full_name` TEXT,
 	FOREIGN KEY(case_number) REFERENCES path_case(case_number)
 );
 
@@ -59,6 +58,12 @@ CREATE TABLE IF NOT EXISTS `procedure` (
 );
 
 CREATE TRIGGER insert_part_entry_author AFTER INSERT  ON part_entry
+BEGIN
+INSERT INTO staff (full_name) VALUES (new.author_full_name);
+END;
+
+
+CREATE TRIGGER insert_case_entry_author AFTER INSERT  ON case_entry
 BEGIN
 INSERT INTO staff (full_name) VALUES (new.author_full_name);
 END;

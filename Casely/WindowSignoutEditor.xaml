@@ -18,25 +18,25 @@
             <ColumnDefinition Width="130*"/>
             <ColumnDefinition Width="281*"/>
         </Grid.ColumnDefinitions>
-        <TextBox x:Name="txtInterpretation" Margin="10,22,18,9" TextWrapping="Wrap" Grid.Row="1" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin"/>
-        <TextBox x:Name="txtResultEntry" Margin="10,27,18,10" TextWrapping="Wrap"  Grid.Row="2" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin"/>
-        <TextBox x:Name="txtTumorSynoptic" Margin="3,27,10,10" TextWrapping="Wrap" Grid.Column="1" Grid.Row="2" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" Grid.ColumnSpan="2" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin"/>
-        <TextBox x:Name="txtComment" Margin="3,27,10,9" TextWrapping="Wrap" Grid.Column="1" Grid.Row="1" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" Grid.ColumnSpan="2" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin"/>
+        <TextBox x:Name="txtInterpretation" Margin="10,22,18,9" TextWrapping="Wrap" Grid.Row="1" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin" TabIndex="4"/>
+        <TextBox x:Name="txtResultEntry" Margin="10,27,18,10" TextWrapping="Wrap"  Grid.Row="2" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin" TabIndex="5"/>
+        <TextBox x:Name="txtTumorSynoptic" Margin="3,27,10,10" TextWrapping="Wrap" Grid.Column="1" Grid.Row="2" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" Grid.ColumnSpan="2" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin" TabIndex="7"/>
+        <TextBox x:Name="txtComment" Margin="3,27,10,9" TextWrapping="Wrap" Grid.Column="1" Grid.Row="1" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" Grid.ColumnSpan="2" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin" TabIndex="6"/>
         <TextBlock HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" Text="Interpretation" VerticalAlignment="Top" Height="17" Width="103" Grid.Row="1" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin"/>
         <TextBlock HorizontalAlignment="Left" Margin="10,5,0,0" TextWrapping="Wrap" Text="Result Entry" Width="103" Height="22" VerticalAlignment="Top" Grid.Row="2" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin"/>
         <TextBlock Margin="10,5,-2,0" TextWrapping="Wrap" Text="Tumor Synoptic" Height="22" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin"/>
         <TextBlock Margin="3,4,5,0" TextWrapping="Wrap" Text="Comment" Height="13" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin"/>
-        <Button x:Name="btnAddCase" Content="Submit" Grid.Column="2" Margin="0,3,10,8" Click="btnAddCase_Click" HorizontalAlignment="Right" Width="109.61"/>
+        <Button x:Name="btnAddCase" Content="Submit" Grid.Column="2" Margin="0,3,10,8" Click="btnAddCase_Click" HorizontalAlignment="Right" Width="109.61" TabIndex="8"/>
         <TextBlock Margin="10,8,0,7" TextWrapping="Wrap" Text="Author" HorizontalAlignment="Left" Width="37" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin"/>
         <TextBlock Margin="3,7,0,8" TextWrapping="Wrap" Text="Service" Grid.Column="1" HorizontalAlignment="Left" Width="54.49"/>
-        <ComboBox x:Name="cmbAuthor" HorizontalAlignment="Left" Margin="52,3,0,7" Width="120" IsEditable="True" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin"/>
-        <ComboBox x:Name="cmbService" Margin="51,3,0,7" IsEditable="True" Grid.Column="1" d:LayoutOverrides="TopMargin, BottomMargin">
+        <ComboBox x:Name="cmbAuthor" HorizontalAlignment="Left" Margin="52,3,0,7" Width="120" IsEditable="True" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin" TabIndex="1"/>
+        <ComboBox x:Name="cmbService" Margin="51,3,0,7" IsEditable="True" Grid.Column="1" d:LayoutOverrides="TopMargin, BottomMargin" TabIndex="3">
             <ComboBoxItem Content="Routine"/>
             <ComboBoxItem Content="Frozen"/>
             <ComboBoxItem Content="Biopsy"/>
         </ComboBox>
         <TextBlock Margin="0,7,127,8" TextWrapping="Wrap" Text="Case#" HorizontalAlignment="Right" Width="45" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin" />
-        <TextBox x:Name="txtCaseNumber" HorizontalAlignment="Right" Margin="0,1,18,7" TextWrapping="Wrap" Width="120" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin" Text="SMP-18-"/>
-        <xctk:DateTimePicker Format="Custom" FormatString="MM/dd/yy hh:mm tt" x:Name="dtCreated" Grid.Column="2" Margin="13.725,1,124.61,7"/>
+        <TextBox x:Name="txtCaseNumber" HorizontalAlignment="Right" Margin="0,1,18,7" TextWrapping="Wrap" Width="120" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin" Text="SMP-18-" TabIndex="2"/>
+        <xctk:DateTimePicker Format="Custom" FormatString="yyyy-MM-dd HH:mm:ss" x:Name="dtCreated" Grid.Column="2" Margin="13.725,1,124.61,7"/>
     </Grid>
 </Window>

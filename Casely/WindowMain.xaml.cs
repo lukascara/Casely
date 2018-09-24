@@ -37,5 +37,10 @@ namespace Casely {
             WindowCompareReports wn = new WindowCompareReports();
             wn.ShowDialog();
         }
+
+        private void btnDiagnosis_Click(object sender, RoutedEventArgs e) {
+          
+        }
+
     }
 }

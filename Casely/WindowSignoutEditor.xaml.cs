@@ -39,10 +39,10 @@ namespace Casely {
             ce.Result = txtResultEntry.Text;
             ce.Comment = txtComment.Text;
             ce.TumorSynoptic = txtTumorSynoptic.Text;
-            ce.DateCreatedString = dtCreated.Value.GetValueOrDefault().ToShortDateString();
-            ce.TimeCreatedString = dtCreated.Value.GetValueOrDefault().ToLongTimeString();
-            ce.DateModifiedString = currentTime.ToShortDateString();
-            ce.TimeModifiedString = currentTime.ToLongTimeString();
+            ce.DateCreatedString = dtCreated.Value.GetValueOrDefault().ToString("yyyy-MM-dd");
+            ce.TimeCreatedString = dtCreated.Value.GetValueOrDefault().ToString("HH:mm:ss");
+            ce.DateModifiedString = currentTime.ToString("yyyy-MM-dd");
+            ce.TimeModifiedString = currentTime.ToString("HH:mm:ss");
             SqliteDataAcces.ParseInsertCaseEntry(ce, pc);
             txtInterpretation.Text = "";
             txtComment.Text = "";

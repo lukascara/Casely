@@ -68,14 +68,15 @@ namespace CaselyData {
         public string TimeCreatedString { get; set; }
         public string TimeModifiedString { get; set; }
         public string DateModifiedString { get; set; }
+        public string GrossByFullName { get; set; }
         public DateTime DateTimeCreatedObject {
             get {
-                return DateTime.Parse(DateCreatedString + " " + TimeCreatedString);
+                return DateTime.Parse(DateCreatedString + " " +  TimeCreatedString);
             }
             set {
-                DateCreatedString = value.ToShortDateString();
+                DateCreatedString = value.ToString("yyyy-MM-dd");
 
-                TimeCreatedString = value.TimeOfDay.ToString();
+                TimeCreatedString = value.ToString("HH:mm:ss");
             }
         }
         public DateTime DateTimeModifiedObject {
@@ -83,9 +84,9 @@ namespace CaselyData {
                 return DateTime.Parse(DateModifiedString + " " + TimeModifiedString);
             }
             set {
-                DateModifiedString = value.ToShortDateString();
+                DateModifiedString = value.ToString("yyyy-MM-dd");
 
-                TimeModifiedString = value.TimeOfDay.ToString();
+                TimeModifiedString = value.ToString("HH:mm:ss");
             }
         }
     }
@@ -103,9 +104,9 @@ namespace CaselyData {
                              VALUES (@CaseNumber, @Service);";
                 cn.Execute(sql, pathCase);
                 sql = @"INSERT INTO part_entry (author_full_name, part, procedure,
-                            specimen, diagnosis, date_created, time_created,date_modified, time_modified, case_number)
+                            specimen, diagnosis, date_created, time_created,date_modified, time_modified, case_number, grossed_by_full_name)
                             VALUES (@AuthorFullName, @Part, @Procedure, @Specimen, @Diagnosis, @DateCreatedString, 
-                                    @TimeCreatedString,@DateModifiedString,@TimeModifiedString, @CaseNumber);";
+                                    @TimeCreatedString,@DateModifiedString,@TimeModifiedString, @CaseNumber, @GrossByFullName);";
                 cn.Execute(sql, parts);
             }
         }

@@ -102,11 +102,12 @@ namespace Casely {
                         Procedure = pt.partEntry.Procedure,
                         Specimen = pt.partEntry.Specimen,
                         AuthorFullName = cmbStaff.Text,
-                        DateCreatedString = pt.dtTime.Value.GetValueOrDefault().ToShortDateString(),
-                        TimeCreatedString = pt.dtTime.Value.GetValueOrDefault().ToLongTimeString(),
-                        DateModifiedString = currentTime.ToShortDateString(),
-                        TimeModifiedString = currentTime.ToLongTimeString(),
-                        CaseNumber = txtCaseNumber.Text
+                        GrossByFullName = cmbStaff.Text,
+                        DateCreatedString = pt.dtTime.Value.GetValueOrDefault().ToString("yyyy-MM-dd"),
+                        TimeCreatedString = pt.dtTime.Value.GetValueOrDefault().ToString("HH:mm:ss"),
+                        DateModifiedString = currentTime.ToString("yyyy-MM-dd"),
+                        TimeModifiedString = currentTime.ToString("HH:mm:ss"),
+                    CaseNumber = txtCaseNumber.Text
                     };
                     partsToAdd.Add(newPart);
                 }
