@@ -37,6 +37,7 @@ namespace Casely {
             loadSuggestions();
             InitializeComponent();
             loadParts();
+            txtCaseNumber.Text = SqliteDataAcces.CaseNumberPrefix;
         }
 
         public void loadSuggestions() {
@@ -91,29 +92,37 @@ namespace Casely {
         }
 
         private void btnSubmit_Click(object sender, RoutedEventArgs e) {
-            List<PartEntry> partsToAdd = new List<PartEntry>();
-            // get the current date and time to save the same modified time for all parts being added to the database
-            DateTime currentTime = DateTime.Now;
-            foreach (var p in wpParts.Children) {
-                if(p is UCPartEntry) {
-                    var pt = (UCPartEntry)p;
-                    PartEntry newPart = new PartEntry() {
-                        Part = pt.partEntry.Part,
-                        Procedure = pt.partEntry.Procedure,
-                        Specimen = pt.partEntry.Specimen,
-                        AuthorFullName = cmbStaff.Text,
-                        GrossByFullName = cmbStaff.Text,
-                        DateCreatedString = pt.dtTime.Value.GetValueOrDefault().ToString("yyyy-MM-dd"),
-                        TimeCreatedString = pt.dtTime.Value.GetValueOrDefault().ToString("HH:mm:ss"),
-                        DateModifiedString = currentTime.ToString("yyyy-MM-dd"),
-                        TimeModifiedString = currentTime.ToString("HH:mm:ss"),
-                    CaseNumber = txtCaseNumber.Text
-                    };
-                    partsToAdd.Add(newPart);
+            if (txtCaseNumber.Text == "" || txtCaseNumber.Text == SqliteDataAcces.CaseNumberPrefix) {
+                MessageBox.Show("Please enter a case number.");
+            } else if (cmbStaff.Text == "") {
+                MessageBox.Show("Please enter the name of the person grossing the specimen");
+            } else if (cbService.Text == "") {
+                MessageBox.Show("Please enter a service");
+            } else {
+                List<PartEntry> partsToAdd = new List<PartEntry>();
+                // get the current date and time to save the same modified time for all parts being added to the database
+                DateTime currentTime = DateTime.Now;
+                foreach (var p in wpParts.Children) {
+                    if (p is UCPartEntry) {
+                        var pt = (UCPartEntry)p;
+                        PartEntry newPart = new PartEntry() {
+                            Part = pt.partEntry.Part,
+                            Procedure = pt.partEntry.Procedure,
+                            Specimen = pt.partEntry.Specimen,
+                            AuthorFullName = cmbStaff.Text,
+                            GrossByFullName = cmbStaff.Text,
+                            DateCreatedString = pt.dtTime.Value.GetValueOrDefault().ToString("yyyy-MM-dd"),
+                            TimeCreatedString = pt.dtTime.Value.GetValueOrDefault().ToString("HH:mm:ss"),
+                            DateModifiedString = currentTime.ToString("yyyy-MM-dd"),
+                            TimeModifiedString = currentTime.ToString("HH:mm:ss"),
+                            CaseNumber = txtCaseNumber.Text
+                        };
+                        partsToAdd.Add(newPart);
+                    }
                 }
-            }
-            SqliteDataAcces.InsertNewParts(partsToAdd, new PathCase() { CaseNumber = txtCaseNumber.Text, Service = cbService.Text });
-            this.Close();
+                SqliteDataAcces.InsertNewParts(partsToAdd, new PathCase() { CaseNumber = txtCaseNumber.Text, Service = cbService.Text });
+                txtCaseNumber.Text = SqliteDataAcces.CaseNumberPrefix;
+            }           
         }
 
         private void wpParts_Loaded(object sender, RoutedEventArgs e) {
@@ -129,6 +138,10 @@ namespace Casely {
 
         private void txtCaseNumber_TextChanged(object sender, TextChangedEventArgs e) {
             hasCaseNumberChanged = true;
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e) {
+
         }
     }
 }

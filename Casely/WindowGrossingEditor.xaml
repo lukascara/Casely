@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:Casely"
         xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid" x:Class="Casely.WindowGrossingEditor"
         mc:Ignorable="d"
-        Title="GrossingEditor" Height="450" Width="800">
-  
+        Title="GrossingEditor" Height="450" Width="800" Loaded="Window_Loaded">
+
     <Grid>
         <StackPanel CanVerticallyScroll="True" x:Name="wpParts" Margin="10,53,10,10" Background="#FFEBFBFF" Loaded="wpParts_Loaded">
 
@@ -15,13 +15,14 @@
         </StackPanel>
         <Label Content="Case #" HorizontalAlignment="Left" Margin="22,10,0,0" VerticalAlignment="Top"/>
         <Label Content="Grossed By" HorizontalAlignment="Left" Margin="242,10,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="txtCaseNumber" HorizontalAlignment="Left" Height="23" Margin="67.283,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="169.717" LostFocus="txtCaseNumber_LostFocus" TextChanged="txtCaseNumber_TextChanged" TabIndex="1" Text="SMP-18-" MaxLines="1"/>
+        <TextBox x:Name="txtCaseNumber" HorizontalAlignment="Left" Height="23" Margin="67.283,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="169.717" LostFocus="txtCaseNumber_LostFocus" TextChanged="txtCaseNumber_TextChanged" TabIndex="1" MaxLines="1"/>
         <Button x:Name="btnSubmit" Content="Submit Case" HorizontalAlignment="Right" Margin="0,10,24,0" VerticalAlignment="Top" Width="75" Click="btnSubmit_Click" TabIndex="5"/>
-        <ComboBox x:Name="cbService" HorizontalAlignment="Right" Margin="0,10,201,0" VerticalAlignment="Top" Width="120" SelectedIndex="0" TabIndex="3">
+        <ComboBox x:Name="cbService" HorizontalAlignment="Right" Margin="0,10,147,0" VerticalAlignment="Top" Width="120" TabIndex="3" IsEditable="True">
             <ComboBoxItem Content="Routine"/>
             <ComboBoxItem Content="Frozen"/>
             <ComboBoxItem Content="Biopsy"/>
         </ComboBox>
         <ComboBox x:Name="cmbStaff" Margin="310.657,10,342.343,0" VerticalAlignment="Top" IsEditable="True" TabIndex="2"/>
+        <Label Content="Service" HorizontalAlignment="Right" Margin="0,7.04,267,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

@@ -100,6 +100,8 @@ namespace CaselyData {
 
     public class SqliteDataAcces {
 
+        public static string CaseNumberPrefix = "SMP-18-";
+
         public static void InsertNewParts(List<PartEntry> parts, PathCase pathCase) {
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 var sql = @"INSERT INTO path_case (case_number, service)
