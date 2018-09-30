@@ -1,0 +1,23 @@
+﻿<Window x:Class="Casely.Window1"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Casely"
+        mc:Ignorable="d"
+        Title="Casely: Search" Height="450" Width="800">
+    <Grid>
+        <ComboBox x:Name="cmbDiagnosis" HorizontalAlignment="Left" Margin="95.564,10,0,0" VerticalAlignment="Top" Width="120">
+            <ComboBoxItem Content="Author"/>
+            <ComboBoxItem Content="Specimen"/>
+            <ComboBoxItem Content="Procedure"/>
+            <ComboBoxItem Content="Diagnosis"/>
+            <ComboBoxItem Content="Service"/>
+        </ComboBox>
+        <Label Content="Field Name" HorizontalAlignment="Left" Margin="20.564,10,0,0" VerticalAlignment="Top"/>
+        <ListBox HorizontalAlignment="Left" Height="100" Margin="95.564,80.358,0,0" VerticalAlignment="Top" Width="100"/>
+        <ComboBox Margin="95.564,36.96,0,0" VerticalAlignment="Top" IsEditable="True" HorizontalAlignment="Left" Width="120"/>
+        <Label Content="Search value" HorizontalAlignment="Left" Margin="20.564,32.96,0,0" VerticalAlignment="Top"/>
+
+    </Grid>
+</Window>

@@ -28,7 +28,7 @@ namespace Casely {
         public WindowGrossingEditor(CaseEntry caseEntry) {
             loadSuggestions();
             InitializeComponent();
-            loadParts();
+            refreshParts();
         }
 
         public WindowGrossingEditor() {
@@ -36,7 +36,7 @@ namespace Casely {
             
             loadSuggestions();
             InitializeComponent();
-            loadParts();
+            refreshParts();
             txtCaseNumber.Text = SqliteDataAcces.CaseNumberPrefix;
         }
 
@@ -46,13 +46,14 @@ namespace Casely {
         }
 
 
-        public void loadParts() {
+        private void refreshParts() {
             
             List<PartEntry> listPartEntry = SqliteDataAcces.GetListPartEntryLatestVersion(txtCaseNumber.Text);
             // clear old UC controls
-            foreach (var p in wpParts.Children) {
-               if (p is UCPartEntry) {
-                    wpParts.Children.Remove((UCPartEntry)p);
+            for (int i = 0; i < wpParts.Children.Count; i++) {
+                if (wpParts.Children[i] is UCPartEntry) {
+                    wpParts.Children.RemoveAt(i);
+                    i--; // go back one since we removed a control
                 }
             }
             // create new ones from the partEntry loaded from the database
@@ -62,7 +63,7 @@ namespace Casely {
         }
 
 
-        public void addPart() {
+        private void addPart() {
             if (wpParts.Children.Count > 1) {
                 UCPartEntry lastPart = wpParts.Children[wpParts.Children.Count-1] as UCPartEntry;
                 char lstParLetter = lastPart.tbPart.Text.Length != 0 ? lastPart.tbPart.Text[0] : 'A';
@@ -122,6 +123,8 @@ namespace Casely {
                 }
                 SqliteDataAcces.InsertNewParts(partsToAdd, new PathCase() { CaseNumber = txtCaseNumber.Text, Service = cbService.Text });
                 txtCaseNumber.Text = SqliteDataAcces.CaseNumberPrefix;
+                refreshParts();
+                MessageBox.Show("Case entry added to database");
             }           
         }
 
@@ -132,7 +135,7 @@ namespace Casely {
 
         private void txtCaseNumber_LostFocus(object sender, RoutedEventArgs e) {
             if (hasCaseNumberChanged == true) {
-                loadParts();
+                refreshParts();
             }
         }
 

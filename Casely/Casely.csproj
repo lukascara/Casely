@@ -127,7 +127,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="UCdiagnosis.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UCPartEntry.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WindowSearch.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -155,8 +163,14 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UCdiagnosis.xaml.cs">
+      <DependentUpon>UCdiagnosis.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UCPartEntry.xaml.cs">
       <DependentUpon>UCPartEntry.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WindowSearch.xaml.cs">
+      <DependentUpon>WindowSearch.xaml</DependentUpon>
     </Compile>
     <Compile Include="WindowCompareReports.xaml.cs">
       <DependentUpon>WindowCompareReports.xaml</DependentUpon>
