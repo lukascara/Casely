@@ -37,5 +37,6 @@ namespace Casely {
             cmbOrganSystem.ItemsSource = suggestOrganSystem;
             cmbDiagnosis.ItemsSource = suggestDiagnosis;
         }
+
     }
 }

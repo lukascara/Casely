@@ -26,21 +26,19 @@ namespace Casely {
         private bool hasCaseNumberChanged = false;
 
         public WindowGrossingEditor(CaseEntry caseEntry) {
-            loadSuggestions();
+            refreshSuggestions();
             InitializeComponent();
             refreshParts();
         }
 
         public WindowGrossingEditor() {
-           
-            
-            loadSuggestions();
+            refreshSuggestions();
             InitializeComponent();
             refreshParts();
             txtCaseNumber.Text = SqliteDataAcces.CaseNumberPrefix;
         }
 
-        public void loadSuggestions() {
+        public void refreshSuggestions() {
             suggestSpecimen = new List<string>(SqliteDataAcces.GetListSpecimen());
             suggestedProcedure = new List<string>(SqliteDataAcces.GetListProcedure());
         }
@@ -124,6 +122,7 @@ namespace Casely {
                 SqliteDataAcces.InsertNewParts(partsToAdd, new PathCase() { CaseNumber = txtCaseNumber.Text, Service = cbService.Text });
                 txtCaseNumber.Text = SqliteDataAcces.CaseNumberPrefix;
                 refreshParts();
+                refreshSuggestions();
                 MessageBox.Show("Case entry added to database");
             }           
         }

@@ -4,23 +4,39 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Casely"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" x:Class="Casely.WindowDiagnosis"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" xmlns:WPF="clr-namespace:TheArtOfDev.HtmlRenderer.WPF;assembly=HtmlRenderer.WPF" x:Class="Casely.WindowDiagnosis"
         mc:Ignorable="d"
-        Title="Casely: Diagnosis" Height="450" Width="800" Loaded="Window_Loaded">
+        Title="Casely: Diagnosis" Height="731" Width="1150" Loaded="Window_Loaded">
     <Grid>
-        <ComboBox x:Name="cmbCaseNumber" HorizontalAlignment="Left" Margin="77.342,16.56,0,0" VerticalAlignment="Top" Width="224.27" IsEditable="True" LostFocus="cmbCaseNumber_LostFocus" DropDownClosed="cmbCaseNumber_DropDownClosed" TabIndex="1"/>
-        <Label Content="Case#" HorizontalAlignment="Left" Margin="30.345,16.56,0,0" VerticalAlignment="Top"/>
-        <Label Content="Load # of past days" Margin="340.612,12.56,338.118,0" VerticalAlignment="Top" d:LayoutOverrides="Width"/>
+        <WrapPanel Orientation="Horizontal">
 
-        <xctk:IntegerUpDown x:Name="txtDaysToLoad" HorizontalAlignment="Right" Margin="0,16.56,292.118,0" VerticalAlignment="Top" Value="7" DefaultValue="7" TabIndex="2" IsTabStop="False"/>
-        <StackPanel Name="spParts"  Margin="340.612,65,10,10">
-            <Button x:Name="btnAddDiagnosis" Width="96.5" Content="Add Diagnosis" TabIndex="2" HorizontalAlignment="Center" Click="btnAddDiagnosis_Click"/>
-        </StackPanel>
-        <RichTextBox x:Name="rtxCaseReport" HorizontalAlignment="Left" Margin="10,65,0,10" Width="291.612" IsTabStop="False">
-            <FlowDocument>
-            </FlowDocument>
-        </RichTextBox>
-        <Button x:Name="btnSubmit" Content="Submit Diagnosis" HorizontalAlignment="Right" Margin="0,0,74,382.48" Click="btnSubmitDiagnosis_Click" VerticalAlignment="Bottom" Width="202" TabIndex="3" IsTabStop="False"/>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="60*"/>
+                    <RowDefinition Height="359*"/>
+                </Grid.RowDefinitions>
+                <ComboBox x:Name="cmbCaseNumber" HorizontalAlignment="Left" Margin="77.342,16.56,0,21.48" Width="152.27" IsEditable="True" LostFocus="cmbCaseNumber_LostFocus" DropDownClosed="cmbCaseNumber_DropDownClosed" TabIndex="1" d:LayoutOverrides="Height"/>
+                <Label Content="Case#" HorizontalAlignment="Left" Margin="30.345,16.56,0,17.48" d:LayoutOverrides="Height"/>
+                <Label Content="Load # of past days" Margin="340.612,12.56,338.118,21.48" d:LayoutOverrides="Width, Height"/>
+
+                <xctk:IntegerUpDown x:Name="txtDaysToLoad" HorizontalAlignment="Right" Margin="0,16.56,292.118,23.44" Value="7" DefaultValue="7" TabIndex="2" IsTabStop="False" d:LayoutOverrides="Height"/>
+                <Button x:Name="btnSubmit" Content="Submit Diagnosis" HorizontalAlignment="Right" Margin="0,16.56,74,23.48" Click="btnSubmitDiagnosis_Click" Width="202" TabIndex="3" IsTabStop="False" d:LayoutOverrides="Height"/>
+                <CheckBox x:Name="chkFilterCompleted" Content="List uncompleted only" Margin="77.341,1.461,0,0" VerticalAlignment="Top" Click="chkFilterCompleted_Click" HorizontalAlignment="Left"/>
+                <CheckBox x:Name="cbInterpretation" Content="Interpretation" Margin="17.62,0,0,1.381" VerticalAlignment="Bottom" Click="cbInterpretation_Click" IsChecked="True" HorizontalAlignment="Left" Width="100.395"/>
+                <CheckBox x:Name="cbResult" Content="Result" Margin="118.015,0,0,1.381" VerticalAlignment="Bottom" Click="cbResult_Click" IsChecked="True" HorizontalAlignment="Left" Width="97.775"/>
+                <CheckBox x:Name="cbTumorSynoptic" Content="Tumor Synoptic" Margin="180.41,0,0,1.381" VerticalAlignment="Bottom" Click="cbTumorSynoptic_Checked" HorizontalAlignment="Left" Width="119.775"/>
+                <CheckBox x:Name="cbComment" Content="Comment" Margin="288.605,0,381,1.381" VerticalAlignment="Bottom" Click="cbComment_Checked"/>
+
+            </Grid>
+
+            <Grid Height="633">
+                <StackPanel x:Name="spParts"  Margin="0,5,10,10" HorizontalAlignment="Right" Width="524">
+                    <Button x:Name="btnAddDiagnosis" Width="96.5" Content="Add Diagnosis" TabIndex="2" HorizontalAlignment="Center" Click="btnAddDiagnosis_Click"/>
+                </StackPanel>
+                <WPF:HtmlPanel x:Name="wbDiffText" Margin="10,5,539,10" BorderBrush="#FDA6A6A6" BorderThickness="3"/>
+
+            </Grid>
+        </WrapPanel>
 
     </Grid>
 </Window>

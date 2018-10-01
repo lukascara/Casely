@@ -117,3 +117,14 @@ BEGIN
 INSERT INTO organ_system (organ_system) VALUES (new.organ_system);
 END;
 
+
+CREATE TABLE IF NOT EXISTS `diagnosis_category` (
+	`category`	TEXT UNIQUE PRIMARY KEY ON CONFLICT IGNORE
+);
+
+CREATE TRIGGER insert_part_diganosis_category AFTER INSERT  ON part_diagnosis
+BEGIN
+INSERT INTO diagnosis_category (category) VALUES (new.category);
+END;
+
+

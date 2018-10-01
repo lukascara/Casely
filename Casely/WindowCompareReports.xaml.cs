@@ -82,7 +82,6 @@ namespace Casely
                 }
             }
         }
-
         private void cbInterpretation_Click(object sender, RoutedEventArgs e) {
             updateComparison();
         }
@@ -99,4 +98,6 @@ namespace Casely
             updateComparison();
         }
     }
+
+    
 }
