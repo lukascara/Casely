@@ -102,7 +102,7 @@ namespace Casely {
                     spPartDiagnosis.Children.Add(new UCdiagnosis(p, suggestionOrgan, suggestionOrganSystem, suggestionCategory, suggestionDiagnosis));
                 }
 
-                refreshComparison();
+                RefreshComparison();
             } else {
                 // blank case number entered, prevent addition of diagnosis
                 btnAddDiagnosis.IsEnabled = false;
@@ -172,10 +172,7 @@ namespace Casely {
             SqliteDataAcces.InsertNewPartDiagnosisEntry(partsToAdd, new PathCase() { CaseNumber = cmbCaseNumber.Text });
             cmbCaseNumber.Text = SqliteDataAcces.CaseNumberPrefix;
             refreshCaseData();
-        }
-
-        private void cmbCaseNumber_DropDownClosed(object sender, EventArgs e) {
-            RefreshPartDiagnosis();
+            RefreshCasesDiagnosis();
         }
 
         private void chkFilterCompleted_Click(object sender, RoutedEventArgs e) {
@@ -183,7 +180,7 @@ namespace Casely {
         }
 
         private void refreshCaseData() {
-            refreshComparison();
+            RefreshComparison();
             RefreshPartDiagnosis();
         }
 
@@ -191,7 +188,7 @@ namespace Casely {
         /// <summary>
         /// Loads the last two versions of the report. Use LoadCaseData to refresh UI as it loads the diagnosis for the case as well.
         /// </summary>
-        private void refreshComparison() {
+        private void RefreshComparison() {
               if (cmbCaseNumber.Text != null && cmbCaseNumber.Text != "" && cmbCaseNumber.Text != SqliteDataAcces.CaseNumberPrefix) {
                 var listCase = SqliteDataAcces.getListCaseEntry(cmbCaseNumber.Text);
                 /*foreach (var lc in listCase) {
@@ -232,27 +229,29 @@ namespace Casely {
                     var html = dmp.DiffPrettyHtml(diffs).Replace("&para;", "");
                     wbDiffText.Text += html;
                 }
+                btnSkipDiagnosis.IsEnabled = true;
 
             } else {
                 wbDiffText.Text = "";
                 clearDiagnosisControls();
+                btnSkipDiagnosis.IsEnabled = false;
             }
         }
 
         private void cbInterpretation_Click(object sender, RoutedEventArgs e) {
-            refreshComparison();
+            RefreshComparison();
         }
 
         private void cbResult_Click(object sender, RoutedEventArgs e) {
-            refreshComparison();
+            RefreshComparison();
         }
 
         private void cbTumorSynoptic_Checked(object sender, RoutedEventArgs e) {
-            refreshComparison();
+            RefreshComparison();
         }
 
         private void cbComment_Checked(object sender, RoutedEventArgs e) {
-            refreshComparison();
+            RefreshComparison();
         }
 
         private void txtDaysToLoad_LostFocus(object sender, RoutedEventArgs e) {
@@ -262,6 +261,22 @@ namespace Casely {
         private void cmbCaseNumber_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             cmbCaseNumber.Text = (string)cmbCaseNumber.SelectedValue;
             refreshCaseData();
+        }
+
+        private void btnSkipDiagnosis_Click(object sender, RoutedEventArgs e) {
+            DateTime currentTime = DateTime.Now;
+            PartDiagnosis pd = new PartDiagnosis() {
+                CaseNumber = cmbCaseNumber.Text,
+                DateModifiedString = currentTime.ToString("yyyy-MM-dd"),
+                TimeModifiedString = currentTime.ToString("HH:mm:ss"),
+                Part = "A"
+            };
+            List<PartDiagnosis> listPD = new List<PartDiagnosis>();
+            listPD.Add(pd);
+            SqliteDataAcces.InsertNewPartDiagnosisEntry(listPD, new PathCase() { CaseNumber = cmbCaseNumber.Text });
+            cmbCaseNumber.Text = SqliteDataAcces.CaseNumberPrefix;
+            refreshCaseData();
+            RefreshCasesDiagnosis();
         }
     }
 }
