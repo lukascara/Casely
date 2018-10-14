@@ -15,7 +15,7 @@
                     <RowDefinition Height="60*"/>
                     <RowDefinition Height="359*"/>
                 </Grid.RowDefinitions>
-                <ComboBox x:Name="cmbCaseNumber" HorizontalAlignment="Left" Margin="77.342,16.56,0,21.48" Width="152.27" IsEditable="True" LostFocus="cmbCaseNumber_LostFocus" DropDownClosed="cmbCaseNumber_DropDownClosed" TabIndex="1" d:LayoutOverrides="Height"/>
+                <ComboBox x:Name="cmbCaseNumber" HorizontalAlignment="Left" Margin="77.342,16.56,0,21.48" Width="152.27" IsEditable="True" LostFocus="cmbCaseNumber_LostFocus" DropDownClosed="cmbCaseNumber_DropDownClosed" TabIndex="1" d:LayoutOverrides="Height" SelectionChanged="cmbCaseNumber_SelectionChanged"/>
                 <Label Content="Case#" HorizontalAlignment="Left" Margin="30.345,16.56,0,17.48" d:LayoutOverrides="Height"/>
                 <Label Content="Load # of past days" Margin="340.612,12.56,338.118,21.48" d:LayoutOverrides="Width, Height"/>
 

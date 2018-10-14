@@ -240,6 +240,9 @@ namespace Casely {
         private void txtDaysToLoad_LostFocus(object sender, RoutedEventArgs e) {
             RefreshCasesDiagnosis();
         }
-                
+
+        private void cmbCaseNumber_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            RefreshPartDiagnosis
+        }
     }
 }
