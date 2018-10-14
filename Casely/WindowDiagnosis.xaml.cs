@@ -92,20 +92,14 @@ namespace Casely {
         /// </summary>
         private void RefreshPartDiagnosis() {
             List<PartDiagnosis> listPartDiagnosis = SqliteDataAcces.GetListPartDiagnosisLatestVersion(cmbCaseNumber.Text);
-            // clear old UC controls
-            for (int i = 0; i < spParts.Children.Count; i++) {
-                if (spParts.Children[i] is UCdiagnosis) {
-                    spParts.Children.RemoveAt(i);
-                    i--; // go back one since we removed a control
-                }
-            }
+            clearDiagnosisControls();
             // Check if a valid case number is selected
             string cmbCaseText = cmbCaseNumber.Text;
             if (cmbCaseText != "" && cmbCaseText != SqliteDataAcces.DbConnectionString) {
                 btnAddDiagnosis.IsEnabled = true;
                 // create new ones from the partDiagnosis loaded from the database
                 foreach (var p in listPartDiagnosis) {
-                    spParts.Children.Add(new UCdiagnosis(p, suggestionOrgan, suggestionOrganSystem, suggestionCategory, suggestionDiagnosis));
+                    spPartDiagnosis.Children.Add(new UCdiagnosis(p, suggestionOrgan, suggestionOrganSystem, suggestionCategory, suggestionDiagnosis));
                 }
 
                 refreshComparison();
@@ -114,18 +108,29 @@ namespace Casely {
                 btnAddDiagnosis.IsEnabled = false;
             }
         }
+        /// <summary>
+        /// clear old UC controls
+        /// </summary>
+        private void clearDiagnosisControls() {            
+            for (int i = 0; i < spPartDiagnosis.Children.Count; i++) {
+                if (spPartDiagnosis.Children[i] is UCdiagnosis) {
+                    spPartDiagnosis.Children.RemoveAt(i);
+                    i--; // go back one since we removed a control
+                }
+            }
+        }
 
         private void AddPartDiagnosis() {
-            if (spParts.Children.Count > 1) {
-                UCdiagnosis lastPart = spParts.Children[spParts.Children.Count - 1] as UCdiagnosis;
+            if (spPartDiagnosis.Children.Count > 1) {
+                UCdiagnosis lastPart = spPartDiagnosis.Children[spPartDiagnosis.Children.Count - 1] as UCdiagnosis;
                 char lstParLetter = lastPart.tbPart.Text.Length != 0 ? lastPart.tbPart.Text[0] : 'A';
                 UCdiagnosis newPart = new UCdiagnosis(new PartDiagnosis {
                     // keep the same part letter as preveious entry to allow multiple diagnosis for the same part
                     Part = (lstParLetter).ToString(),
                     Organ = lastPart.cmbOrgan.Text,
-                    OrganSystem = lastPart.cmbOrgan.Text
-                }, suggestionOrgan,suggestionOrganSystem,suggestionCategory,suggestionDiagnosis);
-                spParts.Children.Add(newPart);
+                    OrganSystem = lastPart.cmbOrganSystem.Text
+                }, suggestionOrgan, suggestionOrganSystem, suggestionCategory, suggestionDiagnosis);
+                spPartDiagnosis.Children.Add(newPart);
             } else {
                 UCdiagnosis newPart = new UCdiagnosis(new PartDiagnosis {
                     Part = "A",
@@ -134,7 +139,7 @@ namespace Casely {
                     Diagnosis = "",
                     DiagnosisDetailed = "",
                 }, suggestionOrgan, suggestionOrganSystem, suggestionCategory, suggestionDiagnosis);
-                spParts.Children.Add(newPart);
+                spPartDiagnosis.Children.Add(newPart);
             }
 
         }
@@ -147,7 +152,7 @@ namespace Casely {
             List<PartDiagnosis> partsToAdd = new List<PartDiagnosis>();
             // get the current date and time to save the same modified time for all parts being added to the database
             DateTime currentTime = DateTime.Now;
-            foreach (var p in spParts.Children) {
+            foreach (var p in spPartDiagnosis.Children) {
                 if (p is UCdiagnosis) {
                     var pt = (UCdiagnosis)p;
                     PartDiagnosis newPartDiagnosis = new PartDiagnosis() {
@@ -162,10 +167,11 @@ namespace Casely {
                         CaseNumber = cmbCaseNumber.Text
                     };
                     partsToAdd.Add(newPartDiagnosis);
-                }
+                } 
             }
             SqliteDataAcces.InsertNewPartDiagnosisEntry(partsToAdd, new PathCase() { CaseNumber = cmbCaseNumber.Text });
             cmbCaseNumber.Text = SqliteDataAcces.CaseNumberPrefix;
+            refreshCaseData();
         }
 
         private void cmbCaseNumber_DropDownClosed(object sender, EventArgs e) {
@@ -176,8 +182,17 @@ namespace Casely {
             RefreshCasesDiagnosis();
         }
 
+        private void refreshCaseData() {
+            refreshComparison();
+            RefreshPartDiagnosis();
+        }
+
+
+        /// <summary>
+        /// Loads the last two versions of the report. Use LoadCaseData to refresh UI as it loads the diagnosis for the case as well.
+        /// </summary>
         private void refreshComparison() {
-            if (cmbCaseNumber.Text != "" && cmbCaseNumber.Text != SqliteDataAcces.CaseNumberPrefix) {
+              if (cmbCaseNumber.Text != null && cmbCaseNumber.Text != "" && cmbCaseNumber.Text != SqliteDataAcces.CaseNumberPrefix) {
                 var listCase = SqliteDataAcces.getListCaseEntry(cmbCaseNumber.Text);
                 /*foreach (var lc in listCase) {
                     ComboBoxItem cbitem = new ComboBoxItem();
@@ -218,6 +233,9 @@ namespace Casely {
                     wbDiffText.Text += html;
                 }
 
+            } else {
+                wbDiffText.Text = "";
+                clearDiagnosisControls();
             }
         }
 
@@ -242,7 +260,8 @@ namespace Casely {
         }
 
         private void cmbCaseNumber_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-
+            cmbCaseNumber.Text = (string)cmbCaseNumber.SelectedValue;
+            refreshCaseData();
         }
     }
 }
