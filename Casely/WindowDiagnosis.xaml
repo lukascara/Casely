@@ -19,7 +19,7 @@
                 <Label Content="Case#" HorizontalAlignment="Left" Margin="30.345,16.56,0,17.48" d:LayoutOverrides="Height"/>
                 <Label Content="Load # of past days" Margin="340.612,12.56,338.118,21.48" d:LayoutOverrides="Width, Height"/>
 
-                <xctk:IntegerUpDown x:Name="txtDaysToLoad" HorizontalAlignment="Right" Margin="0,16.56,292.118,23.44" Value="7" DefaultValue="7" TabIndex="2" IsTabStop="False" d:LayoutOverrides="Height"/>
+                <xctk:IntegerUpDown x:Name="txtDaysToLoad" HorizontalAlignment="Right" Margin="0,16.56,292.118,23.44" Value="7" DefaultValue="7" TabIndex="2" IsTabStop="False" d:LayoutOverrides="Height" LostFocus="txtDaysToLoad_LostFocus"/>
                 <Button x:Name="btnSubmit" Content="Submit Diagnosis" HorizontalAlignment="Right" Margin="0,16.56,74,23.48" Click="btnSubmitDiagnosis_Click" Width="202" TabIndex="3" IsTabStop="False" d:LayoutOverrides="Height"/>
                 <CheckBox x:Name="chkFilterCompleted" Content="List uncompleted only" Margin="77.341,1.461,0,0" VerticalAlignment="Top" Click="chkFilterCompleted_Click" HorizontalAlignment="Left"/>
                 <CheckBox x:Name="cbInterpretation" Content="Interpretation" Margin="17.62,0,0,1.381" VerticalAlignment="Bottom" Click="cbInterpretation_Click" IsChecked="True" HorizontalAlignment="Left" Width="100.395"/>

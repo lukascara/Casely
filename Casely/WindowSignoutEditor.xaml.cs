@@ -19,6 +19,9 @@ namespace Casely {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class WindowReportEditor : Window {
+
+        private bool hasCaseNumberChanged = false;
+
         public WindowReportEditor() {
             InitializeComponent();
             txtCaseNumber.Text = SqliteDataAcces.CaseNumberPrefix;
@@ -74,6 +77,34 @@ namespace Casely {
         private void Window_Loaded(object sender, RoutedEventArgs e) {
             cmbAuthor.ItemsSource = SqliteDataAcces.GetListStaffFullNames();
             dtCreated.Value = DateTime.Now;
+        }
+
+        private void RefreshCaseEntry() {
+            if (txtCaseNumber.Text != SqliteDataAcces.CaseNumberPrefix && txtCaseNumber.Text != "") {
+                CaseEntry ce = SqliteDataAcces.GetCaseEntryLatestVersion(txtCaseNumber.Text);
+                if (ce != null) {
+                    txtInterpretation.Text = ce.Interpretation;
+                    txtResultEntry.Text = ce.Result;
+                    txtComment.Text = ce.Comment;
+                    txtTumorSynoptic.Text = ce.TumorSynoptic;
+                    message.Text = $"Case entry found by: {ce.AuthorFullName} ({ce.DateModifiedString} {ce.TimeModifiedString})";
+                }
+                hasCaseNumberChanged = false;
+            } else {
+                message.Text = $"No case entry found";
+            }     
+        }
+
+        private void txtCaseNumber_LostFocus(object sender, RoutedEventArgs e) {
+            if (hasCaseNumberChanged == true) {
+                RefreshCaseEntry();
+            }
+        }
+
+        private void txtCaseNumber_TextChanged(object sender, TextChangedEventArgs e) {
+            if (txtCaseNumber.Text != SqliteDataAcces.CaseNumberPrefix && txtCaseNumber.Text != "") {
+                hasCaseNumberChanged = true;
+            }
         }
     }
    

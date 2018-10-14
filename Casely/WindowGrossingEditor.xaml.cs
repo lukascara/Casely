@@ -139,7 +139,9 @@ namespace Casely {
         }
 
         private void txtCaseNumber_TextChanged(object sender, TextChangedEventArgs e) {
-            hasCaseNumberChanged = true;
+            if (txtCaseNumber.Text != SqliteDataAcces.CaseNumberPrefix && txtCaseNumber.Text != "") {
+                hasCaseNumberChanged = true;
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {

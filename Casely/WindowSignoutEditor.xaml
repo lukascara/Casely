@@ -35,8 +35,8 @@
             <ComboBoxItem Content="Frozen"/>
             <ComboBoxItem Content="Biopsy"/>
         </ComboBox>
-        <TextBlock Margin="0,7,127,8" TextWrapping="Wrap" Text="Case#" HorizontalAlignment="Right" Width="45" d:LayoutOverrides="LeftMargin, RightMargin, TopMargin, BottomMargin" />
-        <TextBox x:Name="txtCaseNumber" HorizontalAlignment="Right" Margin="0,0,18,7" TextWrapping="Wrap" Width="120" d:LayoutOverrides="LeftMargin, RightMargin" Text="SMP-18-" TabIndex="2" Height="23" VerticalAlignment="Bottom"/>
+        <TextBlock Margin="209,7,0,8" TextWrapping="Wrap" Text="Case#" HorizontalAlignment="Left" Width="45" />
+        <TextBox x:Name="txtCaseNumber" Margin="243,0,0,7" TextWrapping="Wrap" Text="SMP-18-" TabIndex="2" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="120" LostFocus="txtCaseNumber_LostFocus" TextChanged="txtCaseNumber_TextChanged"/>
         <xctk:DateTimePicker Format="Custom" FormatString="yyyy-MM-dd HH:mm:ss" x:Name="dtCreated" Grid.Column="2" Margin="13.725,1,124.61,7"/>
         <StatusBar Height="21.25" Margin="0,0,0,-0.25" Grid.Row="2" VerticalAlignment="Bottom" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="3">
 

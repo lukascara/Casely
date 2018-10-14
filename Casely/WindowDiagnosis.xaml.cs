@@ -88,7 +88,7 @@ namespace Casely {
 
 
         /// <summary>
-        /// Loads the diagnosis for the selected case in to the UI.
+        /// Loads the diagnosis for the selected case into the UI.
         /// </summary>
         private void RefreshPartDiagnosis() {
             List<PartDiagnosis> listPartDiagnosis = SqliteDataAcces.GetListPartDiagnosisLatestVersion(cmbCaseNumber.Text);
@@ -236,5 +236,10 @@ namespace Casely {
         private void cbComment_Checked(object sender, RoutedEventArgs e) {
             refreshComparison();
         }
+
+        private void txtDaysToLoad_LostFocus(object sender, RoutedEventArgs e) {
+            RefreshCasesDiagnosis();
+        }
+                
     }
 }
