@@ -51,7 +51,7 @@ namespace Casely
                     cmbVersion.Items.Add(cbitem);
                 }*/
                 // gets the case entrys, groups them by author and then selects the last two author entries to compare.
-                var listCaseToCompare = listCase.OrderByDescending(x => x.DateTimeModifiedObject).GroupBy(t => t.AuthorFullName).Select(x => x.FirstOrDefault()).ToList();
+                var listCaseToCompare = listCase.OrderByDescending(x => x.DateTimeModifiedObject).GroupBy(t => t.SoftID).Select(x => x.FirstOrDefault()).ToList();
                 if (listCaseToCompare.Count < 2) {
                     wbDiffText.Text = "<h3>Need at least a report from two different authors to compare</h3>";
                 } else {

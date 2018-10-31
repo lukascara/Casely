@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,7 @@ namespace Casely {
         private List<string> suggestionOrganSystem = new List<string>();
         private List<string> suggestionDiagnosis = new List<string>();
         private List<string> suggestionCategory = new List<string>();
+        private ObservableCollection<CaseEntry> listCEfilterDate = new ObservableCollection<CaseEntry>();
 
         public WindowDiagnosis() {
             InitializeComponent();
@@ -32,6 +34,7 @@ namespace Casely {
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
+            cmbCaseNumber.DataContext = listCEfilterDate;
             RefreshCasesDiagnosis();
         }
 
@@ -42,10 +45,12 @@ namespace Casely {
         private void RefreshCasesDiagnosis() {
             DateTime startDate = DateTime.Now.AddDays(-Double.Parse(txtDaysToLoad.Text));
             DateTime endDate = DateTime.Now;
-            cmbCaseNumber.Items.Clear();
-            foreach (var s in SqliteDataAcces.GetListCaseNumbersPastDays(startDate)) {
-                if (chkFilterCompleted.IsChecked == false || !(SqliteDataAcces.EntryExistsPartDiagnosis(s))) {
-                    cmbCaseNumber.Items.Add(s);
+            var filteredList = SqliteDataAcces.GetListCaseEtnriesPastDays(startDate);
+            cmbCaseNumber.SelectedValuePath = "CaseNumber";
+            cmbCaseNumber.SelectedValue = "Material";
+            foreach (var s in filteredList) {
+                if (chkFilterCompleted.IsChecked == false || !(SqliteDataAcces.EntryExistsPartDiagnosis(s.CaseNumber))) {
+                    listCEfilterDate.Add(s);
                 }
             }
         }
@@ -197,7 +202,7 @@ namespace Casely {
                     cmbVersion.Items.Add(cbitem);
                 }*/
                 // gets the case entrys, groups them by author and then selects the last two author entries to compare.
-                var listCaseToCompare = listCase.OrderByDescending(x => x.DateTimeModifiedObject).GroupBy(t => t.AuthorFullName).Select(x => x.FirstOrDefault()).ToList();
+                var listCaseToCompare = listCase.OrderByDescending(x => x.DateTimeModifiedObject).GroupBy(t => t.SoftID).Select(x => x.FirstOrDefault()).ToList();
 
 
                 string version0 = "";

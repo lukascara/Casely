@@ -1,12 +1,12 @@
 ﻿CREATE TABLE `path_case` (
 	`case_number`	TEXT NOT NULL UNIQUE PRIMARY KEY ON CONFLICT IGNORE,
 	`service`	TEXT,
-	`is_signed_out` INTEGER
+	`evaluation` TEXT
 );
 
 CREATE TABLE IF NOT EXISTS `case_entry` (
 	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,	
-	`author_full_name`	TEXT,
+	`soft_id`	TEXT,
 	`case_number`	TEXT NOT NULL,
 	`date_created`	TEXT,
 	`time_created`	TEXT,
@@ -19,8 +19,7 @@ CREATE TABLE IF NOT EXISTS `case_entry` (
 	`history` TEXT,
 	`interpretation` TEXT,
 	`gross` TEXT,
-	`microscopic`	TEXT,
-	FOREIGN KEY(case_number) REFERENCES path_case(case_number)
+	`microscopic`	TEXT
 
 );
 
@@ -32,14 +31,14 @@ CREATE TABLE IF NOT EXISTS `part_diagnosis` (
 	`time_modified` TEXT NOT NULL,
 	`organ_system` TEXT,
 	`organ` TEXT,
-	`category` TEXT,
+	`category` TEXT,	
 	`diagnosis`	TEXT,
 	`diagnosis_detailed` TEXT
 );
 
 CREATE TABLE IF NOT EXISTS `part_entry` (
 	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-	`author_full_name`	TEXT,
+	`soft_id`	TEXT,
 	`part`	TEXT,
 	`procedure`	TEXT,
 	`specimen`	TEXT,
@@ -48,28 +47,27 @@ CREATE TABLE IF NOT EXISTS `part_entry` (
 	`time_created`	TEXT,
 	`date_modified`	TEXT,
 	`time_modified`	TEXT,
-	`case_number` TEXT NOT NULL,
-	`grossed_by_full_name` TEXT,
-	FOREIGN KEY(case_number) REFERENCES path_case(case_number)
+	`case_number` TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `staff` (
-	`full_name`	TEXT UNIQUE PRIMARY KEY ON CONFLICT IGNORE,
+	`last_first_name`	TEXT,
+	`soft_id`TEXT UNIQUE NOT NULL PRIMARY KEY ON CONFLICT IGNORE,
 	`role`	TEXT
 );
 
 CREATE TRIGGER insert_part_entry_author AFTER INSERT  ON part_entry
 BEGIN
-INSERT INTO staff (full_name) VALUES (new.author_full_name);
+INSERT INTO staff (soft_id) VALUES (new.soft_id);
 END;
 
 CREATE TRIGGER insert_case_entry_author AFTER INSERT  ON case_entry
 BEGIN
-INSERT INTO staff (full_name) VALUES (new.author_full_name);
+INSERT INTO staff (soft_id) VALUES (new.soft_id);
 END;
 
 CREATE TABLE IF NOT EXISTS `specimen` (
-	`specimen`	TEXT UNIQUE PRIMARY KEY ON CONFLICT IGNORE
+	`specimen`	TEXT UNIQUE NOT NULL PRIMARY KEY ON CONFLICT IGNORE
 );
 
 CREATE TRIGGER insrt_part_entry_specimen AFTER  INSERT ON part_entry

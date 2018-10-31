@@ -16,6 +16,7 @@
         <Button x:Name="btnDiagnosis" Content="Diagnosis" Margin="10,193.416,0,166.419" Click="btnDiagnosis_Click" HorizontalAlignment="Left" Width="283.835"/>
         <Menu Height="19" Margin="0,0,10,0" VerticalAlignment="Top">
             <MenuItem Header="File" Click="MenuItem_Click">CreateDatabase</MenuItem>
+            <MenuItem Header="File" Click="MenuItem_Click_1">Import Soft Path Tab Separated Data</MenuItem>
         </Menu>
         <ListBox x:Name="lbRecentlyAdded" Height="144.419" Margin="10,0" VerticalAlignment="Bottom"/>
         <TextBlock HorizontalAlignment="Left" Margin="10,0,0,147.799" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="275.804" Text="Recently added cases" FontSize="14" d:LayoutOverrides="HorizontalAlignment"/>

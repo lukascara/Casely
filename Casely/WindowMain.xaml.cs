@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using System.Data.SQLite;
 using CaselyData;
 using System.IO;
+using System.Windows.Forms;
 
 namespace Casely {
     /// <summary>
@@ -53,6 +54,21 @@ namespace Casely {
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
                         
+        }
+
+        private void MenuItem_Click_1(object sender, RoutedEventArgs e) {
+            OpenFileDialog theDialog = new OpenFileDialog();
+            theDialog.Title = "Open Tab Separated File";
+            if (theDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                try {
+                    var softText = File.ReadAllText(theDialog.FileName);
+                    CaselyData.SoftToCaselyConverter sc = new SoftToCaselyConverter();
+                    sc.importSoftPathCSVData(theDialog.FileName);
+                       
+                } catch (Exception ex) {
+                    System.Windows.MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);
+                }
+            }
         }
     }
 }

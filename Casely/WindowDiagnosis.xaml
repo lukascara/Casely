@@ -15,7 +15,17 @@
                     <RowDefinition Height="60*"/>
                     <RowDefinition Height="359*"/>
                 </Grid.RowDefinitions>
-                <ComboBox x:Name="cmbCaseNumber" HorizontalAlignment="Left" Margin="77.342,16.56,0,21.48" Width="152.27" IsEditable="True" LostFocus="cmbCaseNumber_LostFocus" TabIndex="1" d:LayoutOverrides="Height" SelectionChanged="cmbCaseNumber_SelectionChanged"/>
+                <ComboBox x:Name="cmbCaseNumber" ItemsSource="{Binding listCEfilterDate}" HorizontalAlignment="Left" Margin="77.342,16.56,0,21.48" Width="152.27" IsEditable="True" LostFocus="cmbCaseNumber_LostFocus" TabIndex="1" d:LayoutOverrides="Height" SelectionChanged="cmbCaseNumber_SelectionChanged">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding CaseNumber}"></TextBlock>
+                                <TextBlock Text="-"></TextBlock>
+                                <TextBlock Text="{Binding Material}"></TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
                 <Label Content="Case#" HorizontalAlignment="Left" Margin="30.345,16.56,0,17.48" d:LayoutOverrides="Height"/>
                 <Label Content="Load # of past days" Margin="340.612,12.56,338.118,21.48" d:LayoutOverrides="Width, Height"/>
 

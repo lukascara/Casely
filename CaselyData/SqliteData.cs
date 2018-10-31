@@ -50,18 +50,17 @@ namespace CaselyData {
                 TimeModifiedString = value.TimeOfDay.ToString();
             }
         }
-        public string AuthorFullName { get; set; }
+        public string SoftID { get; set; }
         public List<PartEntry> ListPartEntry { get; set; }
 
         public string PrettyVersion() {
-            return $"{AuthorFullName} ({DateModifiedString})";
+            return $"{SoftID} ({DateModifiedString})";
         }
     }
 
     public class PartEntry {
         public string Id { get; set; }
         public string CaseNumber { get; set; }
-        public string AuthorFullName { get; set; }
         public string Part { get; set; }
         public string Procedure { get; set; }
         public string Specimen { get; set; }
@@ -69,7 +68,7 @@ namespace CaselyData {
         public string TimeCreatedString { get; set; }
         public string TimeModifiedString { get; set; }
         public string DateModifiedString { get; set; }
-        public string GrossByFullName { get; set; }
+        public string SoftID { get; set; }
         public DateTime DateTimeCreatedObject {
             get {
                 return DateTime.Parse(DateCreatedString + " " +  TimeCreatedString);
@@ -116,7 +115,8 @@ namespace CaselyData {
     }
 
     public class Staff {
-        public string FullName;
+        public string SoftID;
+        public string firstLastName;
         public string Role;
     }
 
@@ -131,9 +131,9 @@ namespace CaselyData {
                 var sql = @"INSERT INTO path_case (case_number, service)
                              VALUES (@CaseNumber, @Service);";
                 cn.Execute(sql, pathCase);
-                sql = @"INSERT INTO case_entry (author_full_name, case_number, date_created, time_created, date_modified,
+                sql = @"INSERT INTO case_entry (soft_id, case_number, date_created, time_created, date_modified,
                                                 time_modified, tumor_synoptic, comment, result, material, history, interpretation, gross, microscopic)
-                            VALUES (@AuthorFullName, @CaseNumber,  @DateCreatedString, 
+                            VALUES (@SoftID, @CaseNumber,  @DateCreatedString, 
                                     @TimeCreatedString,@DateModifiedString,@TimeModifiedString,@TumorSynoptic, @Comment, @Result, @Material, @History, 
                                     @Interpretation, @Gross, @Microscopic);";
                 cn.Execute(sql, ce);
@@ -206,10 +206,10 @@ namespace CaselyData {
                 var sql = @"INSERT INTO path_case (case_number, service)
                              VALUES (@CaseNumber, @Service);";
                 cn.Execute(sql, pathCase);
-                sql = @"INSERT INTO part_entry (author_full_name, part, procedure,
-                            specimen,  date_created, time_created,date_modified, time_modified, case_number, grossed_by_full_name)
-                            VALUES (@AuthorFullName, @Part, @Procedure, @Specimen, @DateCreatedString, 
-                                    @TimeCreatedString,@DateModifiedString,@TimeModifiedString, @CaseNumber, @GrossByFullName);";
+                sql = @"INSERT INTO part_entry (part, procedure,
+                            specimen,  date_created, time_created,date_modified, time_modified, case_number, soft_id)
+                            VALUES (@Part, @Procedure, @Specimen, @DateCreatedString, 
+                                    @TimeCreatedString,@DateModifiedString,@TimeModifiedString, @CaseNumber, @SoftID);";
                 cn.Execute(sql, parts);
             }
         }
@@ -240,13 +240,37 @@ namespace CaselyData {
             }
         }
 
-        public static List<string> GetListCaseNumbersPastDays(DateTime startDate) {
-            var sql = @"SELECT DISTINCT case_number
+        public static List<CaseEntry> GetListCaseEntryPastDays(DateTime startDate) {
+            var sql = @"SELECT DISTINCT case_number AS CaseNumber, material, date_created AS DateCreatedString
                             FROM case_entry WHERE date_created >= @startDate";
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 DynamicParameters dp = new DynamicParameters();
                 dp.Add("@startDate", startDate.ToString("yyyy-MM-dd"), System.Data.DbType.String);
-                var output = cn.Query<string>(sql, dp).ToList();
+                var output = cn.Query<CaseEntry>(sql, dp).ToList();
+                return output;
+            }
+        }
+
+        public static List<CaseEntry> GetListCaseEtnriesPastDays(DateTime startDate) {
+            var sql = @"SELECT id,
+	soft_id AS SoftID,
+	case_number AS CaseNumber,
+	date_created AS DateCreatedString,
+	time_created AS TimeCreatedString,
+	date_modified AS DateModifiedString,
+	time_modified AS TimeModifiedString,
+	tumor_synoptic AS TumorSynoptic,
+	comment,
+	result,
+	material,
+	history,
+	interpretation,
+	gross,
+	microscopic FROM case_entry WHERE date_created >= @startDate";
+            using (var cn = new SQLiteConnection(DbConnectionString)) {
+                DynamicParameters dp = new DynamicParameters();
+                dp.Add("@startDate", startDate.ToString("yyyy-MM-dd"), System.Data.DbType.String);
+                var output = cn.Query<CaseEntry>(sql, dp).ToList();
                 return output;
             }
         }
@@ -301,7 +325,7 @@ namespace CaselyData {
         }
 
         public static List<PartEntry> getListPartEntry(string caseNumber) {
-            var sql = @"SELECT author_full_name AS AuthorFullName, 
+            var sql = @"SELECT soft_id AS SoftID, 
                             part, procedure,
                             specimen, 
                             date_created AS DateCreatedString, time_created AS TimeCreatedString,
@@ -320,7 +344,7 @@ namespace CaselyData {
 
         public static List<CaseEntry> getListCaseEntry(string caseNumber) {
             var sql = @"SELECT id,
-	author_full_name AS AuthorFullName,
+	soft_id AS SoftID,
 	case_number AS CaseNumber,
 	date_created AS DateCreatedString,
 	time_created AS TimeCreatedString,
@@ -365,12 +389,13 @@ namespace CaselyData {
         }
 
         public static List<string> GetListStaffFullNames() {
-            var sql = @"SELECT full_name FROM staff;";
+            var sql = @"SELECT last_first_name FROM staff;";
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 var output = cn.Query<string>(sql, new DynamicParameters()).ToList();
                 return output;
             }
         }
+
 
         public static List<string> GetListProcedure() {
             var sql = @"SELECT procedure FROM procedure;";
@@ -424,9 +449,11 @@ namespace CaselyData {
         public static string DbConnectionString {
            
             get {
-                var path = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
-                var dbPath = Path.Combine(path, "Casely.db");
-                return @"Data Source = "+dbPath; }
+                //var path = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+                //var dbPath = Path.Combine(path, "Casely.db");
+                //return @"Data Source = "+dbPath; }
+                return @"Data Source = L:\data\casely_1.db";
+            }
         }
 
         /// <summary>
