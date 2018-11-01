@@ -16,16 +16,29 @@ namespace CaselyData {
         public string Service { get; set; }
     }
     public class CaseEntry {
+        string result = "";
+        string microscopic = "";
+        string history = "";
+        string material = "";
+        string gross = "";
+        string tumorSynoptic = "";
+        string comment = "";
         public int Id { get; set; }
         public string CaseNumber { get; set; }
         public string Interpretation { get; set; }
-        public string Result { get; set; }
-        public string Material { get; set; }
-        public string History { get; set; }
-        public string Microscopic { get; set; }
-        public string Gross { get; set; }
-        public string TumorSynoptic { get; set; }
-        public string Comment { get; set; }
+        public string Result { get { return this.result; }
+            set {
+                this.result = value;
+                // parse the result and fill in the micro,gross,material, and history fields.
+                PopulateMicrGrossMatHist();
+            }
+        }
+        public string Material { get { return material ; } set { material = value; } }
+        public string History { get { return history; } set { history = value; } }
+        public string Microscopic { get { return microscopic; } set { microscopic = value; } }
+        public string Gross { get { return gross; }  set { gross = value; } }
+        public string TumorSynoptic { get { return tumorSynoptic; } set { tumorSynoptic = value; } }
+        public string Comment { get { return comment; } set { comment = value; } }
         public string DateCreatedString { get; set; }
         public string TimeCreatedString { get; set; }
         public string TimeModifiedString { get; set; }
@@ -55,6 +68,58 @@ namespace CaselyData {
 
         public string PrettyVersion() {
             return $"{SoftID} ({DateModifiedString})";
+        }
+
+        private void PopulateMicrGrossMatHist() {
+            List<string> sectionWords = new List<string> { "MATERIAL:", "HISTORY:", "GROSS:", "MICROSCOPIC:" };
+            bool endOfResult = false;
+            var linesPathResult = Result.Trim().Replace("\r", "").Split('\n');
+            int i = 0;
+            int lineCount = linesPathResult.Length;
+            while (i < lineCount) {
+                if (endOfResult) { break; } // we have reached the end of the result. this skips the microscopic dictation portion of report.
+                var curLine = linesPathResult[i].Trim();
+                var l = "";
+                // Reads through result and adds the text from each section to the appropriate CaseEntry property.
+                switch (curLine) {
+                    case "MATERIAL:":
+                        // continue adding text until next section is reached
+                        do {
+                            l = linesPathResult[++i];
+                            Material += l + "\n";
+                            if (i+1 >= lineCount) break; // handles the case if no other sections are found after material
+                        } while (sectionWords.IndexOf(linesPathResult[i + 1]) == -1);
+                        break;
+                    case "HISTORY:":
+                        do {
+                            l = linesPathResult[++i];
+                            History += l + "\n";
+                            if (i + 1 >= lineCount) break;
+                        } while (sectionWords.IndexOf(linesPathResult[i + 1]) == -1);
+                        break;
+                    case "GROSS:":
+                        do {
+                            l = linesPathResult[++i];
+                            Gross += l + "\n";
+                            if (i + 1 >= lineCount) break;
+                        } while (sectionWords.IndexOf(linesPathResult[i + 1]) == -1);
+                        break;
+                    case "MICROSCOPIC:":
+                        // will continue parsing until the last line of the report is reached
+                        do {
+                            l = linesPathResult[++i];
+                            Microscopic += l + "\n";
+                            if (i + 1 >= lineCount) break;
+                        } while (!(l.StartsWith("Microscopic Dictator ID")));
+                        endOfResult = true;
+                        break;
+                    default:
+                        // just in case nothing matches. Safety measure to at least continue to increment.
+                        i++;
+                        break;
+                }
+                i++;
+            }
         }
     }
 
@@ -276,53 +341,7 @@ namespace CaselyData {
         }
 
 
-        public static void ParseInsertCaseEntry(CaseEntry caseEntry, PathCase pathCase) {
-            List<string> sectionWords = new List<string> { "MATERIAL:", "HISTORY:","GROSS:", "MICROSCOPIC:" };
-            bool endOfResult = false;
-            var linesPathResult = caseEntry.Result.Trim().Replace("\r","").Split('\n');
-            int i = 0;
-            while ( i < linesPathResult.Length) {
-                if (endOfResult) { break; } // we have reached the end of the result. this skips the microscopic dictation portion of report.
-                var curLine = linesPathResult[i].Trim();
-                var l = "";
-                // Reads through result and adds the text from each section to the appropriate CaseEntry property.
-                switch (curLine) {
-                    case "MATERIAL:":
-                        // continue adding text until next section is reached
-                        do {
-                            l = linesPathResult[++i];
-                            caseEntry.Material += l + "\n";
-                        } while (sectionWords.IndexOf(linesPathResult[i + 1]) == -1);
-                        break;
-                    case "HISTORY:":
-                        do {
-                            l = linesPathResult[++i];
-                            caseEntry.History += l + "\n";
-                        } while (sectionWords.IndexOf(linesPathResult[i+1]) == -1);
-                        break;
-                    case "GROSS:":
-                        do {
-                            l = linesPathResult[++i];
-                            caseEntry.Gross += l + "\n";
-                        } while (sectionWords.IndexOf(linesPathResult[i + 1]) == -1);
-                        break;
-                    case "MICROSCOPIC:":
-                        // will continue parssing until the last line of the report is reached
-                        do {
-                            l = linesPathResult[++i];
-                            caseEntry.Microscopic += l + "\n";
-                        } while (!(l.StartsWith("Microscopic Dictator ID")));
-                        endOfResult = true;
-                        break;                   
-                    default:
-                        // just in case nothing matches. Safety measure to at least continue to increment.
-                        i++;
-                        break;
-                }
-                i++;
-            }
-            InsertNewCaseEntry(caseEntry, pathCase);
-        }
+      
 
         public static List<PartEntry> getListPartEntry(string caseNumber) {
             var sql = @"SELECT soft_id AS SoftID, 

@@ -51,7 +51,7 @@ namespace Casely {
                 ce.TimeCreatedString = dtCreated.Value.GetValueOrDefault().ToString("HH:mm:ss");
                 ce.DateModifiedString = currentTime.ToString("yyyy-MM-dd");
                 ce.TimeModifiedString = currentTime.ToString("HH:mm:ss");
-                SqliteDataAcces.ParseInsertCaseEntry(ce, pc);
+                SqliteDataAcces.InsertNewCaseEntry(ce, pc);
                 txtInterpretation.Text = "";
                 txtComment.Text = "";
                 txtResultEntry.Text = "";

@@ -48,7 +48,11 @@ namespace Casely {
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e) {
-            
+            SaveFileDialog sf = new SaveFileDialog();
+            sf.Title = "New Casely Database";
+            if (sf.FileName != "") {
+
+            }
                 
         }
 

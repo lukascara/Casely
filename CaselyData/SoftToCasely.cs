@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CsvHelper;
+using ExcelDataReader;
 using System.IO;
 using Superpower;
 using Superpower.Parsers;
@@ -11,12 +11,13 @@ using Superpower.Tokenizers;
 using Superpower.Model;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Data;
 
 namespace CaselyData {
     class SoftSignoutData {
         public string caseNum { get; set; }
-        public DateTime registrationDateTime { get; set; }
-        public DateTime enteredDateTime { get; set; }
+        public string registrationDateTime { get; set; }
+        public string enteredDateTime { get; set; }
         public string residentID { get; set; }
         public string residentReportSectionCode { get; set; }
         public string residentSectionText { get; set; }
@@ -54,6 +55,8 @@ namespace CaselyData {
             }
         }
     }
+
+
     public class SoftToCaselyConverter {
         
         public List<CaseEntry> importSoftPathCSVData(string pathToSoftData) {
@@ -62,25 +65,37 @@ namespace CaselyData {
 
             // Extract the CSV data that was export from SoftPath.
             try {
-                var csv = new CsvReader(new System.IO.StreamReader(pathToSoftData));
-           
-                csv.Read();
-                csv.ReadHeader();
-                while (csv.Read()) {
-                    SoftSignoutData sft = new SoftSignoutData() {
-                        caseNum = formatCaseNumber(csv.GetField<string>("ORDERNUMBER")),
-                        registrationDateTime = csv.GetField<DateTime>("ORDERREGISTRATIONDATE"),
-                        enteredDateTime = csv.GetField<DateTime>("ENTEREDDATE"),
-                        residentID = csv.GetField<string>("USERID"),
-                        residentReportSectionCode = csv.GetField<string>("REPORTSECTIONCODE"),
-                        residentSectionText = RichTextToPlainText(csv.GetField<string>("USERREPORT")),
-                        attendingInterpretationText = csv.GetField<string>("FINALREPORT"),
-                        attendingResultText = csv.GetField<string>("FINALGROSSANDMICROTEXT"),
-                        attendingCommentText = csv.GetField<string>("FINALCOMMENTTEXT"),
-                        attendingSynopticText = csv.GetField<string>("FINALSYNOPTICTEXT"),
-                        attendingID = csv.GetField<string>("SIGNOUTPATHOLOGIST")                    
-                    };
-                    listSoftData.Add(sft);
+                using (var stream = File.Open(pathToSoftData, FileMode.Open, FileAccess.Read)) {
+                    using (var reader = ExcelReaderFactory.CreateReader(stream)) {
+                        var result = reader.AsDataSet(new ExcelDataSetConfiguration() {
+                            UseColumnDataType = true,
+                            ConfigureDataTable = (tableReader) => new ExcelDataTableConfiguration() {
+                                UseHeaderRow = true
+
+
+                            }
+                        });
+                        var table = result.Tables[0];
+
+                        foreach (DataRow r in table.Rows) {
+                            SoftSignoutData sft = new SoftSignoutData() {
+                                caseNum = formatCaseNumber((string)r["ORDERNUMBER"]),
+                                registrationDateTime = (string)r["ORDERREGISTRATIONDATE"],
+                                enteredDateTime = (string)r["ENTEREDDATE"],
+                                residentID = (string)r["USERID"],
+                                residentReportSectionCode = (string)r["REPORTSECTIONCODE"],
+                                residentSectionText = RichTextToPlainText((string)r["USERREPORT"]),
+                                attendingInterpretationText = (string)r["FINALREPORT"].ToString() ?? string.Empty,
+                                attendingResultText = (string)r["FINALGROSSANDMICROTEXT"].ToString() ?? string.Empty,
+                                attendingCommentText = (string)r["FINALCOMMENTTEXT"].ToString() ?? string.Empty,
+                                attendingSynopticText = (string)r["FINALSYNOPTICTEXT"].ToString() ?? string.Empty,
+                                attendingID = (string)r["SIGNOUTPATHOLOGIST"].ToString() ?? string.Empty
+                            };
+                            listSoftData.Add(sft);
+                        }
+
+
+                    }
                 }
             } catch (Exception ex) {
                 throw new Exception("Cannot open file" + ex.Message);
@@ -111,7 +126,7 @@ namespace CaselyData {
                 };
 
                 CaseEntry resCE = new CaseEntry() {
-                    DateTimeModifiedObject = firstSoftRow.enteredDateTime,
+                    DateTimeModifiedObject = DateTime.Parse(firstSoftRow.enteredDateTime),
                     CaseNumber = firstSoftRow.caseNum,
                     Interpretation = residentEntry.InterpretationText,
                     Result = residentEntry.ResultText,
@@ -121,7 +136,7 @@ namespace CaselyData {
                 };
 
                 CaseEntry attendCE = new CaseEntry() {
-                    DateTimeModifiedObject = firstSoftRow.enteredDateTime,
+                    DateTimeModifiedObject = DateTime.Parse(firstSoftRow.enteredDateTime),
                     CaseNumber = firstSoftRow.caseNum,
                     Interpretation = attendingEntry.InterpretationText,
                     Result = attendingEntry.ResultText,
@@ -132,7 +147,6 @@ namespace CaselyData {
                 caseEntries.Add(attendCE);
                 caseEntries.Add(resCE);
             }
-
             return caseEntries;
 
             
