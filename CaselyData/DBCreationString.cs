@@ -1,15 +1,30 @@
-﻿CREATE TABLE `path_case` (
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+using Superpower;
+using Superpower.Parsers;
+using Superpower.Tokenizers;
+using Superpower.Model;
+using System.Windows.Forms;
+using System.Diagnostics;
+using System.Data;
+
+namespace CaselyData {
+	public class DBCreationString {
+        public static string sqlCreateDBString = @"CREATE TABLE `path_case` (
 	`case_number`	TEXT NOT NULL UNIQUE PRIMARY KEY ON CONFLICT IGNORE,
 	`service`	TEXT,
-	`evaluation` TEXT
+	`evaluation` TEXT,
+    `date_of_service` TEXT
 );
 
 CREATE TABLE IF NOT EXISTS `case_entry` (
 	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,	
 	`soft_id`	TEXT,
 	`case_number`	TEXT NOT NULL,
-	`date_created`	TEXT,
-	`time_created`	TEXT,
 	`date_modified`	TEXT,
 	`time_modified`	TEXT,
 	`tumor_synoptic`	TEXT,
@@ -43,8 +58,6 @@ CREATE TABLE IF NOT EXISTS `part_entry` (
 	`procedure`	TEXT,
 	`specimen`	TEXT,
 	`organ_system` TEXT,
-	`date_created`	TEXT,
-	`time_created`	TEXT,
 	`date_modified`	TEXT,
 	`time_modified`	TEXT,
 	`case_number` TEXT NOT NULL
@@ -124,5 +137,9 @@ CREATE TRIGGER insert_part_diganosis_category AFTER INSERT  ON part_diagnosis
 BEGIN
 INSERT INTO diagnosis_category (category) VALUES (new.category);
 END;
+	";
 
 
+
+    }
+}

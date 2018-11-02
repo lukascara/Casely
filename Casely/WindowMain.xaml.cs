@@ -57,7 +57,12 @@ namespace Casely {
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
-                        
+            if (!(File.Exists(SqliteDataAcces.DBPath))) {
+                MessageBoxResult dialogResult = System.Windows.MessageBox.Show("Casely database does not exist and will now be created.", "Create Database");
+                if (dialogResult == MessageBoxResult.OK) {
+                    SqliteDataAcces.CreateDatabase();
+                }
+            }
         }
 
         private void MenuItem_Click_1(object sender, RoutedEventArgs e) {
@@ -67,7 +72,12 @@ namespace Casely {
                 try {
                     var softText = File.ReadAllText(theDialog.FileName);
                     CaselyData.SoftToCaselyConverter sc = new SoftToCaselyConverter();
-                    sc.importSoftPathCSVData(theDialog.FileName);
+                    var importedData = sc.importSoftPathCSVData(theDialog.FileName);
+                    foreach(var d in importedData) {
+                        var pc = new PathCase() { CaseNumber = d.CaseNumber };
+                        SqliteDataAcces.InsertNewPathCase(pc);
+                        SqliteDataAcces.InsertNewCaseEntry(d, pc);
+                    }
                        
                 } catch (Exception ex) {
                     System.Windows.MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);

@@ -217,9 +217,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="create_database.sql" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\CaselyData\CaselyData.csproj">
       <Project>{ce67d5fd-d031-4cf3-9d7e-9d9a8fb72f1e}</Project>
       <Name>CaselyData</Name>

@@ -68,7 +68,7 @@ namespace Casely {
                 lstParLetter++;
                 UCPartEntry newPart = new UCPartEntry(new PartEntry {
                     Part = (lstParLetter++).ToString(),
-                    DateTimeCreatedObject = DateTime.Now,
+                    DateTimeModifiedObject = DateTime.Now,
                     Specimen = lastPart.tbSpecimen.Text,
                     Procedure = lastPart.tbProcedure.Text
                 }, suggestSpecimen, suggestedProcedure);
@@ -76,7 +76,7 @@ namespace Casely {
             } else {
                 UCPartEntry newPart = new UCPartEntry(new PartEntry {
                     Part = "A",
-                    DateTimeCreatedObject = DateTime.Now,
+                    DateTimeModifiedObject = DateTime.Now,
                     Specimen = "",
                     Procedure = ""
                 }, suggestSpecimen,suggestedProcedure);
@@ -109,10 +109,8 @@ namespace Casely {
                             Procedure = pt.partEntry.Procedure,
                             Specimen = pt.partEntry.Specimen,
                             SoftID = cmbStaff.Text,
-                            DateCreatedString = pt.dtTime.Value.GetValueOrDefault().ToString("yyyy-MM-dd"),
-                            TimeCreatedString = pt.dtTime.Value.GetValueOrDefault().ToString("HH:mm:ss"),
-                            DateModifiedString = currentTime.ToString("yyyy-MM-dd"),
-                            TimeModifiedString = currentTime.ToString("HH:mm:ss"),
+                            DateModifiedString = pt.dtTime.Value.GetValueOrDefault().ToString("yyyy-MM-dd"),
+                            TimeModifiedString = pt.dtTime.Value.GetValueOrDefault().ToString("HH:mm:ss"),
                             CaseNumber = txtCaseNumber.Text
                         };
                         partsToAdd.Add(newPart);

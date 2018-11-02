@@ -115,7 +115,7 @@ namespace CaselyData {
                         .Select(x=> x.residentSectionText).DefaultIfEmpty("").First();
                     residentEntry.setFieldValue(sectText, sectCode);
                 }
-                // Each row of the softpath data contains the entire final attending report, therefore we just need to read 
+                // Each row of the softpath data contains the entire final report, therefore we just need to read 
                 // the first copy.
                 var firstSoftRow = entriesCurrentCase.First();
                 var attendingEntry = new PathReportFields() {
@@ -157,8 +157,9 @@ namespace CaselyData {
                 from caseType in Character.Letter.Many()
                 from year in Character.Digit.Repeat(2)
                 from caseNum in Character.Digit.Many()
-                select $"{caseType}-{new String(year)}-{new String(caseNum).TrimStart('0')}";
-            return formatCaseNum.Parse(caseNumber);
+                select $"{new String(caseType)}-{new String(year)}-{new String(caseNum).TrimStart('0')}";
+            var formCaseNum = formatCaseNum.Parse(caseNumber);
+            return formCaseNum;
         }
             
         /// <summary>

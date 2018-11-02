@@ -95,6 +95,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DBCreationString.cs" />
     <Compile Include="SoftToCasely.cs" />
     <Compile Include="SqliteData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

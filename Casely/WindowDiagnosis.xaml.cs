@@ -34,7 +34,7 @@ namespace Casely {
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
-            cmbCaseNumber.DataContext = listCEfilterDate;
+            cmbCaseNumber.ItemsSource = listCEfilterDate;
             RefreshCasesDiagnosis();
         }
 
@@ -282,6 +282,10 @@ namespace Casely {
             cmbCaseNumber.Text = SqliteDataAcces.CaseNumberPrefix;
             refreshCaseData();
             RefreshCasesDiagnosis();
+        }
+
+        private void cmbCaseNumber_Loaded(object sender, RoutedEventArgs e) {
+
         }
     }
 }

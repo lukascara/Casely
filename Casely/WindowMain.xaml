@@ -16,7 +16,6 @@
         <Button x:Name="btnDiagnosis" Content="Diagnosis" Margin="10,193.416,0,166.419" Click="btnDiagnosis_Click" HorizontalAlignment="Left" Width="283.835"/>
         <Menu Height="19" Margin="0,0,10,0" VerticalAlignment="Top">
             <MenuItem Header="File">
-                <MenuItem Header="CreateDatabase" Click="MenuItem_Click"></MenuItem>
                 <MenuItem Header="Import Soft Path Tab Separated Data" Click="MenuItem_Click_1"></MenuItem>
             </MenuItem>
         </Menu>

@@ -39,26 +39,15 @@ namespace CaselyData {
         public string Gross { get { return gross; }  set { gross = value; } }
         public string TumorSynoptic { get { return tumorSynoptic; } set { tumorSynoptic = value; } }
         public string Comment { get { return comment; } set { comment = value; } }
-        public string DateCreatedString { get; set; }
-        public string TimeCreatedString { get; set; }
         public string TimeModifiedString { get; set; }
         public string DateModifiedString { get; set; }
-        public DateTime DateTimeCreatedObject {
-            get {
-                return DateTime.Parse(DateCreatedString + " " + TimeCreatedString);
-            }
-            set {
-                DateCreatedString = value.ToShortDateString();
-
-                TimeCreatedString = value.TimeOfDay.ToString();
-            }
-        }
+        
         public DateTime DateTimeModifiedObject {
             get {
-                return DateTime.Parse(DateCreatedString + " " + TimeCreatedString);
+                return DateTime.Parse(DateModifiedString + " " + TimeModifiedString);
             }
             set {
-                DateModifiedString = value.ToShortDateString();
+                DateModifiedString = value.ToString("yyyy-MM-dd");
 
                 TimeModifiedString = value.TimeOfDay.ToString();
             }
@@ -129,21 +118,10 @@ namespace CaselyData {
         public string Part { get; set; }
         public string Procedure { get; set; }
         public string Specimen { get; set; }
-        public string DateCreatedString { get; set; }
-        public string TimeCreatedString { get; set; }
         public string TimeModifiedString { get; set; }
         public string DateModifiedString { get; set; }
         public string SoftID { get; set; }
-        public DateTime DateTimeCreatedObject {
-            get {
-                return DateTime.Parse(DateCreatedString + " " +  TimeCreatedString);
-            }
-            set {
-                DateCreatedString = value.ToString("yyyy-MM-dd");
-
-                TimeCreatedString = value.ToString("HH:mm:ss");
-            }
-        }
+       
         public DateTime DateTimeModifiedObject {
             get {
                 return DateTime.Parse(DateModifiedString + " " + TimeModifiedString);
@@ -189,17 +167,16 @@ namespace CaselyData {
 
         public static string CaseNumberPrefix = "SMP-18-";
 
-
+        
 
         public static void InsertNewCaseEntry(CaseEntry ce, PathCase pathCase) {
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 var sql = @"INSERT INTO path_case (case_number, service)
                              VALUES (@CaseNumber, @Service);";
                 cn.Execute(sql, pathCase);
-                sql = @"INSERT INTO case_entry (soft_id, case_number, date_created, time_created, date_modified,
+                sql = @"INSERT INTO case_entry (soft_id, case_number, date_modified,
                                                 time_modified, tumor_synoptic, comment, result, material, history, interpretation, gross, microscopic)
-                            VALUES (@SoftID, @CaseNumber,  @DateCreatedString, 
-                                    @TimeCreatedString,@DateModifiedString,@TimeModifiedString,@TumorSynoptic, @Comment, @Result, @Material, @History, 
+                            VALUES (@SoftID, @CaseNumber,@DateModifiedString,@TimeModifiedString,@TumorSynoptic, @Comment, @Result, @Material, @History, 
                                     @Interpretation, @Gross, @Microscopic);";
                 cn.Execute(sql, ce);
             }
@@ -272,9 +249,8 @@ namespace CaselyData {
                              VALUES (@CaseNumber, @Service);";
                 cn.Execute(sql, pathCase);
                 sql = @"INSERT INTO part_entry (part, procedure,
-                            specimen,  date_created, time_created,date_modified, time_modified, case_number, soft_id)
-                            VALUES (@Part, @Procedure, @Specimen, @DateCreatedString, 
-                                    @TimeCreatedString,@DateModifiedString,@TimeModifiedString, @CaseNumber, @SoftID);";
+                            specimen, date_modified, time_modified, case_number, soft_id)
+                            VALUES (@Part, @Procedure, @Specimen, @DateModifiedString,@TimeModifiedString, @CaseNumber, @SoftID);";
                 cn.Execute(sql, parts);
             }
         }
@@ -295,8 +271,8 @@ namespace CaselyData {
 
 
         public static List<string> GetListPartEntryPastDays(DateTime startDate) {
-            var sql = @"SELECT DISTINCT case_number AS CaseNumber, specimen, procedure, date_created AS DateCreatedString
-                            FROM part_entry WHERE date_created >= @startDate";
+            var sql = @"SELECT DISTINCT case_number AS CaseNumber, specimen, procedure, date_modified AS DateModifiedString
+                            FROM part_entry WHERE date_modified >= @startDate";
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 DynamicParameters dp = new DynamicParameters();
                 dp.Add("@startDate", startDate.ToString("yyyy-MM-dd"), System.Data.DbType.String);
@@ -306,8 +282,8 @@ namespace CaselyData {
         }
 
         public static List<CaseEntry> GetListCaseEntryPastDays(DateTime startDate) {
-            var sql = @"SELECT DISTINCT case_number AS CaseNumber, material, date_created AS DateCreatedString
-                            FROM case_entry WHERE date_created >= @startDate";
+            var sql = @"SELECT DISTINCT case_number AS CaseNumber, material, date_modified AS DateModifiedString
+                            FROM case_entry WHERE date_modified >= @startDate";
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 DynamicParameters dp = new DynamicParameters();
                 dp.Add("@startDate", startDate.ToString("yyyy-MM-dd"), System.Data.DbType.String);
@@ -318,23 +294,22 @@ namespace CaselyData {
 
         public static List<CaseEntry> GetListCaseEtnriesPastDays(DateTime startDate) {
             var sql = @"SELECT id,
-	soft_id AS SoftID,
-	case_number AS CaseNumber,
-	date_created AS DateCreatedString,
-	time_created AS TimeCreatedString,
-	date_modified AS DateModifiedString,
-	time_modified AS TimeModifiedString,
-	tumor_synoptic AS TumorSynoptic,
-	comment,
-	result,
-	material,
-	history,
-	interpretation,
-	gross,
-	microscopic FROM case_entry WHERE date_created >= @startDate";
+	                    soft_id AS SoftID,
+	                    case_number AS CaseNumber,
+	                    date_modified AS DateModifiedString,
+	                    time_modified AS TimeModifiedString,
+	                    tumor_synoptic AS TumorSynoptic,
+	                    comment,
+	                    result,
+	                    material,
+	                    history,
+	                    interpretation,
+	                    gross,
+	                    microscopic FROM case_entry WHERE date_modified >= @startDate";
+            var strStartDate = startDate.ToString("yyyy-MM-dd");
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 DynamicParameters dp = new DynamicParameters();
-                dp.Add("@startDate", startDate.ToString("yyyy-MM-dd"), System.Data.DbType.String);
+                dp.Add("@startDate", strStartDate, System.Data.DbType.String);
                 var output = cn.Query<CaseEntry>(sql, dp).ToList();
                 return output;
             }
@@ -347,7 +322,6 @@ namespace CaselyData {
             var sql = @"SELECT soft_id AS SoftID, 
                             part, procedure,
                             specimen, 
-                            date_created AS DateCreatedString, time_created AS TimeCreatedString,
                             date_modified AS DateModifiedString, time_modified AS TimeModifiedString,
                             case_number AS CaseNumber 
                             FROM part_entry WHERE CaseNumber = @caseNumber;";
@@ -363,20 +337,18 @@ namespace CaselyData {
 
         public static List<CaseEntry> getListCaseEntry(string caseNumber) {
             var sql = @"SELECT id,
-	soft_id AS SoftID,
-	case_number AS CaseNumber,
-	date_created AS DateCreatedString,
-	time_created AS TimeCreatedString,
-	date_modified AS DateModifiedString,
-	time_modified AS TimeModifiedString,
-	tumor_synoptic AS TumorSynoptic,
-	comment,
-	result,
-	material,
-	history,
-	interpretation,
-	gross,
-	microscopic FROM case_entry WHERE case_number = @caseNumber;";
+	                    soft_id AS SoftID,
+	                    case_number AS CaseNumber,
+	                    date_modified AS DateModifiedString,
+	                    time_modified AS TimeModifiedString,
+	                    tumor_synoptic AS TumorSynoptic,
+	                    comment,
+	                    result,
+	                    material,
+	                    history,
+	                    interpretation,
+	                    gross,
+	                    microscopic FROM case_entry WHERE case_number = @caseNumber;";
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 DynamicParameters dp = new DynamicParameters();
                 dp.Add("@caseNumber", caseNumber, System.Data.DbType.String);
@@ -466,12 +438,32 @@ namespace CaselyData {
 
 
         public static string DbConnectionString {
-           
+            get {
+               
+                return @"Data Source = "+ DBPath; 
+            } 
+        }
+
+        public static string DBPath {
             get {
                 //var path = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
-                //var dbPath = Path.Combine(path, "Casely.db");
-                //return @"Data Source = "+dbPath; }
-                return @"Data Source = L:\data\casely_1.db";
+                var path = @"L:\data\";
+                var dbPath = Path.Combine(path, "Casely.db");
+                return dbPath;
+            }
+        }
+
+        /// <summary>
+        /// Creates the Casely database
+        /// </summary>
+        public static void CreateDatabase() {
+            if (!(File.Exists(DBPath))) {
+               var f = File.Create(DBPath);
+                f.Close();
+            }
+            
+            using (var cn = new SQLiteConnection(DbConnectionString)) {
+                cn.Execute(DBCreationString.sqlCreateDBString);
             }
         }
 
@@ -482,8 +474,8 @@ namespace CaselyData {
         /// <param name="pathCase"></param>
         public static void InsertNewPathCase(PathCase pathCase) {
             using (var cn = new SQLiteConnection(DbConnectionString)) {
-                var sql = @"INSERT INTO path_case (case_number, service) VALUES (@CaseNumber, Service);";
-                var result = cn.Execute(sql, new { pathCase });
+                var sql = @"INSERT INTO path_case (case_number, service) VALUES (@CaseNumber, @Service);";
+                var result = cn.Execute(sql, pathCase );
             }
         }
 
