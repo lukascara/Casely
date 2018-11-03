@@ -35,19 +35,18 @@ namespace Casely {
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
             cmbCaseNumber.ItemsSource = listCEfilterDate;
+            cmbCaseNumber.SelectedValuePath = "CaseNumber";
             RefreshCasesDiagnosis();
+
+            if (cmbCaseNumber.Items.Count > 0) cmbCaseNumber.SelectedIndex = 0;
         }
 
-        private void cmbCaseNumber_LostFocus(object sender, RoutedEventArgs e) {
-            RefreshPartDiagnosis();
-        }
 
         private void RefreshCasesDiagnosis() {
             DateTime startDate = DateTime.Now.AddDays(-Double.Parse(txtDaysToLoad.Text));
             DateTime endDate = DateTime.Now;
-            var filteredList = SqliteDataAcces.GetListCaseEtnriesPastDays(startDate);
+            var filteredList = SqliteDataAcces.GetListCaseEntriesPastDays(startDate);
             cmbCaseNumber.SelectedValuePath = "CaseNumber";
-            cmbCaseNumber.SelectedValue = "Material";
             foreach (var s in filteredList) {
                 if (chkFilterCompleted.IsChecked == false || !(SqliteDataAcces.EntryExistsPartDiagnosis(s.CaseNumber))) {
                     listCEfilterDate.Add(s);
@@ -194,8 +193,8 @@ namespace Casely {
         /// Loads the last two versions of the report. Use LoadCaseData to refresh UI as it loads the diagnosis for the case as well.
         /// </summary>
         private void RefreshComparison() {
-              if (cmbCaseNumber.Text != null && cmbCaseNumber.Text != "" && cmbCaseNumber.Text != SqliteDataAcces.CaseNumberPrefix) {
-                var listCase = SqliteDataAcces.getListCaseEntry(cmbCaseNumber.Text);
+              if (cmbCaseNumber.SelectedValue != null) {
+                var listCase = SqliteDataAcces.getListCaseEntry(cmbCaseNumber.SelectedValue.ToString());
                 /*foreach (var lc in listCase) {
                     ComboBoxItem cbitem = new ComboBoxItem();
                     cbitem.Content = lc.PrettyVersion();
@@ -204,10 +203,11 @@ namespace Casely {
                 // gets the case entrys, groups them by author and then selects the last two author entries to compare.
                 var listCaseToCompare = listCase.OrderByDescending(x => x.DateTimeModifiedObject).GroupBy(t => t.SoftID).Select(x => x.FirstOrDefault()).ToList();
 
-
+               
                 string version0 = "";
                 string version1 = "";
                 wbDiffText.Text = "";
+                if (listCaseToCompare.Count <= 0) return;
                 if (cbInterpretation.IsChecked == true) {
                     version1 += $"-------Interpretation------------------------------------\n{listCaseToCompare[0].Interpretation}\n";
                     version0 += listCaseToCompare.Count == 2 ? $"-------Interpretation------------------------------------\n{listCaseToCompare[1].Interpretation}\n" : "";
@@ -231,7 +231,9 @@ namespace Casely {
                     var dmp = DiffMatchPatchModule.Default;
                     var diffs = dmp.DiffMain(version0, version1);
                     dmp.DiffCleanupSemantic(diffs);
+                    //var html = dmp.DiffPrettyHtml(diffs).Replace("&para;", "").Replace("\\\"","\"");
                     var html = dmp.DiffPrettyHtml(diffs).Replace("&para;", "");
+                    html = "<head><style>INS {background-color: powderblue;}DEL  {color: #ff5151;}</style></head>" + html;
                     wbDiffText.Text += html;
                 }
                 btnSkipDiagnosis.IsEnabled = true;
@@ -264,22 +266,21 @@ namespace Casely {
         }
 
         private void cmbCaseNumber_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            cmbCaseNumber.Text = (string)cmbCaseNumber.SelectedValue;
+            var x = cmbCaseNumber.SelectedValue;
             refreshCaseData();
         }
 
         private void btnSkipDiagnosis_Click(object sender, RoutedEventArgs e) {
             DateTime currentTime = DateTime.Now;
             PartDiagnosis pd = new PartDiagnosis() {
-                CaseNumber = cmbCaseNumber.Text,
+                CaseNumber = cmbCaseNumber.SelectedValue.ToString(),
                 DateModifiedString = currentTime.ToString("yyyy-MM-dd"),
                 TimeModifiedString = currentTime.ToString("HH:mm:ss"),
                 Part = "A"
             };
             List<PartDiagnosis> listPD = new List<PartDiagnosis>();
             listPD.Add(pd);
-            SqliteDataAcces.InsertNewPartDiagnosisEntry(listPD, new PathCase() { CaseNumber = cmbCaseNumber.Text });
-            cmbCaseNumber.Text = SqliteDataAcces.CaseNumberPrefix;
+            SqliteDataAcces.InsertNewPartDiagnosisEntry(listPD, new PathCase() { CaseNumber = cmbCaseNumber.SelectedValue.ToString() });
             refreshCaseData();
             RefreshCasesDiagnosis();
         }
@@ -288,4 +289,5 @@ namespace Casely {
 
         }
     }
+
 }

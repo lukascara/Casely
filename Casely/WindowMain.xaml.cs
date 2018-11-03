@@ -46,16 +46,7 @@ namespace Casely {
             WindowDiagnosis wn = new WindowDiagnosis();
             wn.ShowDialog();
         }
-
-        private void MenuItem_Click(object sender, RoutedEventArgs e) {
-            SaveFileDialog sf = new SaveFileDialog();
-            sf.Title = "New Casely Database";
-            if (sf.FileName != "") {
-
-            }
-                
-        }
-
+        
         private void Window_Loaded(object sender, RoutedEventArgs e) {
             if (!(File.Exists(SqliteDataAcces.DBPath))) {
                 MessageBoxResult dialogResult = System.Windows.MessageBox.Show("Casely database does not exist and will now be created.", "Create Database");
@@ -78,6 +69,8 @@ namespace Casely {
                         SqliteDataAcces.InsertNewPathCase(pc);
                         SqliteDataAcces.InsertNewCaseEntry(d, pc);
                     }
+                    System.Windows.Forms.MessageBox.Show("Data imported!");
+
                        
                 } catch (Exception ex) {
                     System.Windows.MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);

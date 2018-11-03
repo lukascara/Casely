@@ -77,21 +77,24 @@ namespace CaselyData {
                             l = linesPathResult[++i];
                             Material += l + "\n";
                             if (i+1 >= lineCount) break; // handles the case if no other sections are found after material
-                        } while (sectionWords.IndexOf(linesPathResult[i + 1]) == -1);
+                        } while (sectionWords.IndexOf(linesPathResult[i + 1].Trim()) == -1);
+                        Material = material.Trim();
                         break;
                     case "HISTORY:":
                         do {
                             l = linesPathResult[++i];
                             History += l + "\n";
                             if (i + 1 >= lineCount) break;
-                        } while (sectionWords.IndexOf(linesPathResult[i + 1]) == -1);
+                        } while (sectionWords.IndexOf(linesPathResult[i + 1].Trim()) == -1);
+                        History = history.Trim();
                         break;
                     case "GROSS:":
                         do {
                             l = linesPathResult[++i];
                             Gross += l + "\n";
                             if (i + 1 >= lineCount) break;
-                        } while (sectionWords.IndexOf(linesPathResult[i + 1]) == -1);
+                        } while (sectionWords.IndexOf(linesPathResult[i + 1].Trim()) == -1);
+                        Gross = gross.Trim();
                         break;
                     case "MICROSCOPIC:":
                         // will continue parsing until the last line of the report is reached
@@ -101,6 +104,7 @@ namespace CaselyData {
                             if (i + 1 >= lineCount) break;
                         } while (!(l.StartsWith("Microscopic Dictator ID")));
                         endOfResult = true;
+                        Microscopic = microscopic.Trim();
                         break;
                     default:
                         // just in case nothing matches. Safety measure to at least continue to increment.
@@ -292,10 +296,8 @@ namespace CaselyData {
             }
         }
 
-        public static List<CaseEntry> GetListCaseEtnriesPastDays(DateTime startDate) {
-            var sql = @"SELECT id,
-	                    soft_id AS SoftID,
-	                    case_number AS CaseNumber,
+        public static List<CaseEntry> GetListCaseEntriesPastDays(DateTime startDate) {
+            var sql = @"SELECT case_number AS CaseNumber,
 	                    date_modified AS DateModifiedString,
 	                    time_modified AS TimeModifiedString,
 	                    tumor_synoptic AS TumorSynoptic,
@@ -305,7 +307,8 @@ namespace CaselyData {
 	                    history,
 	                    interpretation,
 	                    gross,
-	                    microscopic FROM case_entry WHERE date_modified >= @startDate";
+	                    microscopic FROM case_entry 
+                        GROUP BY case_number";
             var strStartDate = startDate.ToString("yyyy-MM-dd");
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 DynamicParameters dp = new DynamicParameters();

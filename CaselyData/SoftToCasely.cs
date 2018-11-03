@@ -85,10 +85,10 @@ namespace CaselyData {
                                 residentID = (string)r["USERID"],
                                 residentReportSectionCode = (string)r["REPORTSECTIONCODE"],
                                 residentSectionText = RichTextToPlainText((string)r["USERREPORT"]),
-                                attendingInterpretationText = (string)r["FINALREPORT"].ToString() ?? string.Empty,
-                                attendingResultText = (string)r["FINALGROSSANDMICROTEXT"].ToString() ?? string.Empty,
-                                attendingCommentText = (string)r["FINALCOMMENTTEXT"].ToString() ?? string.Empty,
-                                attendingSynopticText = (string)r["FINALSYNOPTICTEXT"].ToString() ?? string.Empty,
+                                attendingInterpretationText = RichTextToPlainText(r["FINALDIAGNOSISRICHTEXT"].ToString() ?? string.Empty),
+                                attendingResultText = RichTextToPlainText(r["FINALGROSSANDMICRORICHTEXT"].ToString() ?? string.Empty),
+                                attendingCommentText = RichTextToPlainText(r["FINALCOMMENTRICHTEXT"].ToString() ?? string.Empty),
+                                attendingSynopticText = RichTextToPlainText(r["FINALSYNOPTICRICHTEXT"].ToString() ?? string.Empty),
                                 attendingID = (string)r["SIGNOUTPATHOLOGIST"].ToString() ?? string.Empty
                             };
                             listSoftData.Add(sft);
