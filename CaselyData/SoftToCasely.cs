@@ -132,7 +132,7 @@ namespace CaselyData {
                     Result = residentEntry.ResultText,
                     Comment = residentEntry.CommentText,
                     TumorSynoptic = residentEntry.TumorSynopticText,
-                    SoftID = firstSoftRow.residentID
+                    AuthorID = firstSoftRow.residentID
                 };
 
                 CaseEntry attendCE = new CaseEntry() {
@@ -142,7 +142,7 @@ namespace CaselyData {
                     Result = attendingEntry.ResultText,
                     Comment = attendingEntry.CommentText,
                     TumorSynoptic = attendingEntry.TumorSynopticText,
-                    SoftID = firstSoftRow.attendingID
+                    AuthorID = firstSoftRow.attendingID
                 };
                 caseEntries.Add(attendCE);
                 caseEntries.Add(resCE);

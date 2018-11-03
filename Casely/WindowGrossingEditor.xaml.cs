@@ -108,7 +108,7 @@ namespace Casely {
                             Part = pt.partEntry.Part,
                             Procedure = pt.partEntry.Procedure,
                             Specimen = pt.partEntry.Specimen,
-                            SoftID = cmbStaff.Text,
+                            AuthorID = cmbStaff.Text,
                             DateModifiedString = pt.dtTime.Value.GetValueOrDefault().ToString("yyyy-MM-dd"),
                             TimeModifiedString = pt.dtTime.Value.GetValueOrDefault().ToString("HH:mm:ss"),
                             CaseNumber = txtCaseNumber.Text

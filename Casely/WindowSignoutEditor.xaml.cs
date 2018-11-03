@@ -41,7 +41,7 @@ namespace Casely {
                 pc.Service = cmbService.Text;
                 CaseEntry ce = new CaseEntry();
                 DateTime currentTime = DateTime.Now;
-                ce.SoftID = cmbAuthor.Text;
+                ce.AuthorID = cmbAuthor.Text;
                 ce.CaseNumber = txtCaseNumber.Text;
                 ce.Interpretation = txtInterpretation.Text;
                 ce.Result = txtResultEntry.Text;
@@ -85,7 +85,7 @@ namespace Casely {
                     txtResultEntry.Text = ce.Result;
                     txtComment.Text = ce.Comment;
                     txtTumorSynoptic.Text = ce.TumorSynoptic;
-                    message.Text = $"Case entry found by: {ce.SoftID} ({ce.DateModifiedString} {ce.TimeModifiedString})";
+                    message.Text = $"Case entry found by: {ce.AuthorID} ({ce.DateModifiedString} {ce.TimeModifiedString})";
                 }
                 hasCaseNumberChanged = false;
             } else {

@@ -23,7 +23,7 @@ namespace CaselyData {
 
 CREATE TABLE IF NOT EXISTS `case_entry` (
 	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,	
-	`soft_id`	TEXT,
+	`author_id`	TEXT,
 	`case_number`	TEXT NOT NULL,
 	`date_modified`	TEXT,
 	`time_modified`	TEXT,
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `part_diagnosis` (
 
 CREATE TABLE IF NOT EXISTS `part_entry` (
 	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-	`soft_id`	TEXT,
+	`author_id`	TEXT,
 	`part`	TEXT,
 	`procedure`	TEXT,
 	`specimen`	TEXT,
@@ -65,18 +65,18 @@ CREATE TABLE IF NOT EXISTS `part_entry` (
 
 CREATE TABLE IF NOT EXISTS `staff` (
 	`last_first_name`	TEXT,
-	`soft_id`TEXT UNIQUE NOT NULL PRIMARY KEY ON CONFLICT IGNORE,
+	`author_id`TEXT UNIQUE NOT NULL PRIMARY KEY ON CONFLICT IGNORE,
 	`role`	TEXT
 );
 
 CREATE TRIGGER insert_part_entry_author AFTER INSERT  ON part_entry
 BEGIN
-INSERT INTO staff (soft_id) VALUES (new.soft_id);
+INSERT INTO staff (author_id) VALUES (new.author_id);
 END;
 
 CREATE TRIGGER insert_case_entry_author AFTER INSERT  ON case_entry
 BEGIN
-INSERT INTO staff (soft_id) VALUES (new.soft_id);
+INSERT INTO staff (author_id) VALUES (new.author_id);
 END;
 
 CREATE TABLE IF NOT EXISTS `specimen` (

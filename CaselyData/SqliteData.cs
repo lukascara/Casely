@@ -52,11 +52,11 @@ namespace CaselyData {
                 TimeModifiedString = value.TimeOfDay.ToString();
             }
         }
-        public string SoftID { get; set; }
+        public string AuthorID { get; set; }
         public List<PartEntry> ListPartEntry { get; set; }
 
         public string PrettyVersion() {
-            return $"{SoftID} ({DateModifiedString})";
+            return $"{AuthorID} ({DateModifiedString})";
         }
 
         private void PopulateMicrGrossMatHist() {
@@ -124,7 +124,7 @@ namespace CaselyData {
         public string Specimen { get; set; }
         public string TimeModifiedString { get; set; }
         public string DateModifiedString { get; set; }
-        public string SoftID { get; set; }
+        public string AuthorID { get; set; }
        
         public DateTime DateTimeModifiedObject {
             get {
@@ -162,7 +162,7 @@ namespace CaselyData {
     }
 
     public class Staff {
-        public string SoftID;
+        public string AuthorID;
         public string firstLastName;
         public string Role;
     }
@@ -178,9 +178,9 @@ namespace CaselyData {
                 var sql = @"INSERT INTO path_case (case_number, service)
                              VALUES (@CaseNumber, @Service);";
                 cn.Execute(sql, pathCase);
-                sql = @"INSERT INTO case_entry (soft_id, case_number, date_modified,
+                sql = @"INSERT INTO case_entry (author_id, case_number, date_modified,
                                                 time_modified, tumor_synoptic, comment, result, material, history, interpretation, gross, microscopic)
-                            VALUES (@SoftID, @CaseNumber,@DateModifiedString,@TimeModifiedString,@TumorSynoptic, @Comment, @Result, @Material, @History, 
+                            VALUES (@AuthorID, @CaseNumber,@DateModifiedString,@TimeModifiedString,@TumorSynoptic, @Comment, @Result, @Material, @History, 
                                     @Interpretation, @Gross, @Microscopic);";
                 cn.Execute(sql, ce);
             }
@@ -247,14 +247,31 @@ namespace CaselyData {
                
         }
 
+        /// <summary>
+        /// Returns true if there is at least 2 authors that have made a case entry on the given case
+        /// </summary>
+        /// <param name="caseNumber"></param>
+        /// <returns></returns>
+        public static bool HasMultipleAuthorEntries(string caseNumber) {
+            using (var cn = new SQLiteConnection(DbConnectionString)) {
+                var sql = @"select COUNT(DISTINCT author_id) from case_entry where case_number = @CaseNumber";
+                DynamicParameters dp = new DynamicParameters();
+                dp.Add("@caseNumber", caseNumber, System.Data.DbType.String);
+                int v = cn.Query<int>(sql, dp).FirstOrDefault();
+                bool multipleAuthors = v > 1 ? true : false;
+                return multipleAuthors;
+
+            }
+        }
+
         public static void InsertNewParts(List<PartEntry> parts, PathCase pathCase) {
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 var sql = @"INSERT INTO path_case (case_number, service)
                              VALUES (@CaseNumber, @Service);";
                 cn.Execute(sql, pathCase);
                 sql = @"INSERT INTO part_entry (part, procedure,
-                            specimen, date_modified, time_modified, case_number, soft_id)
-                            VALUES (@Part, @Procedure, @Specimen, @DateModifiedString,@TimeModifiedString, @CaseNumber, @SoftID);";
+                            specimen, date_modified, time_modified, case_number, author_id)
+                            VALUES (@Part, @Procedure, @Specimen, @DateModifiedString,@TimeModifiedString, @CaseNumber, @AuthorID);";
                 cn.Execute(sql, parts);
             }
         }
@@ -322,7 +339,7 @@ namespace CaselyData {
       
 
         public static List<PartEntry> getListPartEntry(string caseNumber) {
-            var sql = @"SELECT soft_id AS SoftID, 
+            var sql = @"SELECT author_id AS AuthorID, 
                             part, procedure,
                             specimen, 
                             date_modified AS DateModifiedString, time_modified AS TimeModifiedString,
@@ -340,7 +357,7 @@ namespace CaselyData {
 
         public static List<CaseEntry> getListCaseEntry(string caseNumber) {
             var sql = @"SELECT id,
-	                    soft_id AS SoftID,
+	                    author_id AS AuthorID,
 	                    case_number AS CaseNumber,
 	                    date_modified AS DateModifiedString,
 	                    time_modified AS TimeModifiedString,

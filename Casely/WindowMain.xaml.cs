@@ -66,8 +66,11 @@ namespace Casely {
                     var importedData = sc.importSoftPathCSVData(theDialog.FileName);
                     foreach(var d in importedData) {
                         var pc = new PathCase() { CaseNumber = d.CaseNumber };
-                        SqliteDataAcces.InsertNewPathCase(pc);
-                        SqliteDataAcces.InsertNewCaseEntry(d, pc);
+                        // Import the cases only if there is not already a report version by both the attending and the resident.
+                        if (!(SqliteDataAcces.HasMultipleAuthorEntries(d.CaseNumber))) {
+                            SqliteDataAcces.InsertNewPathCase(pc);
+                            SqliteDataAcces.InsertNewCaseEntry(d, pc);
+                        }
                     }
                     System.Windows.Forms.MessageBox.Show("Data imported!");
 

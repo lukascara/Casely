@@ -201,7 +201,7 @@ namespace Casely {
                     cmbVersion.Items.Add(cbitem);
                 }*/
                 // gets the case entrys, groups them by author and then selects the last two author entries to compare.
-                var listCaseToCompare = listCase.OrderByDescending(x => x.DateTimeModifiedObject).GroupBy(t => t.SoftID).Select(x => x.FirstOrDefault()).ToList();
+                var listCaseToCompare = listCase.OrderByDescending(x => x.DateTimeModifiedObject).GroupBy(t => t.AuthorID).Select(x => x.FirstOrDefault()).ToList();
 
                
                 string version0 = "";
