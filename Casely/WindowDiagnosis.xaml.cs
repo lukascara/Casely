@@ -105,8 +105,6 @@ namespace Casely {
                 foreach (var p in listPartDiagnosis) {
                     spPartDiagnosis.Children.Add(new UCdiagnosis(p, suggestionOrgan, suggestionOrganSystem, suggestionCategory, suggestionDiagnosis));
                 }
-
-                RefreshComparison();
             } else {
                 // blank case number entered, prevent addition of diagnosis
                 btnAddDiagnosis.IsEnabled = false;
@@ -208,22 +206,18 @@ namespace Casely {
                 string version1 = "";
                 wbDiffText.Text = "";
                 if (listCaseToCompare.Count <= 0) return;
-                if (cbInterpretation.IsChecked == true) {
-                    version1 += $"-------Interpretation------------------------------------\n{listCaseToCompare[0].Interpretation}\n";
-                    version0 += listCaseToCompare.Count == 2 ? $"-------Interpretation------------------------------------\n{listCaseToCompare[1].Interpretation}\n" : "";
-                }
-                if (cbResult.IsChecked == true) {
-                    version1 += $"-------Result-------------------------------------------\n{listCaseToCompare[0].Result}\n";
-                    version0 += listCaseToCompare.Count == 2 ? $"-------Result-------------------------------------------\n{listCaseToCompare[1].Result}\n" : "";
-                }
-                if (cbTumorSynoptic.IsChecked == true) {
-                    version1 += $"-------Tumor Synoptic------------------------------------\n{listCaseToCompare[0].TumorSynoptic}\n";
-                    version0 += listCaseToCompare.Count == 2 ? $"-------Tumor Synoptic------------------------------------\n{listCaseToCompare[1].TumorSynoptic}\n" : "";
-                }
-                if (cbComment.IsChecked == true) {
-                    version1 += $"-------Comment-------------------------------------------\n{listCaseToCompare[0].Comment}\n";
-                    version0 += listCaseToCompare.Count == 2 ? $"-------Comment-------------------------------------------\n{listCaseToCompare[1].Comment}\n" : "";
-                }
+                version1 += $"--Interpretation--{listCaseToCompare[0].Interpretation}";
+                version0 += listCaseToCompare.Count == 2 ? $"--Interpretation--{listCaseToCompare[1].Interpretation}" : "";
+                
+                version1 += $"--Result--{listCaseToCompare[0].Result}\n";
+                version0 += listCaseToCompare.Count == 2 ? $"--Result--{listCaseToCompare[1].Result}" : "";
+               
+                version1 += $"--Tumor Synoptic--{listCaseToCompare[0].TumorSynoptic}";
+                version0 += listCaseToCompare.Count == 2 ? $"--Tumor Synoptic--{listCaseToCompare[1].TumorSynoptic}" : "";
+               
+                version1 += $"--Comment--{listCaseToCompare[0].Comment}\n";
+                version0 += listCaseToCompare.Count == 2 ? $"--Comment--{listCaseToCompare[1].Comment}" : "";
+              
                 if (listCaseToCompare.Count < 2) {
                     wbDiffText.Text += "<h3>Need at least a report from two different authors to compare</h3>";
                     wbDiffText.Text += "\n" + version1.Replace("\n","<BR>");
@@ -232,7 +226,11 @@ namespace Casely {
                     var diffs = dmp.DiffMain(version0, version1);
                     dmp.DiffCleanupSemantic(diffs);
                     //var html = dmp.DiffPrettyHtml(diffs).Replace("&para;", "").Replace("\\\"","\"");
-                    var html = dmp.DiffPrettyHtml(diffs).Replace("&para;", "");
+                    var html = dmp.DiffPrettyHtml(diffs).Replace("&para;", "")
+                        .Replace("--Interpretation--", "<h3>Interpretation</h3>")
+                         .Replace("--Result--", "<h3>Result</h3>")
+                          .Replace("--Tumor Synoptic--", "<h3>Tumor Synoptic</h3>")
+                           .Replace("--Comment--", "<h3>Comment</h3>");
                     html = "<head><style>INS {background-color: powderblue;}DEL  {color: #ff5151;}</style></head>" + html;
                     wbDiffText.Text += html;
                 }
@@ -244,27 +242,8 @@ namespace Casely {
                 btnSkipDiagnosis.IsEnabled = false;
             }
         }
-
-        private void cbInterpretation_Click(object sender, RoutedEventArgs e) {
-            RefreshComparison();
-        }
-
-        private void cbResult_Click(object sender, RoutedEventArgs e) {
-            RefreshComparison();
-        }
-
-        private void cbTumorSynoptic_Checked(object sender, RoutedEventArgs e) {
-            RefreshComparison();
-        }
-
-        private void cbComment_Checked(object sender, RoutedEventArgs e) {
-            RefreshComparison();
-        }
-
-        private void txtDaysToLoad_LostFocus(object sender, RoutedEventArgs e) {
-            RefreshCasesDiagnosis();
-        }
-
+       
+       
         private void cmbCaseNumber_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             var x = cmbCaseNumber.SelectedValue;
             refreshCaseData();

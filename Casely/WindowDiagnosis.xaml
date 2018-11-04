@@ -27,16 +27,13 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
                 <Label Content="Case#" HorizontalAlignment="Left" Margin="30.345,16.56,0,17.48" d:LayoutOverrides="Height"/>
-                <Label Content="Load # of past days" Margin="340.612,12.56,338.118,21.48" d:LayoutOverrides="Width, Height"/>
+                <Label Content="Load # of past days" Margin="231.612,14.52,447.118,19.52"/>
 
-                <xctk:IntegerUpDown x:Name="txtDaysToLoad" HorizontalAlignment="Right" Margin="0,16.56,292.118,23.44" Value="7" DefaultValue="7" TabIndex="2" IsTabStop="False" d:LayoutOverrides="Height" LostFocus="txtDaysToLoad_LostFocus"/>
+                <xctk:IntegerUpDown x:Name="txtDaysToLoad" HorizontalAlignment="Right" Margin="0,18.52,401.118,21.48" Value="7" DefaultValue="7" TabIndex="2" IsTabStop="False" />
                 <Button x:Name="btnSubmit" Content="Submit Diagnosis" HorizontalAlignment="Right" Margin="0,15.56,146.118,24.48" Click="btnSubmitDiagnosis_Click" Width="141" TabIndex="3" IsTabStop="False"/>
                 <CheckBox x:Name="chkFilterCompleted" Content="List uncompleted only" Margin="77.341,1.461,0,0" VerticalAlignment="Top" Click="chkFilterCompleted_Click" HorizontalAlignment="Left"/>
-                <CheckBox x:Name="cbInterpretation" Content="Interpretation" Margin="17.62,0,0,1.381" VerticalAlignment="Bottom" Click="cbInterpretation_Click" IsChecked="True" HorizontalAlignment="Left" Width="100.395"/>
-                <CheckBox x:Name="cbResult" Content="Result" Margin="118.015,0,0,1.381" VerticalAlignment="Bottom" Click="cbResult_Click" IsChecked="True" HorizontalAlignment="Left" Width="97.775"/>
-                <CheckBox x:Name="cbTumorSynoptic" Content="Tumor Synoptic" Margin="180.41,0,0,1.381" VerticalAlignment="Bottom" Click="cbTumorSynoptic_Checked" HorizontalAlignment="Left" Width="119.775"/>
-                <CheckBox x:Name="cbComment" Content="Comment" Margin="288.605,0,381,1.381" VerticalAlignment="Bottom" Click="cbComment_Checked"/>
                 <Button x:Name="btnSkipDiagnosis" Content="No Diagnosis" HorizontalAlignment="Right" Margin="0,16.6,30.118,23.44" Width="111" TabIndex="3" IsTabStop="False" ToolTip="This will remove the case from the list of cases that do not have a diagnosis by inserting a blank entry into the database" Click="btnSkipDiagnosis_Click"/>
+                <Button x:Name="btnRefresh" Content="Refresh List" HorizontalAlignment="Right" Margin="0,18.56,323.118,21.48" Click="btnSubmitDiagnosis_Click" Width="73" TabIndex="3" IsTabStop="False"/>
 
             </Grid>
 

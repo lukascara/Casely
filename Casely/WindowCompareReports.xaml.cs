@@ -58,22 +58,17 @@ namespace Casely
                     
                     string version0 = "";
                     string version1 = "";
-                    if (cbInterpretation.IsChecked == true) {
-                        version1 += $"-------Interpretation------------------------------------\n{listCaseToCompare[0].Interpretation}\n";
-                        version0 += $"-------Interpretation------------------------------------\n{listCaseToCompare[1].Interpretation}\n";
-                    }
-                    if (cbResult.IsChecked == true) {
-                        version1 += $"-------Result-------------------------------------------\n{listCaseToCompare[0].Result}\n";
-                        version0 += $"-------Result-------------------------------------------\n{listCaseToCompare[1].Result}\n";
-                    }
-                    if (cbTumorSynoptic.IsChecked == true) {
-                        version1 += $"-------Tumor Synoptic------------------------------------\n{listCaseToCompare[0].TumorSynoptic}\n";
-                        version0 += $"-------Tumor Synoptic--------\n{listCaseToCompare[1].TumorSynoptic}\n";
-                    }
-                    if (cbComment.IsChecked == true) {
-                        version1 += $"-------Comment-------------------------------------------\n{listCaseToCompare[0].Comment}\n";
-                        version0 += $"-------Comment-------------------------------------------\n{listCaseToCompare[1].Comment}\n";
-                    }
+                    version1 += $"-------Interpretation------------------------------------\n{listCaseToCompare[0].Interpretation}\n";
+                    version0 += $"-------Interpretation------------------------------------\n{listCaseToCompare[1].Interpretation}\n";
+                    
+                    version1 += $"-------Result-------------------------------------------\n{listCaseToCompare[0].Result}\n";
+                    version0 += $"-------Result-------------------------------------------\n{listCaseToCompare[1].Result}\n";
+                 
+                    version1 += $"-------Tumor Synoptic------------------------------------\n{listCaseToCompare[0].TumorSynoptic}\n";
+                    version0 += $"-------Tumor Synoptic--------\n{listCaseToCompare[1].TumorSynoptic}\n";
+               
+                    version1 += $"-------Comment-------------------------------------------\n{listCaseToCompare[0].Comment}\n";
+                    
                     var dmp = DiffMatchPatchModule.Default;
                     var diffs = dmp.DiffMain(version0, version1);
                     dmp.DiffCleanupSemantic(diffs);
@@ -81,22 +76,7 @@ namespace Casely
                     wbDiffText.Text = html;
                 }
             }
-        }
-        private void cbInterpretation_Click(object sender, RoutedEventArgs e) {
-            updateComparison();
-        }
-
-        private void cbResult_Click(object sender, RoutedEventArgs e) {
-            updateComparison();
-        }
-
-        private void cbTumorSynoptic_Checked(object sender, RoutedEventArgs e) {
-            updateComparison();
-        }
-
-        private void cbComment_Checked(object sender, RoutedEventArgs e) {
-            updateComparison();
-        }
+        }   
     }
 
     
