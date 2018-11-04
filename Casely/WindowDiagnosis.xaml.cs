@@ -198,18 +198,21 @@ namespace Casely {
 
                 // gets the case entrys, groups them by author and then selects the last two author entries to compare.
                 var listCaseToCompare = listCase.OrderByDescending(x => x.DateTimeModifiedObject).GroupBy(t => t.AuthorID).Select(x => x.FirstOrDefault()).ToList();
-                CaseEntry residentEntry = listCaseToCompare[0];
-                CaseEntry attendingEntry = listCaseToCompare[1];
+                CaseEntry attendingEntry = listCaseToCompare[0];
+                CaseEntry residentEntry= listCaseToCompare[1];
                 // if we only have
                 if (listCaseToCompare.Count < 2) {
                     wbDiffText.Text += "<h3>Need at least a report from two different authors to compare</h3>";
                     return;
                 }
 
-                html += DiffToHTML(attendingEntry.Interpretation, residentEntry.Interpretation, "Interpretation");
-                html += DiffToHTML(attendingEntry.Result, residentEntry.Result, "Result");
-                html += DiffToHTML(attendingEntry.TumorSynoptic, residentEntry.TumorSynoptic, "Tumor Synoptic");
-                html += DiffToHTML(attendingEntry.Comment, residentEntry.Comment, "Comment");   
+                html += DiffToHTML(residentEntry.Interpretation, attendingEntry.Interpretation, "Interpretation");
+                html += DiffToHTML(residentEntry.Material, attendingEntry.Material, "Material");
+                html += DiffToHTML(residentEntry.History, attendingEntry.History, "History");
+                html += DiffToHTML(residentEntry.Gross, attendingEntry.Gross, "Gross");
+                html += DiffToHTML(residentEntry.Microscopic, attendingEntry.Microscopic, "Microscopic");
+                html += DiffToHTML(residentEntry.TumorSynoptic, attendingEntry.TumorSynoptic, "Tumor Synoptic");
+                html += DiffToHTML(residentEntry.Comment, attendingEntry.Comment, "Comment");   
                 html = "<head><style>INS {background-color: powderblue;}DEL  {color: #ff5151;}</style></head>" + html;
                 btnSkipDiagnosis.IsEnabled = true;
                 wbDiffText.Text = html;
