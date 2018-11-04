@@ -36,16 +36,17 @@ namespace Casely {
         private void Window_Loaded(object sender, RoutedEventArgs e) {
             cmbCaseNumber.ItemsSource = listCEfilterDate;
             cmbCaseNumber.SelectedValuePath = "CaseNumber";
-            RefreshCasesDiagnosis();
+            RefreshCaseList();
 
             if (cmbCaseNumber.Items.Count > 0) cmbCaseNumber.SelectedIndex = 0;
         }
 
 
-        private void RefreshCasesDiagnosis() {
+        private void RefreshCaseList() {
             DateTime startDate = DateTime.Now.AddDays(-Double.Parse(txtDaysToLoad.Text));
             DateTime endDate = DateTime.Now;
             var filteredList = SqliteDataAcces.GetListCaseEntriesPastDays(startDate);
+            listCEfilterDate.Clear();
             cmbCaseNumber.SelectedValuePath = "CaseNumber";
             foreach (var s in filteredList) {
                 if (chkFilterCompleted.IsChecked == false || !(SqliteDataAcces.EntryExistsPartDiagnosis(s.CaseNumber))) {
@@ -174,11 +175,11 @@ namespace Casely {
             SqliteDataAcces.InsertNewPartDiagnosisEntry(partsToAdd, new PathCase() { CaseNumber = cmbCaseNumber.Text });
             cmbCaseNumber.Text = SqliteDataAcces.CaseNumberPrefix;
             refreshCaseData();
-            RefreshCasesDiagnosis();
+            RefreshCaseList();
         }
 
         private void chkFilterCompleted_Click(object sender, RoutedEventArgs e) {
-            RefreshCasesDiagnosis();
+            RefreshCaseList();
         }
 
         private void refreshCaseData() {
@@ -249,11 +250,15 @@ namespace Casely {
             listPD.Add(pd);
             SqliteDataAcces.InsertNewPartDiagnosisEntry(listPD, new PathCase() { CaseNumber = cmbCaseNumber.SelectedValue.ToString() });
             refreshCaseData();
-            RefreshCasesDiagnosis();
+            RefreshCaseList();
         }
 
         private void cmbCaseNumber_Loaded(object sender, RoutedEventArgs e) {
 
+        }
+
+        private void btnRefresh_Click(object sender, RoutedEventArgs e) {
+            RefreshCaseList();
         }
     }
 

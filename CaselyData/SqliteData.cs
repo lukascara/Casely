@@ -324,8 +324,8 @@ namespace CaselyData {
 	                    history,
 	                    interpretation,
 	                    gross,
-	                    microscopic FROM case_entry 
-                        GROUP BY case_number";
+	                    microscopic FROM case_entry WHERE date_modified >= @startDate
+                        GROUP BY case_number ";
             var strStartDate = startDate.ToString("yyyy-MM-dd");
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 DynamicParameters dp = new DynamicParameters();

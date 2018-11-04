@@ -27,13 +27,13 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
                 <Label Content="Case#" HorizontalAlignment="Left" Margin="30.345,16.56,0,17.48" d:LayoutOverrides="Height"/>
-                <Label Content="Load # of past days" Margin="573.612,14.52,447.118,19.52"/>
+                <Label Content="Load # of past days" Margin="415.612,15.52,605.118,18.52"/>
 
-                <xctk:IntegerUpDown x:Name="txtDaysToLoad" HorizontalAlignment="Right" Margin="0,18.52,401.118,21.48" Value="7" DefaultValue="7" TabIndex="2" IsTabStop="False" />
+                <xctk:IntegerUpDown x:Name="txtDaysToLoad" HorizontalAlignment="Right" Margin="0,19.52,559.118,20.48" Value="7" DefaultValue="7" TabIndex="2" IsTabStop="False" Minimum="0" />
                 <Button x:Name="btnSubmit" Content="Submit Diagnosis" HorizontalAlignment="Right" Margin="0,15.56,146.118,24.48" Click="btnSubmitDiagnosis_Click" Width="141" TabIndex="3" IsTabStop="False"/>
                 <CheckBox x:Name="chkFilterCompleted" Content="List uncompleted only" Margin="77.341,1.461,0,0" VerticalAlignment="Top" Click="chkFilterCompleted_Click" HorizontalAlignment="Left"/>
                 <Button x:Name="btnSkipDiagnosis" Content="No Diagnosis" HorizontalAlignment="Right" Margin="0,16.6,30.118,23.44" Width="111" TabIndex="3" IsTabStop="False" ToolTip="This will remove the case from the list of cases that do not have a diagnosis by inserting a blank entry into the database" Click="btnSkipDiagnosis_Click"/>
-                <Button x:Name="btnRefresh" Content="Refresh List" HorizontalAlignment="Right" Margin="0,18.56,323.118,21.48" Click="btnSubmitDiagnosis_Click" Width="73" TabIndex="3" IsTabStop="False"/>
+                <Button x:Name="btnRefresh" Content="Refresh List" HorizontalAlignment="Right" Margin="0,19.56,481.118,20.48" Width="73" TabIndex="3" IsTabStop="False" Click="btnRefresh_Click"/>
 
             </Grid>
 

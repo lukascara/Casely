@@ -137,6 +137,16 @@ CREATE TRIGGER insert_part_diganosis_category AFTER INSERT  ON part_diagnosis
 BEGIN
 INSERT INTO diagnosis_category (category) VALUES (new.category);
 END;
+
+CREATE TRIGGER insert_case_entry_case_number AFTER INSERT ON case_entry
+BEGIN
+INSERT INTO path_case (case_number) VALUES (new.case_number);
+END;
+
+CREATE TRIGGER insert_part_entry_case_number AFTER INSERT ON part_entry
+BEGIN
+INSERT INTO path_case (case_number) VALUES (new.case_number);
+END;
 	";
 
 
