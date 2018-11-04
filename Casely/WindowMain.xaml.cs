@@ -48,9 +48,14 @@ namespace Casely {
         }
         
         private void Window_Loaded(object sender, RoutedEventArgs e) {
+            tbDBPath.Text = SqliteDataAcces.DBPath;
+            connectToDB();
+        }
+
+        private void connectToDB() {
             if (!(File.Exists(SqliteDataAcces.DBPath))) {
-                MessageBoxResult dialogResult = System.Windows.MessageBox.Show("Casely database does not exist and will now be created.", "Create Database");
-                if (dialogResult == MessageBoxResult.OK) {
+                MessageBoxResult dialogResult = System.Windows.MessageBox.Show($"Casely database does not exist at {SqliteDataAcces.DBPath}. Should it be created?", "Create Database", MessageBoxButton.YesNo,MessageBoxImage.None);
+                if (dialogResult == MessageBoxResult.Yes) {
                     SqliteDataAcces.CreateDatabase();
                 }
             }
@@ -78,6 +83,39 @@ namespace Casely {
                 } catch (Exception ex) {
                     System.Windows.MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);
                 }
+            }
+        }
+
+        private void btnOpenDatabase_Click(object sender, RoutedEventArgs e) {
+            Microsoft.Win32.OpenFileDialog fileDialog = new Microsoft.Win32.OpenFileDialog();
+            fileDialog.DefaultExt = ".db";
+            fileDialog.Filter = "Casely database files (.db)|*.db";
+            Nullable<bool> result = fileDialog.ShowDialog();
+            if (result == true) {
+                //var path = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+                //var path = Properties.Settings.Default.DatabasePath;
+                //var dbPath = Path.Combine(path, "Casely.db");
+                tbDBPath.Text = fileDialog.FileName;
+                CaselyData.SqliteDataAcces.DBPath = fileDialog.FileName;
+                connectToDB();
+            }
+        }
+
+        private void btnCreateDatabase_Click(object sender, RoutedEventArgs e) {
+            Microsoft.Win32.SaveFileDialog fileDialog = new Microsoft.Win32.SaveFileDialog();
+            fileDialog.DefaultExt = ".db";
+            fileDialog.Filter = "Casely database files (.db)|*.db";
+            Nullable<bool> result = fileDialog.ShowDialog();
+            if (result == true) {
+                //var path = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+                //var path = Properties.Settings.Default.DatabasePath;
+                //var dbPath = Path.Combine(path, "Casely.db");
+                if (File.Exists(fileDialog.FileName)) {
+                    File.Delete(fileDialog.FileName);
+                }
+                tbDBPath.Text = fileDialog.FileName;
+                CaselyData.SqliteDataAcces.DBPath = fileDialog.FileName;
+                connectToDB();
             }
         }
     }

@@ -466,11 +466,13 @@ namespace CaselyData {
 
         public static string DBPath {
             get {
-                //var path = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
-                var path = @"L:\data\";
-                var dbPath = Path.Combine(path, "Casely.db");
+                var dbPath = Properties.Settings.Default.DatabasePath;
                 return dbPath;
             }
+            set {
+                Properties.Settings.Default.DatabasePath = value;
+            }
+
         }
 
         /// <summary>

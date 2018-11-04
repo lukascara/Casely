@@ -10,12 +10,12 @@
     <Grid>
         <WrapPanel Orientation="Horizontal">
 
-            <Grid>
+            <Grid Width="1139">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="60*"/>
                     <RowDefinition Height="359*"/>
                 </Grid.RowDefinitions>
-                <ComboBox x:Name="cmbCaseNumber" HorizontalAlignment="Left" Margin="77.342,16.56,0,21.48" Width="152.27"  TabIndex="1" d:LayoutOverrides="Height" SelectionChanged="cmbCaseNumber_SelectionChanged" Loaded="cmbCaseNumber_Loaded" >
+                <ComboBox x:Name="cmbCaseNumber" HorizontalAlignment="Left" Margin="77.342,16.56,0,21.48" Width="319.27"  TabIndex="1" SelectionChanged="cmbCaseNumber_SelectionChanged" Loaded="cmbCaseNumber_Loaded" >
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
@@ -27,7 +27,7 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
                 <Label Content="Case#" HorizontalAlignment="Left" Margin="30.345,16.56,0,17.48" d:LayoutOverrides="Height"/>
-                <Label Content="Load # of past days" Margin="231.612,14.52,447.118,19.52"/>
+                <Label Content="Load # of past days" Margin="573.612,14.52,447.118,19.52"/>
 
                 <xctk:IntegerUpDown x:Name="txtDaysToLoad" HorizontalAlignment="Right" Margin="0,18.52,401.118,21.48" Value="7" DefaultValue="7" TabIndex="2" IsTabStop="False" />
                 <Button x:Name="btnSubmit" Content="Submit Diagnosis" HorizontalAlignment="Right" Margin="0,15.56,146.118,24.48" Click="btnSubmitDiagnosis_Click" Width="141" TabIndex="3" IsTabStop="False"/>
