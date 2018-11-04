@@ -192,55 +192,40 @@ namespace Casely {
         /// </summary>
         private void RefreshComparison() {
               if (cmbCaseNumber.SelectedValue != null) {
+                wbDiffText.Text = "";
+                string html = "";
                 var listCase = SqliteDataAcces.getListCaseEntry(cmbCaseNumber.SelectedValue.ToString());
-                /*foreach (var lc in listCase) {
-                    ComboBoxItem cbitem = new ComboBoxItem();
-                    cbitem.Content = lc.PrettyVersion();
-                    cmbVersion.Items.Add(cbitem);
-                }*/
+
                 // gets the case entrys, groups them by author and then selects the last two author entries to compare.
                 var listCaseToCompare = listCase.OrderByDescending(x => x.DateTimeModifiedObject).GroupBy(t => t.AuthorID).Select(x => x.FirstOrDefault()).ToList();
-
-               
-                string version0 = "";
-                string version1 = "";
-                wbDiffText.Text = "";
-                if (listCaseToCompare.Count <= 0) return;
-                version1 += $"--Interpretation--{listCaseToCompare[0].Interpretation}";
-                version0 += listCaseToCompare.Count == 2 ? $"--Interpretation--{listCaseToCompare[1].Interpretation}" : "";
-                
-                version1 += $"--Result--{listCaseToCompare[0].Result}\n";
-                version0 += listCaseToCompare.Count == 2 ? $"--Result--{listCaseToCompare[1].Result}" : "";
-               
-                version1 += $"--Tumor Synoptic--{listCaseToCompare[0].TumorSynoptic}";
-                version0 += listCaseToCompare.Count == 2 ? $"--Tumor Synoptic--{listCaseToCompare[1].TumorSynoptic}" : "";
-               
-                version1 += $"--Comment--{listCaseToCompare[0].Comment}\n";
-                version0 += listCaseToCompare.Count == 2 ? $"--Comment--{listCaseToCompare[1].Comment}" : "";
-              
+                CaseEntry residentEntry = listCaseToCompare[0];
+                CaseEntry attendingEntry = listCaseToCompare[1];
+                // if we only have
                 if (listCaseToCompare.Count < 2) {
                     wbDiffText.Text += "<h3>Need at least a report from two different authors to compare</h3>";
-                    wbDiffText.Text += "\n" + version1.Replace("\n","<BR>");
-                } else {
-                    var dmp = DiffMatchPatchModule.Default;
-                    var diffs = dmp.DiffMain(version0, version1);
-                    dmp.DiffCleanupSemantic(diffs);
-                    //var html = dmp.DiffPrettyHtml(diffs).Replace("&para;", "").Replace("\\\"","\"");
-                    var html = dmp.DiffPrettyHtml(diffs).Replace("&para;", "")
-                        .Replace("--Interpretation--", "<h3>Interpretation</h3>")
-                         .Replace("--Result--", "<h3>Result</h3>")
-                          .Replace("--Tumor Synoptic--", "<h3>Tumor Synoptic</h3>")
-                           .Replace("--Comment--", "<h3>Comment</h3>");
-                    html = "<head><style>INS {background-color: powderblue;}DEL  {color: #ff5151;}</style></head>" + html;
-                    wbDiffText.Text += html;
+                    return;
                 }
-                btnSkipDiagnosis.IsEnabled = true;
 
+                html += DiffToHTML(attendingEntry.Interpretation, residentEntry.Interpretation, "Interpretation");
+                html += DiffToHTML(attendingEntry.Result, residentEntry.Result, "Result");
+                html += DiffToHTML(attendingEntry.TumorSynoptic, residentEntry.TumorSynoptic, "Tumor Synoptic");
+                html += DiffToHTML(attendingEntry.Comment, residentEntry.Comment, "Comment");   
+                html = "<head><style>INS {background-color: powderblue;}DEL  {color: #ff5151;}</style></head>" + html;
+                btnSkipDiagnosis.IsEnabled = true;
+                wbDiffText.Text = html;
             } else {
                 wbDiffText.Text = "";
                 clearDiagnosisControls();
                 btnSkipDiagnosis.IsEnabled = false;
             }
+        }
+
+        private string DiffToHTML(string version0, string version1, string header) {
+            var dmp = DiffMatchPatchModule.Default;
+            var diffs = dmp.DiffMain(version0, version1);
+            dmp.DiffCleanupSemantic(diffs);
+            var html = dmp.DiffPrettyHtml(diffs).Replace("&para;", "");
+            return  $"<h3><u>{header}</u></h3>"+ html;
         }
        
        
