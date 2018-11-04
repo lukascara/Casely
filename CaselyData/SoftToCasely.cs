@@ -17,7 +17,7 @@ namespace CaselyData {
     class SoftSignoutData {
         public string caseNum { get; set; }
         public string registrationDateTime { get; set; }
-        public string enteredDateTime { get; set; }
+        public DateTime enteredDateTime { get; set; }
         public string residentID { get; set; }
         public string residentReportSectionCode { get; set; }
         public string residentSectionText { get; set; }
@@ -81,7 +81,7 @@ namespace CaselyData {
                             SoftSignoutData sft = new SoftSignoutData() {
                                 caseNum = formatCaseNumber((string)r["ORDERNUMBER"]),
                                 registrationDateTime = (string)r["ORDERREGISTRATIONDATE"],
-                                enteredDateTime = (string)r["ENTEREDDATE"],
+                                enteredDateTime = DateTime.Parse((string)r["ENTEREDDATE"]),
                                 residentID = (string)r["USERID"],
                                 residentReportSectionCode = (string)r["REPORTSECTIONCODE"],
                                 residentSectionText = RichTextToPlainText((string)r["USERREPORT"]),
@@ -126,7 +126,7 @@ namespace CaselyData {
                 };
 
                 CaseEntry resCE = new CaseEntry() {
-                    DateTimeModifiedObject = DateTime.Parse(firstSoftRow.enteredDateTime),
+                    DateTimeModifiedObject =firstSoftRow.enteredDateTime,
                     CaseNumber = firstSoftRow.caseNum,
                     Interpretation = residentEntry.InterpretationText,
                     Result = residentEntry.ResultText,
@@ -136,7 +136,7 @@ namespace CaselyData {
                 };
 
                 CaseEntry attendCE = new CaseEntry() {
-                    DateTimeModifiedObject = DateTime.Parse(firstSoftRow.enteredDateTime),
+                    DateTimeModifiedObject = firstSoftRow.enteredDateTime,
                     CaseNumber = firstSoftRow.caseNum,
                     Interpretation = attendingEntry.InterpretationText,
                     Result = attendingEntry.ResultText,
