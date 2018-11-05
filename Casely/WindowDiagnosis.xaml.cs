@@ -25,6 +25,8 @@ namespace Casely {
         private List<string> suggestionOrganSystem = new List<string>();
         private List<string> suggestionDiagnosis = new List<string>();
         private List<string> suggestionCategory = new List<string>();
+        private List<string> suggestionService = new List<string>();
+        private List<string> suggestionEvaluation = new List<string>();
         private ObservableCollection<CaseEntry> listCEfilterDate = new ObservableCollection<CaseEntry>();
 
         public WindowDiagnosis() {
@@ -39,6 +41,8 @@ namespace Casely {
             RefreshCaseList();
 
             if (cmbCaseNumber.Items.Count > 0) cmbCaseNumber.SelectedIndex = 0;
+            cmbService.ItemsSource = suggestionService;
+            cmbSelfEvaluation.ItemsSource = suggestionEvaluation;
         }
 
 
@@ -80,15 +84,24 @@ namespace Casely {
             standardSuggestCategory.Add("Malignant");
             standardSuggestCategory.Add("Infectious");
             standardSuggestCategory.Add("Normal");
-            suggestionCategory = new List<string>(SqliteDataAcces.GetListCategory());
+            suggestionCategory = new List<string>(SqliteDataAcces.GetUniqueDiagnosticCategory());
             foreach (string st in standardSuggestCategory) {
                 if (suggestionCategory.IndexOf(st) == -1) {
                     suggestionCategory.Add(st);
                 }
             }
+            
 
-            suggestionDiagnosis = new List<string>(SqliteDataAcces.GetListDiagnosis());
+            suggestionDiagnosis = new List<string>(SqliteDataAcces.GetUniqueDiagnosis());
             suggestionOrgan = new List<string>(SqliteDataAcces.GetListOrgan());
+            suggestionEvaluation = new List<string>(SqliteDataAcces.GetUniqueEvaluations());
+            suggestionService = new List<string>(SqliteDataAcces.GetUniqueService());
+            suggestionEvaluation.Add("1) Perfect");
+            suggestionEvaluation.Add("2) Style difference");
+            suggestionEvaluation.Add("2) Gramme and spelling");
+            suggestionEvaluation.Add("3) Minor diagnostic differences");
+            suggestionEvaluation.Add("4) Major diagnostic differences");
+
         }
 
 
@@ -172,7 +185,12 @@ namespace Casely {
                     partsToAdd.Add(newPartDiagnosis);
                 } 
             }
-            SqliteDataAcces.InsertNewPartDiagnosisEntry(partsToAdd, new PathCase() { CaseNumber = cmbCaseNumber.Text });
+            PathCase pathCase = new PathCase() { CaseNumber = cmbCaseNumber.SelectedValue.ToString(), Service = cmbService.Text, Evaluation = cmbSelfEvaluation.Text};
+            // save the assigned diagnosis to the case
+            SqliteDataAcces.InsertNewPartDiagnosisEntry(partsToAdd, pathCase);
+
+            // Save the evaluation and other data for the case, essentially completing it.
+            SqliteDataAcces.UpdateCompletedCase(pathCase);
             cmbCaseNumber.Text = SqliteDataAcces.CaseNumberPrefix;
             refreshCaseData();
             RefreshCaseList();
@@ -199,13 +217,14 @@ namespace Casely {
 
                 // gets the case entrys, groups them by author and then selects the last two author entries to compare.
                 var listCaseToCompare = listCase.OrderByDescending(x => x.DateTimeModifiedObject).GroupBy(t => t.AuthorID).Select(x => x.FirstOrDefault()).ToList();
-                CaseEntry attendingEntry = listCaseToCompare[0];
-                CaseEntry residentEntry= listCaseToCompare[1];
                 // if we only have
                 if (listCaseToCompare.Count < 2) {
                     wbDiffText.Text += "<h3>Need at least a report from two different authors to compare</h3>";
                     return;
                 }
+                CaseEntry attendingEntry = listCaseToCompare[0];
+                CaseEntry residentEntry= listCaseToCompare[1];
+               
 
                 html += DiffToHTML(residentEntry.Interpretation, attendingEntry.Interpretation, "Interpretation");
                 html += DiffToHTML(residentEntry.Material, attendingEntry.Material, "Material");
@@ -215,12 +234,11 @@ namespace Casely {
                 html += DiffToHTML(residentEntry.TumorSynoptic, attendingEntry.TumorSynoptic, "Tumor Synoptic");
                 html += DiffToHTML(residentEntry.Comment, attendingEntry.Comment, "Comment");   
                 html = "<head><style>INS {background-color: powderblue;}DEL  {color: #ff5151;}</style></head>" + html;
-                btnSkipDiagnosis.IsEnabled = true;
+               
                 wbDiffText.Text = html;
             } else {
                 wbDiffText.Text = "";
                 clearDiagnosisControls();
-                btnSkipDiagnosis.IsEnabled = false;
             }
         }
 
@@ -236,21 +254,6 @@ namespace Casely {
         private void cmbCaseNumber_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             var x = cmbCaseNumber.SelectedValue;
             refreshCaseData();
-        }
-
-        private void btnSkipDiagnosis_Click(object sender, RoutedEventArgs e) {
-            DateTime currentTime = DateTime.Now;
-            PartDiagnosis pd = new PartDiagnosis() {
-                CaseNumber = cmbCaseNumber.SelectedValue.ToString(),
-                DateModifiedString = currentTime.ToString("yyyy-MM-dd"),
-                TimeModifiedString = currentTime.ToString("HH:mm:ss"),
-                Part = "A"
-            };
-            List<PartDiagnosis> listPD = new List<PartDiagnosis>();
-            listPD.Add(pd);
-            SqliteDataAcces.InsertNewPartDiagnosisEntry(listPD, new PathCase() { CaseNumber = cmbCaseNumber.SelectedValue.ToString() });
-            refreshCaseData();
-            RefreshCaseList();
         }
 
         private void cmbCaseNumber_Loaded(object sender, RoutedEventArgs e) {

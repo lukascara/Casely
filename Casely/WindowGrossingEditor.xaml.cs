@@ -39,8 +39,8 @@ namespace Casely {
         }
 
         public void refreshSuggestions() {
-            suggestSpecimen = new List<string>(SqliteDataAcces.GetListSpecimen());
-            suggestedProcedure = new List<string>(SqliteDataAcces.GetListProcedure());
+            suggestSpecimen = new List<string>(SqliteDataAcces.GetUniqueSpecimen());
+            suggestedProcedure = new List<string>(SqliteDataAcces.GetUniqueProcedure());
         }
 
 

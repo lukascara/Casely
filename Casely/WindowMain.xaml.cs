@@ -63,7 +63,8 @@ namespace Casely {
 
         private void MenuItem_Click_1(object sender, RoutedEventArgs e) {
             OpenFileDialog theDialog = new OpenFileDialog();
-            theDialog.Title = "Open Tab Separated File";
+            theDialog.Title = "Open Excel File";
+            theDialog.Filter = "Excel files (.xls)|*.xls";
             if (theDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 try {
                     var softText = File.ReadAllText(theDialog.FileName);

@@ -69,6 +69,14 @@ CREATE TABLE IF NOT EXISTS `staff` (
 	`role`	TEXT
 );
 
+CREATE TABLE IF NOT EXISTS `evaluation` (
+	`evaluation`	TEXT UNIQUE PRIMARY KEY ON CONFLICT IGNORE
+);
+
+CREATE TABLE IF NOT EXISTS `service` (
+	`service`	TEXT UNIQUE PRIMARY KEY ON CONFLICT IGNORE
+);
+
 CREATE TRIGGER insert_part_entry_author AFTER INSERT  ON part_entry
 BEGIN
 INSERT INTO staff (author_id) VALUES (new.author_id);
@@ -146,6 +154,16 @@ END;
 CREATE TRIGGER insert_part_entry_case_number AFTER INSERT ON part_entry
 BEGIN
 INSERT INTO path_case (case_number) VALUES (new.case_number);
+END;
+
+CREATE TRIGGER insert_path_case_case_number AFTER UPDATE ON path_case
+BEGIN
+INSERT INTO evaluation (evaluation) VALUES (new.evaluation);
+END;
+
+CREATE TRIGGER insert_service_path_case AFTER UPDATE ON path_case
+BEGIN
+INSERT INTO service (service) VALUES (new.service);
 END;
 	";
 

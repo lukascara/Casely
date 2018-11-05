@@ -15,25 +15,25 @@
                     <RowDefinition Height="60*"/>
                     <RowDefinition Height="359*"/>
                 </Grid.RowDefinitions>
-                <ComboBox x:Name="cmbCaseNumber" HorizontalAlignment="Left" Margin="77.342,16.56,0,21.48" Width="319.27"  TabIndex="1" SelectionChanged="cmbCaseNumber_SelectionChanged" Loaded="cmbCaseNumber_Loaded" >
+                <ComboBox x:Name="cmbCaseNumber" HorizontalAlignment="Left" Margin="10.001,18.669,0,19.371" Width="319.27"  TabIndex="1" SelectionChanged="cmbCaseNumber_SelectionChanged" Loaded="cmbCaseNumber_Loaded" >
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding CaseNumber}"></TextBlock>
-                                <TextBlock Text="-"></TextBlock>
-                                <TextBlock Text="{Binding Material}"></TextBlock>
+                                <TextBlock Text="{Binding CaseNumber}"/>
+                                <TextBlock Text="-"/>
+                                <TextBlock Text="{Binding Material}"/>
                             </StackPanel>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <Label Content="Case#" HorizontalAlignment="Left" Margin="30.345,16.56,0,17.48" d:LayoutOverrides="Height"/>
-                <Label Content="Load # of past days" Margin="415.612,15.52,605.118,18.52"/>
+                <Label Content="Load # of past days" Margin="334.271,15.56,686.459,18.48"/>
 
-                <xctk:IntegerUpDown x:Name="txtDaysToLoad" HorizontalAlignment="Right" Margin="0,19.52,559.118,20.48" Value="7" DefaultValue="7" TabIndex="2" IsTabStop="False" Minimum="0" />
-                <Button x:Name="btnSubmit" Content="Submit Diagnosis" HorizontalAlignment="Right" Margin="0,15.56,146.118,24.48" Click="btnSubmitDiagnosis_Click" Width="141" TabIndex="3" IsTabStop="False"/>
-                <CheckBox x:Name="chkFilterCompleted" Content="List uncompleted only" Margin="77.341,1.461,0,0" VerticalAlignment="Top" Click="chkFilterCompleted_Click" HorizontalAlignment="Left"/>
-                <Button x:Name="btnSkipDiagnosis" Content="No Diagnosis" HorizontalAlignment="Right" Margin="0,16.6,30.118,23.44" Width="111" TabIndex="3" IsTabStop="False" ToolTip="This will remove the case from the list of cases that do not have a diagnosis by inserting a blank entry into the database" Click="btnSkipDiagnosis_Click"/>
-                <Button x:Name="btnRefresh" Content="Refresh List" HorizontalAlignment="Right" Margin="0,19.56,481.118,20.48" Width="73" TabIndex="3" IsTabStop="False" Click="btnRefresh_Click"/>
+                <xctk:IntegerUpDown x:Name="txtDaysToLoad" HorizontalAlignment="Right" Margin="0,19.52,645.459,20.48" Value="7" DefaultValue="7" TabIndex="5" IsTabStop="False" Minimum="0" />
+                <Button x:Name="btnSubmit" Content="Submit Diagnosis" HorizontalAlignment="Right" Margin="0,20.669,25.118,19.371" Click="btnSubmitDiagnosis_Click" Width="141" TabIndex="4" IsTabStop="False"/>
+                <CheckBox x:Name="chkFilterCompleted" Content="List uncompleted only" Margin="10,3.57,0,0" VerticalAlignment="Top" Click="chkFilterCompleted_Click" HorizontalAlignment="Left"/>
+                <Button x:Name="btnRefresh" Content="R" HorizontalAlignment="Right" Margin="0,18.56,623.459,21.48" Width="17" TabIndex="3" IsTabStop="False" Click="btnRefresh_Click"/>
+                <xctk:WatermarkComboBox x:Name="cmbSelfEvaluation" Watermark="Self-evaulation" HorizontalAlignment="Left" Margin="703,18.669,0,0" VerticalAlignment="Top" Width="183" IsEditable="True" TabIndex="3"/>
+                <xctk:WatermarkComboBox x:Name="cmbService" Watermark="Service" HorizontalAlignment="Left" Margin="564,20.669,0,0" VerticalAlignment="Top" Width="120" IsEditable="True" TabIndex="2"/>
 
             </Grid>
 
@@ -41,7 +41,7 @@
                 <StackPanel x:Name="spPartDiagnosis"  Margin="0,5,10,10" HorizontalAlignment="Right" Width="524">
                     <Button x:Name="btnAddDiagnosis" Width="96.5" Content="Add Diagnosis" TabIndex="2" HorizontalAlignment="Center" Click="btnAddDiagnosis_Click"/>
                 </StackPanel>
-                <WPF:HtmlPanel x:Name="wbDiffText" Margin="10,5,539,10" BorderBrush="#FDA6A6A6" BorderThickness="3"/>
+                <WPF:HtmlPanel x:Name="wbDiffText" Margin="10,10,539,10" BorderBrush="#FDA6A6A6" BorderThickness="3"/>
 
             </Grid>
         </WrapPanel>

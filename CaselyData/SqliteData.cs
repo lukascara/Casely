@@ -14,6 +14,7 @@ namespace CaselyData {
     public class PathCase {
         public string CaseNumber { get; set; }
         public string Service { get; set; }
+        public string Evaluation { get; set; }
     }
     public class CaseEntry {
         string result = "";
@@ -186,6 +187,15 @@ namespace CaselyData {
             }
         }
 
+        public static void UpdateCompletedCase(PathCase pathCase) {
+            using (var cn = new SQLiteConnection(DbConnectionString)) {
+                var sql = @"UPDATE path_case 
+                                SET case_number = @CaseNumber, service = @Service, evaluation = @Evaluation
+                                WHERE case_number = @CaseNumber;";
+                cn.Execute(sql, pathCase);
+            }
+        }
+
         public static void InsertNewPartDiagnosisEntry(List<PartDiagnosis> ce, PathCase pathCase) {
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 var sql = @"INSERT INTO path_case (case_number, service)
@@ -275,6 +285,7 @@ namespace CaselyData {
                 cn.Execute(sql, parts);
             }
         }
+
 
         public static List<PartEntry> GetListPartEntryLatestVersion(string caseNumber) {
             List<PartEntry> parts = getListPartEntry(caseNumber);
@@ -408,7 +419,7 @@ namespace CaselyData {
         }
 
 
-        public static List<string> GetListProcedure() {
+        public static List<string> GetUniqueProcedure() {
             var sql = @"SELECT procedure FROM procedure;";
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 var output = cn.Query<string>(sql, new DynamicParameters()).ToList();
@@ -416,7 +427,7 @@ namespace CaselyData {
             }
         }
 
-        public static List<string> GetListSpecimen() {
+        public static List<string> GetUniqueSpecimen() {
             var sql = @"SELECT specimen FROM specimen;";
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 var output = cn.Query<string>(sql, new DynamicParameters()).ToList();
@@ -424,7 +435,7 @@ namespace CaselyData {
             }
         }
 
-        public static List<string> GetListCategory() {
+        public static List<string> GetUniqueDiagnosticCategory() {
             var sql = @"SELECT category FROM diagnosis_category;";
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 var output = cn.Query<string>(sql, new DynamicParameters()).ToList();
@@ -432,13 +443,30 @@ namespace CaselyData {
             }
         }
 
-        public static List<string> GetListDiagnosis() {
+        public static List<string> GetUniqueDiagnosis() {
             var sql = @"SELECT diagnosis FROM diagnosis;";
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 var output = cn.Query<string>(sql, new DynamicParameters()).ToList();
                 return output;
             }
         }
+
+        public static List<string> GetUniqueEvaluations() {
+            var sql = @"SELECT evaluation FROM evaluation;";
+            using (var cn = new SQLiteConnection(DbConnectionString)) {
+                var output = cn.Query<string>(sql, new DynamicParameters()).ToList();
+                return output;
+            }
+        }
+
+        public static List<string> GetUniqueService() {
+            var sql = @"SELECT service FROM service;";
+            using (var cn = new SQLiteConnection(DbConnectionString)) {
+                var output = cn.Query<string>(sql, new DynamicParameters()).ToList();
+                return output;
+            }
+        }
+
 
         public static List<string> GetListOrgan() {
             var sql = @"SELECT organ FROM organ;";
@@ -497,7 +525,10 @@ namespace CaselyData {
         public static void InsertNewPathCase(PathCase pathCase) {
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 var sql = @"INSERT INTO path_case (case_number, service) VALUES (@CaseNumber, @Service);";
-                var result = cn.Execute(sql, pathCase );
+                DynamicParameters dp = new DynamicParameters();
+                dp.Add("@CaseNumber", pathCase.CaseNumber, System.Data.DbType.String);
+                dp.Add("@Service", pathCase.Service, System.Data.DbType.String);
+                var result = cn.Execute(sql, dp);
             }
         }
 
