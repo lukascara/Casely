@@ -8,21 +8,21 @@
         Title="Casely" Height="450" Width="800" Loaded="Window_Loaded">
     <Grid>
         <Button   x:Name="btnGrossing" Content="Grossing" Margin="10,65.724,0,0" Height="58.527" Visibility="Hidden" VerticalAlignment="Top" Click="btnGrossing_Click" HorizontalAlignment="Left" Width="283.835"/>
-        <Button x:Name="btnSignout" Content="Signout" Margin="10,110.086,0,0" Click="btnSignout_Click" Height="59.165" VerticalAlignment="Top" HorizontalAlignment="Left" Width="283.835"/>
-        <TextBlock HorizontalAlignment="Left" Margin="33.293,70.724,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="275.804" Text="What would you like to track today?" FontSize="14"/>
-        <Button x:Name="btnCompare" Content="Check Reports" Margin="330.262,110.086,229.903,0" Click="btnCompare_Click" Height="59.165" VerticalAlignment="Top"/>
-        <TextBlock HorizontalAlignment="Left" Margin="338.293,64,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="275.804" Text="What analysis would you like to do?" FontSize="14"/>
-        <Button x:Name="btnSearch" Content="Search Reports" Margin="330.262,174.251,229.903,0" Click="btnCompare_Click" Height="59.165" VerticalAlignment="Top"/>
-        <Button x:Name="btnDiagnosis" Content="Diagnosis" Margin="10,174.251,0,185.584" Click="btnDiagnosis_Click" HorizontalAlignment="Left" Width="283.835"/>
+        <Button Visibility="Hidden" x:Name="btnSignout" Content="Signout" Margin="10,110.086,0,0" Click="btnSignout_Click" Height="59.165" VerticalAlignment="Top" HorizontalAlignment="Left" Width="283.835"/>
+        <TextBlock HorizontalAlignment="Left" Margin="144.293,25.34,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="275.804" FontSize="14"><Run Text="Database path"/><LineBreak/><Run/></TextBlock>
+        <Button Visibility="Hidden" x:Name="btnCompare" Content="Check Reports" Margin="330.262,110.086,229.903,0" Click="btnCompare_Click" Height="59.165" VerticalAlignment="Top"/>
+        <TextBlock Visibility="Hidden" HorizontalAlignment="Left" Margin="338.293,64,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="275.804" Text="What analysis would you like to do?" FontSize="14"/>
+        <Button Visibility="Hidden" x:Name="btnSearch" Content="Search Reports" Margin="330.262,174.251,229.903,0" Click="btnCompare_Click" Height="59.165" VerticalAlignment="Top"/>
+        <Button x:Name="btnDiagnosis" Content="Check Reports" Margin="10,94.344,0,265.491" Click="btnDiagnosis_Click" HorizontalAlignment="Left" Width="283.835"/>
         <Menu Height="19" Margin="0,0,10,0" VerticalAlignment="Top">
             <MenuItem Header="File">
                 <MenuItem Header="Import Soft Path Tab Separated Data" Click="MenuItem_Click_1"></MenuItem>
             </MenuItem>
         </Menu>
-        <ListBox x:Name="lbRecentlyAdded" Height="144.419" Margin="10,0" VerticalAlignment="Bottom"/>
-        <TextBlock HorizontalAlignment="Left" Margin="10,0,0,147.799" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="275.804" Text="Recently added cases" FontSize="14" d:LayoutOverrides="HorizontalAlignment"/>
+        <ListBox Visibility="Hidden" x:Name="lbRecentlyAdded" Height="144.419" Margin="10,0" VerticalAlignment="Bottom"/>
+        <TextBlock Visibility="Hidden" HorizontalAlignment="Left" Margin="10,0,0,147.799" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="275.804" Text="Recently added cases" FontSize="14" d:LayoutOverrides="HorizontalAlignment"/>
         <Button x:Name="btnOpenDatabase" Content="Open Database" HorizontalAlignment="Left" Margin="33.293,24,0,0" VerticalAlignment="Top" Width="106" Click="btnOpenDatabase_Click"/>
-        <TextBlock x:Name="tbDBPath" HorizontalAlignment="Left" Margin="144.293,24,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="Database path"/><LineBreak/><Run/></TextBlock>
+        <TextBlock x:Name="tbDBPath" HorizontalAlignment="Left" Margin="242.293,26,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="Database path"/><LineBreak/><Run/></TextBlock>
         <Button x:Name="btnCreateDatabase" Content="Create Database" HorizontalAlignment="Left" Margin="33.293,48.96,0,0" VerticalAlignment="Top" Width="106" Click="btnCreateDatabase_Click"/>
 
     </Grid>

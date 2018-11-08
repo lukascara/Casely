@@ -324,8 +324,14 @@ namespace CaselyData {
             }
         }
 
+        /// <summary>
+        /// Returns a list of all case entries entered after the supplied start_date.
+        /// </summary>
+        /// <param name="startDate"></param>
+        /// <returns></returns>
         public static List<CaseEntry> GetListCaseEntriesPastDays(DateTime startDate) {
-            var sql = @"SELECT case_number AS CaseNumber,
+            var sql = @"SELECT * FROM (SELECT case_number AS CaseNumber,
+                        author_id AS AuthorID,
 	                    date_modified AS DateModifiedString,
 	                    time_modified AS TimeModifiedString,
 	                    tumor_synoptic AS TumorSynoptic,
@@ -335,8 +341,10 @@ namespace CaselyData {
 	                    history,
 	                    interpretation,
 	                    gross,
-	                    microscopic FROM case_entry WHERE date_modified >= @startDate
-                        GROUP BY case_number ";
+	                    microscopic FROM case_entry 
+                        WHERE date_modified >= 2018-10-30
+                        ORDER BY date_modified ASC,
+                                 time_modified ASC) GROUP BY CaseNumber";
             var strStartDate = startDate.ToString("yyyy-MM-dd");
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 DynamicParameters dp = new DynamicParameters();
@@ -384,6 +392,18 @@ namespace CaselyData {
                 DynamicParameters dp = new DynamicParameters();
                 dp.Add("@caseNumber", caseNumber, System.Data.DbType.String);
                 var output = cn.Query<CaseEntry>(sql, dp).ToList();
+                return output;
+            }
+        }
+
+        public static PathCase getPathCase(string caseNumber) {
+            var sql = @"SELECT 
+	                    case_number AS CaseNumber,
+	                   evaluation, service FROM path_case WHERE case_number = @caseNumber;";
+            using (var cn = new SQLiteConnection(DbConnectionString)) {
+                DynamicParameters dp = new DynamicParameters();
+                dp.Add("@caseNumber", caseNumber, System.Data.DbType.String);
+                var output = cn.Query<PathCase>(sql, dp).ToList().FirstOrDefault();
                 return output;
             }
         }
@@ -499,6 +519,7 @@ namespace CaselyData {
             }
             set {
                 Properties.Settings.Default.DatabasePath = value;
+                Properties.Settings.Default.Save();
             }
 
         }
@@ -508,8 +529,13 @@ namespace CaselyData {
         /// </summary>
         public static void CreateDatabase() {
             if (!(File.Exists(DBPath))) {
-               var f = File.Create(DBPath);
-                f.Close();
+                if (Directory.Exists(Path.GetDirectoryName(DBPath))) {
+                    var f = File.Create(DBPath);
+                    f.Close();
+                } else {
+                    System.Windows.Forms.MessageBox.Show($"Could not create database at {SqliteDataAcces.DBPath}. Does the folder exist?","",System.Windows.Forms.MessageBoxButtons.OK,System.Windows.Forms.MessageBoxIcon.Error);
+                }
+              
             }
             
             using (var cn = new SQLiteConnection(DbConnectionString)) {

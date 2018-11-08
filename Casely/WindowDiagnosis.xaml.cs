@@ -96,11 +96,13 @@ namespace Casely {
             suggestionOrgan = new List<string>(SqliteDataAcces.GetListOrgan());
             suggestionEvaluation = new List<string>(SqliteDataAcces.GetUniqueEvaluations());
             suggestionService = new List<string>(SqliteDataAcces.GetUniqueService());
-            suggestionEvaluation.Add("1) Perfect");
-            suggestionEvaluation.Add("2) Style difference");
-            suggestionEvaluation.Add("2) Gramme and spelling");
-            suggestionEvaluation.Add("3) Minor diagnostic differences");
-            suggestionEvaluation.Add("4) Major diagnostic differences");
+            var listeval = new List<string>() { "1) Perfect", "2) Style difference" ,
+                "2) Grammar and spelling", "3) Minor diagnostic differences","4) Major diagnostic differences"};
+            foreach (var lv in listeval) {
+                if (!(suggestionEvaluation.Contains(lv))) {
+                    suggestionEvaluation.Add(lv);
+                }
+            }
 
         }
 
@@ -191,7 +193,8 @@ namespace Casely {
 
             // Save the evaluation and other data for the case, essentially completing it.
             SqliteDataAcces.UpdateCompletedCase(pathCase);
-            cmbCaseNumber.Text = SqliteDataAcces.CaseNumberPrefix;
+            cmbSelfEvaluation.Text = "";
+
             refreshCaseData();
             RefreshCaseList();
         }
@@ -203,6 +206,13 @@ namespace Casely {
         private void refreshCaseData() {
             RefreshComparison();
             RefreshPartDiagnosis();
+            var cn = cmbCaseNumber.SelectedValue;
+            if (cn != null) {
+                var pathCase = SqliteDataAcces.getPathCase(cn.ToString());
+                cmbSelfEvaluation.Text = pathCase.Evaluation;
+                cmbService.Text = pathCase.Service;
+
+            }
         }
 
 
@@ -252,7 +262,8 @@ namespace Casely {
        
        
         private void cmbCaseNumber_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            var x = cmbCaseNumber.SelectedValue;
+            
+
             refreshCaseData();
         }
 

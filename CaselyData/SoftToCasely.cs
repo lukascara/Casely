@@ -79,17 +79,17 @@ namespace CaselyData {
 
                         foreach (DataRow r in table.Rows) {
                             SoftSignoutData sft = new SoftSignoutData() {
-                                caseNum = formatCaseNumber((string)r["ORDERNUMBER"]),
-                                registrationDateTime = (string)r["ORDERREGISTRATIONDATE"],
-                                enteredDateTime = DateTime.Parse((string)r["ENTEREDDATE"]),
-                                residentID = (string)r["USERID"],
-                                residentReportSectionCode = (string)r["REPORTSECTIONCODE"],
-                                residentSectionText = RichTextToPlainText((string)r["USERREPORT"]),
+                                caseNum = formatCaseNumber(r["ORDERNUMBER"].ToString() ?? string.Empty),
+                                registrationDateTime = r["ORDERREGISTRATIONDATE"].ToString() ?? string.Empty,
+                                enteredDateTime = DateTime.Parse(r["ENTEREDDATE"].ToString() ?? string.Empty),
+                                residentID = r["USERID"].ToString() ?? string.Empty,
+                                residentReportSectionCode = r["REPORTSECTIONCODE"].ToString() ?? string.Empty,
+                                residentSectionText = RichTextToPlainText(r["USERREPORT"].ToString()),
                                 attendingInterpretationText = RichTextToPlainText(r["FINALDIAGNOSISRICHTEXT"].ToString() ?? string.Empty),
                                 attendingResultText = RichTextToPlainText(r["FINALGROSSANDMICRORICHTEXT"].ToString() ?? string.Empty),
                                 attendingCommentText = RichTextToPlainText(r["FINALCOMMENTRICHTEXT"].ToString() ?? string.Empty),
                                 attendingSynopticText = RichTextToPlainText(r["FINALSYNOPTICRICHTEXT"].ToString() ?? string.Empty),
-                                attendingID = (string)r["SIGNOUTPATHOLOGIST"].ToString() ?? string.Empty
+                                attendingID = r["SIGNOUTPATHOLOGIST"].ToString() ?? string.Empty
                             };
                             listSoftData.Add(sft);
                         }
@@ -136,7 +136,7 @@ namespace CaselyData {
                 };
 
                 CaseEntry attendCE = new CaseEntry() {
-                    DateTimeModifiedObject = firstSoftRow.enteredDateTime,
+                    DateTimeModifiedObject = firstSoftRow.enteredDateTime.AddHours(1), // make the attending report added later than the resident report
                     CaseNumber = firstSoftRow.caseNum,
                     Interpretation = attendingEntry.InterpretationText,
                     Result = attendingEntry.ResultText,

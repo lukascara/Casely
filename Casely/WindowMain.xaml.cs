@@ -43,6 +43,7 @@ namespace Casely {
         }
 
         private void btnDiagnosis_Click(object sender, RoutedEventArgs e) {
+            connectToDB();
             WindowDiagnosis wn = new WindowDiagnosis();
             wn.ShowDialog();
         }
@@ -58,7 +59,7 @@ namespace Casely {
                 if (dialogResult == MessageBoxResult.Yes) {
                     SqliteDataAcces.CreateDatabase();
                 }
-            }
+            } 
         }
 
         private void MenuItem_Click_1(object sender, RoutedEventArgs e) {
