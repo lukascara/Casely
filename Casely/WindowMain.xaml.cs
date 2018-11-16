@@ -69,25 +69,27 @@ namespace Casely {
             theDialog.Filter = "Excel files (.xls)|*.xls";
             if (theDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 try {
-
-                    var sw = new Stopwatch();
-                    sw.Start();
+                    
                     var softText = File.ReadAllText(theDialog.FileName);
                     CaselyData.SoftToCaselyConverter sc = new SoftToCaselyConverter();
                     var importedData = sc.importSoftPathCSVData(theDialog.FileName);
-
-                    sw.Stop();
+                    
                     var pathCaseEntriesToAdd = new List<CaseEntry>();
+                    int casesImportedCount = 0;
+                    int casesAlreadImported = 0;
                     foreach(var d in importedData) {
                         // Import the cases only if there is not already a report version by both the attending and the resident.
                         if (!(SqliteDataAcces.HasMultipleAuthorEntries(d.CaseNumber))) {
                             pathCaseEntriesToAdd.Add(d);
+                            casesImportedCount++;
+                        } else {
+                            casesAlreadImported++;
                         }
                     }
                     SqliteDataAcces.BatchInsertNewCaseEntry(pathCaseEntriesToAdd);
                    
                     
-                    System.Windows.Forms.MessageBox.Show($"Data imported in {sw.ElapsedMilliseconds}!");
+                    System.Windows.Forms.MessageBox.Show($"{casesImportedCount/2} cases imported. {casesAlreadImported} already existed in Casely.");
                     
                        
                 } catch (Exception ex) {

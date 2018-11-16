@@ -79,9 +79,6 @@ namespace CaselyData {
                             }
                         });
                         var table = result.Tables[0];
-
-                        var sw = new Stopwatch();
-                        sw.Start();
                         foreach (DataRow r in table.Rows) {
                             string frmCaseNum = formatCaseNumber(r["ORDERNUMBER"].ToString() ?? string.Empty);
                             SoftSignoutData sft = new SoftSignoutData() {
@@ -99,9 +96,7 @@ namespace CaselyData {
                             };
                             listSoftData.Add(sft);
                         }
-
-                        sw.Stop();
-                        MessageBox.Show($"Importing {sw.ElapsedMilliseconds}");
+                        
 
                     }
                 }
