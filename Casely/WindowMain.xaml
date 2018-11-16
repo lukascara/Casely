@@ -17,6 +17,7 @@
         <Menu Height="19" Margin="0,0,10,0" VerticalAlignment="Top">
             <MenuItem Header="File">
                 <MenuItem Header="Import Soft Path Tab Separated Data" Click="MenuItem_Click_1"></MenuItem>
+                <MenuItem Header="License" Click="MenuShowLicense_Click"></MenuItem>
             </MenuItem>
         </Menu>
         <ListBox Visibility="Hidden" x:Name="lbRecentlyAdded" Height="144.419" Margin="10,0" VerticalAlignment="Bottom"/>
