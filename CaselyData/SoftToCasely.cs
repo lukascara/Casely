@@ -58,7 +58,8 @@ namespace CaselyData {
 
 
     public class SoftToCaselyConverter {
-        
+        RichTextBox rtx = new RichTextBox(); // this is used for rich text conversion. Is a global variable so we only create one instance of it.
+
         public List<CaseEntry> importSoftPathCSVData(string pathToSoftData) {
             List<CaseEntry> caseEntries = new List<CaseEntry>();
             List<SoftSignoutData> listSoftData = new List<SoftSignoutData>();
@@ -66,6 +67,8 @@ namespace CaselyData {
             // Extract the CSV data that was export from SoftPath.
             try {
                 using (var stream = File.Open(pathToSoftData, FileMode.Open, FileAccess.Read)) {
+
+                    
                     using (var reader = ExcelReaderFactory.CreateReader(stream)) {
                         var result = reader.AsDataSet(new ExcelDataSetConfiguration() {
                             UseColumnDataType = true,
@@ -77,9 +80,12 @@ namespace CaselyData {
                         });
                         var table = result.Tables[0];
 
+                        var sw = new Stopwatch();
+                        sw.Start();
                         foreach (DataRow r in table.Rows) {
+                            string frmCaseNum = formatCaseNumber(r["ORDERNUMBER"].ToString() ?? string.Empty);
                             SoftSignoutData sft = new SoftSignoutData() {
-                                caseNum = formatCaseNumber(r["ORDERNUMBER"].ToString() ?? string.Empty),
+                                caseNum = frmCaseNum,
                                 registrationDateTime = r["ORDERREGISTRATIONDATE"].ToString() ?? string.Empty,
                                 enteredDateTime = DateTime.Parse(r["ENTEREDDATE"].ToString() ?? string.Empty),
                                 residentID = r["USERID"].ToString() ?? string.Empty,
@@ -94,12 +100,16 @@ namespace CaselyData {
                             listSoftData.Add(sft);
                         }
 
+                        sw.Stop();
+                        MessageBox.Show($"Importing {sw.ElapsedMilliseconds}");
 
                     }
                 }
+
             } catch (Exception ex) {
                 throw new Exception("Cannot open file" + ex.Message);
             }
+
             // get all the distinct case numbers that were in the softpath export data
             var distCaseNums = listSoftData.GroupBy(x => x.caseNum).Select(y => y.First()).Distinct().Select(x => x.caseNum);
             foreach (var c in distCaseNums) {
@@ -163,12 +173,11 @@ namespace CaselyData {
         }
             
         /// <summary>
-        /// 
+        /// Converts the rich text into a string. A slow function since it must use the rich textbox control.
         /// </summary>
         /// <param name="richTxt"></param>
         /// <returns></returns>
         public string RichTextToPlainText(string richTxt) {
-            RichTextBox rtx = new RichTextBox();
             rtx.Rtf = richTxt;
             return rtx.Text;
         }        

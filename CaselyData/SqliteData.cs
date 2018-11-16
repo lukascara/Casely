@@ -53,6 +53,12 @@ namespace CaselyData {
                 TimeModifiedString = value.TimeOfDay.ToString();
             }
         }
+
+        public string ShortDateModifiedString {
+            get {
+                return DateTimeModifiedObject.ToShortDateString();
+            }
+        }
         public string AuthorID { get; set; }
         public List<PartEntry> ListPartEntry { get; set; }
 
@@ -187,6 +193,26 @@ namespace CaselyData {
             }
         }
 
+        public static void BatchInsertNewCaseEntry(List<CaseEntry> listCasesToInsert) {
+            
+                using (var cn = new SQLiteConnection(DbConnectionString)) {
+                    cn.Open();
+                    var sqliteTransaction = cn.BeginTransaction();
+                    foreach (var ce in listCasesToInsert) {
+                        var sql = @"INSERT INTO path_case (case_number)
+                                 VALUES (@CaseNumber);
+
+                                INSERT INTO case_entry (author_id, case_number, date_modified,
+                                       time_modified, tumor_synoptic, comment, result, material, history, interpretation, gross, microscopic)
+                                VALUES (@AuthorID, @CaseNumber,@DateModifiedString,@TimeModifiedString,@TumorSynoptic, @Comment, @Result, @Material, @History, 
+                                        @Interpretation, @Gross, @Microscopic);";
+                        cn.Execute(sql, ce);
+                    }
+                    sqliteTransaction.Commit();
+                
+            }
+        }
+
         public static void UpdateCompletedCase(PathCase pathCase) {
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 var sql = @"UPDATE path_case 
@@ -255,6 +281,17 @@ namespace CaselyData {
                 return entryExists;
             }
                
+        }
+
+        public static bool CaseEntryEvaluated(string caseNumber) {
+             using (var cn = new SQLiteConnection(DbConnectionString)) {
+                var sql = @"select count(*) from path_case where case_number = @caseNumber and evaluation not NULL;";
+                DynamicParameters dp = new DynamicParameters();
+                dp.Add("@caseNumber", caseNumber, System.Data.DbType.String);
+                int v = cn.Query<int>(sql, dp).FirstOrDefault();
+                bool entryExists = v >= 1 ? true : false;
+                return entryExists;
+            }
         }
 
         /// <summary>

@@ -27,7 +27,7 @@ namespace Casely {
         private List<string> suggestionCategory = new List<string>();
         private List<string> suggestionService = new List<string>();
         private List<string> suggestionEvaluation = new List<string>();
-        private ObservableCollection<CaseEntry> listCEfilterDate = new ObservableCollection<CaseEntry>();
+        private ObservableCollection<CaseEntry> listFilteredCaseEntry = new ObservableCollection<CaseEntry>();
 
         public WindowDiagnosis() {
             InitializeComponent();
@@ -36,7 +36,7 @@ namespace Casely {
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
-            cmbCaseNumber.ItemsSource = listCEfilterDate;
+            cmbCaseNumber.ItemsSource = listFilteredCaseEntry;
             cmbCaseNumber.SelectedValuePath = "CaseNumber";
             RefreshCaseList();
 
@@ -50,11 +50,11 @@ namespace Casely {
             DateTime startDate = DateTime.Now.AddDays(-Double.Parse(txtDaysToLoad.Text));
             DateTime endDate = DateTime.Now;
             var filteredList = SqliteDataAcces.GetListCaseEntriesPastDays(startDate);
-            listCEfilterDate.Clear();
+            listFilteredCaseEntry.Clear();
             cmbCaseNumber.SelectedValuePath = "CaseNumber";
             foreach (var s in filteredList) {
-                if (chkFilterCompleted.IsChecked == false || !(SqliteDataAcces.EntryExistsPartDiagnosis(s.CaseNumber))) {
-                    listCEfilterDate.Add(s);
+                if (chkFilterCompleted.IsChecked == false || !(SqliteDataAcces.CaseEntryEvaluated(s.CaseNumber))) {
+                    listFilteredCaseEntry.Add(s);
                 }
             }
         }
@@ -96,11 +96,20 @@ namespace Casely {
             suggestionOrgan = new List<string>(SqliteDataAcces.GetListOrgan());
             suggestionEvaluation = new List<string>(SqliteDataAcces.GetUniqueEvaluations());
             suggestionService = new List<string>(SqliteDataAcces.GetUniqueService());
-            var listeval = new List<string>() { "1) Perfect", "2) Style difference" ,
-                "2) Grammar and spelling", "3) Minor diagnostic differences","4) Major diagnostic differences"};
+            var listeval = new List<string>() { "NA", "1 - Style changes" ,
+                "2 - Grammar and spelling", "3 - Interpretation - Minor diagnostic alteration","3 - Microscopic - Minor diagnostic alteration",
+             "4 - Interpretation - Major diagnostic alteration", "4 - Interpretation - Major diagnostic alteration", "1 - Perfect"};
             foreach (var lv in listeval) {
                 if (!(suggestionEvaluation.Contains(lv))) {
                     suggestionEvaluation.Add(lv);
+                }
+            }
+           suggestionEvaluation.Sort();
+
+            var listService = new List<string>() { "Routine", "Frozen", "Biopsy"};
+            foreach (var lv in listService) {
+                if (!(suggestionService.Contains(lv))) {
+                    suggestionService.Add(lv);
                 }
             }
 
@@ -167,6 +176,10 @@ namespace Casely {
         }
 
         private void btnSubmitDiagnosis_Click(object sender, RoutedEventArgs e) {
+            submitDiagnosis();
+        }
+
+        private void submitDiagnosis() {
             List<PartDiagnosis> partsToAdd = new List<PartDiagnosis>();
             // get the current date and time to save the same modified time for all parts being added to the database
             DateTime currentTime = DateTime.Now;
@@ -185,18 +198,19 @@ namespace Casely {
                         CaseNumber = cmbCaseNumber.Text
                     };
                     partsToAdd.Add(newPartDiagnosis);
-                } 
+                }
             }
-            PathCase pathCase = new PathCase() { CaseNumber = cmbCaseNumber.SelectedValue.ToString(), Service = cmbService.Text, Evaluation = cmbSelfEvaluation.Text};
+            PathCase pathCase = new PathCase() { CaseNumber = cmbCaseNumber.SelectedValue.ToString(), Service = cmbService.Text, Evaluation = cmbSelfEvaluation.Text };
             // save the assigned diagnosis to the case
             SqliteDataAcces.InsertNewPartDiagnosisEntry(partsToAdd, pathCase);
 
             // Save the evaluation and other data for the case, essentially completing it.
             SqliteDataAcces.UpdateCompletedCase(pathCase);
             cmbSelfEvaluation.Text = "";
-
-            refreshCaseData();
-            RefreshCaseList();
+            var indx = cmbCaseNumber.SelectedIndex;
+            listFilteredCaseEntry.RemoveAt(indx);
+            cmbCaseNumber.SelectedIndex = cmbCaseNumber.Items.Count == 0 ? 0 : cmbCaseNumber.Items.Count - 1;
+            cmbService.Focus();
         }
 
         private void chkFilterCompleted_Click(object sender, RoutedEventArgs e) {

@@ -165,6 +165,12 @@ CREATE TRIGGER insert_service_path_case AFTER UPDATE ON path_case
 BEGIN
 INSERT INTO service (service) VALUES (new.service);
 END;
+
+CREATE INDEX casenum_case_entry ON case_entry (case_number);
+CREATE INDEX casenum_part_entry ON part_entry (case_number);
+CREATE INDEX casenum_path_case ON path_case (case_number);
+CREATE INDEX casenum_part_diagnosis ON part_diagnosis (case_number);
+
 	";
 
 

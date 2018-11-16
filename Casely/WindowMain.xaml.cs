@@ -15,6 +15,7 @@ using System.Data.SQLite;
 using CaselyData;
 using System.IO;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace Casely {
     /// <summary>
@@ -68,19 +69,26 @@ namespace Casely {
             theDialog.Filter = "Excel files (.xls)|*.xls";
             if (theDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 try {
+
+                    var sw = new Stopwatch();
+                    sw.Start();
                     var softText = File.ReadAllText(theDialog.FileName);
                     CaselyData.SoftToCaselyConverter sc = new SoftToCaselyConverter();
                     var importedData = sc.importSoftPathCSVData(theDialog.FileName);
+
+                    sw.Stop();
+                    var pathCaseEntriesToAdd = new List<CaseEntry>();
                     foreach(var d in importedData) {
-                        var pc = new PathCase() { CaseNumber = d.CaseNumber };
                         // Import the cases only if there is not already a report version by both the attending and the resident.
                         if (!(SqliteDataAcces.HasMultipleAuthorEntries(d.CaseNumber))) {
-                            SqliteDataAcces.InsertNewPathCase(pc);
-                            SqliteDataAcces.InsertNewCaseEntry(d, pc);
+                            pathCaseEntriesToAdd.Add(d);
                         }
                     }
-                    System.Windows.Forms.MessageBox.Show("Data imported!");
-
+                    SqliteDataAcces.BatchInsertNewCaseEntry(pathCaseEntriesToAdd);
+                   
+                    
+                    System.Windows.Forms.MessageBox.Show($"Data imported in {sw.ElapsedMilliseconds}!");
+                    
                        
                 } catch (Exception ex) {
                     System.Windows.MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);
