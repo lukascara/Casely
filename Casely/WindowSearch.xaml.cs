@@ -67,7 +67,6 @@ namespace Casely {
         private void cmbAuthor_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             txtStatus.Text = "Searching...";
             SearchDatabase();
-            txtStatus.Text = "Done";
         }
     }
 }

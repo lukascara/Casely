@@ -8,7 +8,6 @@
         mc:Ignorable="d"
         Title="Casely: Search" Height="703" Width="1238.7" Loaded="Window_Loaded">
     <Grid>
-        <xctk:WatermarkComboBox x:Name="cmbDiagnosis" Watermark="Diagnosis" IsEditable="True" HorizontalAlignment="Left" Margin="135,10,0,0" VerticalAlignment="Top" Width="146.679"/>
         <xctk:WatermarkComboBox x:Name="cmbAuthor"  Watermark="Author (i.e. APXYX)" IsEditable="True" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="cmbAuthor_SelectionChanged">
             <xctk:WatermarkComboBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ComboBoxItem}">
@@ -23,7 +22,6 @@
                 </DataTemplate>
             </xctk:WatermarkComboBox.ItemTemplate>
         </xctk:WatermarkComboBox>
-        <xctk:WatermarkComboBox x:Name="cmbSpecimen" Watermark="Gross Specimen" IsEditable="True" HorizontalAlignment="Left" Margin="286.679,10,0,0" VerticalAlignment="Top" Width="163.337"/>
         <ListBox x:Name="lbFilteredCaseEntry" HorizontalAlignment="Left" Margin="10,70.669,0,29" Width="440.016"  TabIndex="1" SelectionChanged="lbFilteredCaseEntry_SelectionChanged">
             <ListBox.ItemTemplate>
                 <DataTemplate>

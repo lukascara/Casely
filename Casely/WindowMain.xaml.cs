@@ -87,7 +87,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.");
         }
 
-        private void MenuItem_Click_1(object sender, RoutedEventArgs e) {
+        private void btnImportData_Click(object sender, RoutedEventArgs e) {
             OpenFileDialog theDialog = new OpenFileDialog();
             theDialog.Title = "Open Excel File" ;
             theDialog.Filter = "Excel files (.xls)|*.xls";
