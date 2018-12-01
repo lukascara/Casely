@@ -56,7 +56,6 @@ namespace Casely {
                 txtTumorSynoptic.Text = "";
                 txtCaseNumber.Text = SqliteDataAcces.CaseNumberPrefix;
                 MessageBox.Show("Case Added");
-                cmbAuthor.ItemsSource = SqliteDataAcces.GetListStaffFullNames();
                 dtCreated.Value = DateTime.Now;
 
             }
@@ -73,7 +72,6 @@ namespace Casely {
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
-            cmbAuthor.ItemsSource = SqliteDataAcces.GetListStaffFullNames();
             dtCreated.Value = DateTime.Now;
         }
 

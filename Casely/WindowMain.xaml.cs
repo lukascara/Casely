@@ -154,5 +154,10 @@ SOFTWARE.");
                 connectToDB();
             }
         }
+
+        private void btnSearch_Click(object sender, RoutedEventArgs e) {
+            WindowCaseSearch wn = new WindowCaseSearch();
+            wn.ShowDialog();
+        }
     }
 }

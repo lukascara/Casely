@@ -4,13 +4,47 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Casely"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" x:Class="Casely.Window1"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" xmlns:WPF="clr-namespace:TheArtOfDev.HtmlRenderer.WPF;assembly=HtmlRenderer.WPF" x:Class="Casely.WindowCaseSearch"
         mc:Ignorable="d"
-        Title="Casely: Search" Height="450" Width="800">
+        Title="Casely: Search" Height="703" Width="1238.7" Loaded="Window_Loaded">
     <Grid>
-        <xctk:WatermarkComboBox Name="cmbDiagnosis" Watermark="Diagnosis" IsEditable="True" HorizontalAlignment="Left" Margin="135,10,0,0" VerticalAlignment="Top" Width="146.679"/>
-        <xctk:WatermarkComboBox x:Name="cmbAuthorFullName" Watermark="Author Full Name" IsEditable="True" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="120"/>
+        <xctk:WatermarkComboBox x:Name="cmbDiagnosis" Watermark="Diagnosis" IsEditable="True" HorizontalAlignment="Left" Margin="135,10,0,0" VerticalAlignment="Top" Width="146.679"/>
+        <xctk:WatermarkComboBox x:Name="cmbAuthor"  Watermark="Author (i.e. APXYX)" IsEditable="True" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="cmbAuthor_SelectionChanged">
+            <xctk:WatermarkComboBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ComboBoxItem}">
+                    <Setter Property="TextSearch.Text" Value="{Binding AuthorID}" />
+                </Style>
+            </xctk:WatermarkComboBox.ItemContainerStyle>
+            <xctk:WatermarkComboBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding AuthorID}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </xctk:WatermarkComboBox.ItemTemplate>
+        </xctk:WatermarkComboBox>
         <xctk:WatermarkComboBox x:Name="cmbSpecimen" Watermark="Gross Specimen" IsEditable="True" HorizontalAlignment="Left" Margin="286.679,10,0,0" VerticalAlignment="Top" Width="163.337"/>
-        
+        <ListBox x:Name="lbFilteredCaseEntry" HorizontalAlignment="Left" Margin="10,70.669,0,29" Width="440.016"  TabIndex="1" SelectionChanged="lbFilteredCaseEntry_SelectionChanged">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding CaseNumber}"/>
+                        <TextBlock Text=" ("/>
+                        <TextBlock Text="{Binding AuthorID}"/>
+                        <TextBlock Text=" - "/>
+                        <TextBlock Text="{Binding ShortDateModifiedString}"/>
+                        <TextBlock Text=") "/>
+                        <TextBlock Text="-"/>
+                        <TextBlock Text="{Binding Material}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <WPF:HtmlPanel x:Name="wbReportViewer" Margin="455.016,70.669,10,29" BorderBrush="#FDA6A6A6" BorderThickness="3"/>
+        <StatusBar HorizontalAlignment="Left" Height="29" VerticalAlignment="Bottom" Width="1230.7">
+            <TextBlock x:Name="txtStatus" TextWrapping="Wrap" Text=""/>
+        </StatusBar>
+
     </Grid>
 </Window>

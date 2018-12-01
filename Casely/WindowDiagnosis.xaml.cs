@@ -222,7 +222,7 @@ namespace Casely {
             RefreshPartDiagnosis();
             var cn = cmbCaseNumber.SelectedValue;
             if (cn != null) {
-                var pathCase = SqliteDataAcces.getPathCase(cn.ToString());
+                var pathCase = SqliteDataAcces.GetPathCase(cn.ToString());
                 cmbSelfEvaluation.Text = pathCase.Evaluation;
                 cmbService.Text = pathCase.Service;
 
@@ -237,7 +237,7 @@ namespace Casely {
               if (cmbCaseNumber.SelectedValue != null) {
                 wbDiffText.Text = "";
                 string html = "";
-                var listCase = SqliteDataAcces.getListCaseEntry(cmbCaseNumber.SelectedValue.ToString());
+                var listCase = SqliteDataAcces.GetListCaseEntry(cmbCaseNumber.SelectedValue.ToString());
 
                 // gets the case entrys, groups them by author and then selects the last two author entries to compare.
                 var listCaseToCompare = listCase.OrderByDescending(x => x.DateTimeModifiedObject).GroupBy(t => t.AuthorID).Select(x => x.FirstOrDefault()).ToList();
@@ -280,11 +280,6 @@ namespace Casely {
 
             refreshCaseData();
         }
-
-        private void cmbCaseNumber_Loaded(object sender, RoutedEventArgs e) {
-
-        }
-
         private void btnRefresh_Click(object sender, RoutedEventArgs e) {
             RefreshCaseList();
         }

@@ -125,7 +125,7 @@ namespace Casely {
         }
 
         private void wpParts_Loaded(object sender, RoutedEventArgs e) {
-            cmbStaff.ItemsSource = SqliteDataAcces.GetListStaffFullNames();
+           
         }
 
 

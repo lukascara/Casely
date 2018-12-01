@@ -19,7 +19,7 @@
                     <RowDefinition Height="60*"/>
                     <RowDefinition Height="359*"/>
                 </Grid.RowDefinitions>
-                <ComboBox x:Name="cmbCaseNumber" HorizontalAlignment="Left" Margin="10.001,18.669,0,19.371" Width="319.27"  TabIndex="1" SelectionChanged="cmbCaseNumber_SelectionChanged" Loaded="cmbCaseNumber_Loaded" >
+                <xctk:WatermarkComboBox x:Name="cmbCaseNumber" HorizontalAlignment="Left" Margin="10.001,18.669,0,19.371" Width="319.27"  TabIndex="1" SelectionChanged="cmbCaseNumber_SelectionChanged">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
@@ -30,12 +30,11 @@
                                 <TextBlock Text="{Binding ShortDateModifiedString}"/>
                                 <TextBlock Text=") "/>
                                 <TextBlock Text="-"/>
-                                <TextBlock Text="{Binding Material}"/>
-                                
+                                <TextBlock Text="{Binding Material}"/>                                
                             </StackPanel>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
-                </ComboBox>
+                </xctk:WatermarkComboBox>
                 <Label Visibility="Hidden" Content="Load # of past days" Margin="334.271,15.56,373.459,18.48"/>
 
                 <xctk:IntegerUpDown Visibility="Hidden" x:Name="txtDaysToLoad" HorizontalAlignment="Right" Margin="0,19.52,332.459,20.48" Value="7" DefaultValue="7" TabIndex="5" IsTabStop="False" Minimum="0" />

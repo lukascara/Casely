@@ -62,10 +62,18 @@ namespace CaselyData {
         public string AuthorID { get; set; }
         public List<PartEntry> ListPartEntry { get; set; }
 
-        public string PrettyVersion() {
-            return $"{AuthorID} ({DateModifiedString})";
-        }
+        public string toHtml() {
+            string htmlCaseEntry = $"<h3><u>Interpretation</u></h3><p>{Interpretation}</p>";
+            htmlCaseEntry += $"<h3><u>Material</u></h3><p>{Material}</p>";
+            htmlCaseEntry += $"<h3><u>History</u></h3><p>{History}</p>";
+            htmlCaseEntry += $"<h3><u>Gross</u></h3><p>{Gross}</p>";
+            htmlCaseEntry += $"<h3><u>Microscopic</u></h3><p>{Microscopic}</p>";
+            htmlCaseEntry += $"<h3><u>Tumor Synoptic</u></h3><p>{TumorSynoptic}</p>";
+            htmlCaseEntry += $"<h3><u>Comment</u></h3><p>{Comment}</p>";
+            htmlCaseEntry = "<head><style>P { white-space: pre; }</style></head>" + htmlCaseEntry;
 
+            return htmlCaseEntry.Replace("\n","<br>");
+        }
         private void PopulateMicrGrossMatHist() {
             List<string> sectionWords = new List<string> { "MATERIAL:", "HISTORY:", "GROSS:", "MICROSCOPIC:" };
             bool endOfResult = false;
@@ -169,9 +177,12 @@ namespace CaselyData {
     }
 
     public class Staff {
-        public string AuthorID;
-        public string firstLastName;
-        public string Role;
+        public string AuthorID { get; set; }
+        public string FirstLastName { get; set; }
+        public string Role { get; set; }
+        public override string ToString() {
+            return AuthorID;
+        }
     }
 
     public class SqliteDataAcces {
@@ -325,7 +336,7 @@ namespace CaselyData {
 
 
         public static List<PartEntry> GetListPartEntryLatestVersion(string caseNumber) {
-            List<PartEntry> parts = getListPartEntry(caseNumber);
+            List<PartEntry> parts = GetListPartEntry(caseNumber);
             DateTime latestDateTimeModified = (from latestTimeModified in parts
                                                orderby latestTimeModified.DateTimeModifiedObject descending
                                                select latestTimeModified.DateTimeModifiedObject).FirstOrDefault();
@@ -390,11 +401,10 @@ namespace CaselyData {
                 return output;
             }
         }
-
-
+        
       
 
-        public static List<PartEntry> getListPartEntry(string caseNumber) {
+        public static List<PartEntry> GetListPartEntry(string caseNumber) {
             var sql = @"SELECT author_id AS AuthorID, 
                             part, procedure,
                             specimen, 
@@ -409,9 +419,29 @@ namespace CaselyData {
             }
         }
 
+        public static List<CaseEntry> GetCaseEntryFilterAuthorID(string authorID) {
+            var sql = @"SELECT id,
+	                    author_id AS AuthorID,
+	                    case_number AS CaseNumber,
+	                    date_modified AS DateModifiedString,
+	                    time_modified AS TimeModifiedString,
+	                    tumor_synoptic AS TumorSynoptic,
+	                    comment,
+	                    result,
+	                    material,
+	                    history,
+	                    interpretation,
+	                    gross,
+	                    microscopic FROM case_entry WHERE author_id = @authorID;";
+            using (var cn = new SQLiteConnection(DbConnectionString)) {
+                DynamicParameters dp = new DynamicParameters();
+                dp.Add("@authorID", authorID, System.Data.DbType.String);
+                var output = cn.Query<CaseEntry>(sql, dp).ToList();
+                return output;
+            }
+        }
 
-
-        public static List<CaseEntry> getListCaseEntry(string caseNumber) {
+        public static List<CaseEntry> GetListCaseEntry(string caseNumber) {
             var sql = @"SELECT id,
 	                    author_id AS AuthorID,
 	                    case_number AS CaseNumber,
@@ -433,7 +463,7 @@ namespace CaselyData {
             }
         }
 
-        public static PathCase getPathCase(string caseNumber) {
+        public static PathCase GetPathCase(string caseNumber) {
             var sql = @"SELECT 
 	                    case_number AS CaseNumber,
 	                   evaluation, service FROM path_case WHERE case_number = @caseNumber;";
@@ -446,7 +476,7 @@ namespace CaselyData {
         }
 
         public static CaseEntry GetCaseEntryLatestVersion(string caseNumber) {
-            List<CaseEntry> cases = getListCaseEntry(caseNumber);
+            List<CaseEntry> cases = GetListCaseEntry(caseNumber);
             DateTime latestDateTimeModified = (from latestTimeModified in cases
                                                orderby latestTimeModified.DateTimeModifiedObject descending
                                                select latestTimeModified.DateTimeModifiedObject).FirstOrDefault();
@@ -459,23 +489,16 @@ namespace CaselyData {
             return latestCaseEntry;
         }
 
-        public static List<Staff> GetListStaff() {
-            var sql = @"SELECT full_name, role FROM staff;";
+        public static List<Staff> GetListAuthor() {
+            var sql = @"SELECT author_id as AuthorID,
+                               last_first_name AS LastFirstName,
+                               role AS Role FROM staff;";
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 var output = cn.Query<Staff>(sql, new DynamicParameters()).ToList();
                 return output;
             }
         }
-
-        public static List<string> GetListStaffFullNames() {
-            var sql = @"SELECT last_first_name FROM staff;";
-            using (var cn = new SQLiteConnection(DbConnectionString)) {
-                var output = cn.Query<string>(sql, new DynamicParameters()).ToList();
-                return output;
-            }
-        }
-
-
+              
         public static List<string> GetUniqueProcedure() {
             var sql = @"SELECT procedure FROM procedure;";
             using (var cn = new SQLiteConnection(DbConnectionString)) {

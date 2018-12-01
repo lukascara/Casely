@@ -44,7 +44,7 @@ namespace Casely
 
         private void updateComparison() {
             if (txtCaseNumber.Text != "") {
-                var listCase = SqliteDataAcces.getListCaseEntry(txtCaseNumber.Text);
+                var listCase = SqliteDataAcces.GetListCaseEntry(txtCaseNumber.Text);
                 /*foreach (var lc in listCase) {
                     ComboBoxItem cbitem = new ComboBoxItem();
                     cbitem.Content = lc.PrettyVersion();

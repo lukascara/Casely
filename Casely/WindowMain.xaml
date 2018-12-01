@@ -12,7 +12,7 @@
         <TextBlock HorizontalAlignment="Left" Margin="144.293,25.34,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="275.804" FontSize="14"><Run Text="Database path"/><LineBreak/><Run/></TextBlock>
         <Button Visibility="Hidden" x:Name="btnCompare" Content="Check Reports" Margin="330.262,110.086,229.903,0" Click="btnCompare_Click" Height="59.165" VerticalAlignment="Top"/>
         <TextBlock Visibility="Hidden" HorizontalAlignment="Left" Margin="338.293,64,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="275.804" Text="What analysis would you like to do?" FontSize="14"/>
-        <Button Visibility="Hidden" x:Name="btnSearch" Content="Search Reports" Margin="330.262,174.251,229.903,0" Click="btnCompare_Click" Height="59.165" VerticalAlignment="Top"/>
+        <Button x:Name="btnSearch" Content="Search Reports" Margin="10,158.509,498.165,0" Click="btnSearch_Click" Height="59.165" VerticalAlignment="Top"/>
         <Button x:Name="btnDiagnosis" Content="Check Reports" Margin="10,94.344,0,265.491" Click="btnDiagnosis_Click" HorizontalAlignment="Left" Width="283.835"/>
         <Menu Height="19" Margin="0,0,10,0" VerticalAlignment="Top">
             <MenuItem Header="File">
