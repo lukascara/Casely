@@ -20,6 +20,7 @@ namespace Casely {
     /// Interaction logic for WindowSearch.xaml
     /// </summary>
     public partial class WindowCaseSearch : Window {
+        List<CaseEntry> listAllCaseEntries = new List<CaseEntry>();
         ObservableCollection<Staff> listStaff = new ObservableCollection<Staff>();
         ObservableCollection<CaseEntry> listFilteredCaseEntry = new ObservableCollection<CaseEntry>();
 
@@ -35,6 +36,8 @@ namespace Casely {
 
             lbFilteredCaseEntry.ItemsSource = listFilteredCaseEntry;
             lbFilteredCaseEntry.SelectedValuePath = "CaseNumber";
+            listAllCaseEntries = SqliteDataAcces.GetListAllCaseEntries();
+            SearchDatabase();
 
         }
 
@@ -42,19 +45,65 @@ namespace Casely {
             SearchDatabase();
         }
 
+        /// <summary>
+        /// Searches the database using the search terms and restrictions inputed by the user.
+        /// </summary>
         private void SearchDatabase() {
-            List<CaseEntry> listCE = new List<CaseEntry>();
+            // create a copy of all the case entries which will be filtered in the following steps
+            List<CaseEntry> listFilteredCE = new List<CaseEntry>(listAllCaseEntries);
+            // Find cases that match the authorID
             if (cmbAuthor.SelectedIndex != -1) {
-                listCE = SearchByAuthor(cmbAuthor.SelectedValue.ToString());
+                var listFilter = SearchByAuthor(cmbAuthor.SelectedValue.ToString());
+                listFilteredCE = listFilteredCE.Where(x => listFilter.ToList()
+                                        .FindIndex(c => c.CaseNumber == x.CaseNumber) != -1).ToList();
+            }
+            if (txtFilterInterpretation.Text != "") {
+                var listFilter = SearchFilterByInterpretation(txtFilterInterpretation.Text);
+                listFilteredCE = listFilteredCE.Where(x => listFilter.ToList()
+                                        .FindIndex(c => c.CaseNumber == x.CaseNumber) != -1).ToList();              
+            }
+            if (txtFilterResult.Text != "") {
+                var listFilter = SearchFilterByResult(txtFilterResult.Text);
+                listFilteredCE = listFilteredCE.Where(x => listFilter.ToList()
+                                        .FindIndex(c => c.CaseNumber == x.CaseNumber) != -1).ToList();
+            }
+            if (txtFilterComment.Text != "") {
+                var listFilter = SearchFilterByComment(txtFilterComment.Text);
+                listFilteredCE = listFilteredCE.Where(x => listFilter.ToList()
+                                        .FindIndex(c => c.CaseNumber == x.CaseNumber) != -1).ToList();
+            }
+            if (txtFilterTumorSynoptic.Text != "") {
+                var listFilter = SearchFilterByTumorSynoptic(txtFilterTumorSynoptic.Text);
+                listFilteredCE = listFilteredCE.Where(x => listFilter.ToList()
+                                        .FindIndex(c => c.CaseNumber == x.CaseNumber) != -1).ToList();
             }
             listFilteredCaseEntry.Clear();
-            foreach(var c in listCE) {
+            foreach(var c in listFilteredCE) {
                 listFilteredCaseEntry.Add(c);
+            }
+            if (listFilteredCaseEntry.Count != 0) {
+                lbFilteredCaseEntry.SelectedIndex = 0;
             }
         }
 
         private List<CaseEntry> SearchByAuthor(string authorID) {
            return  SqliteDataAcces.GetCaseEntryFilterAuthorID(authorID);
+        }
+
+        private List<CaseEntry> SearchFilterByInterpretation(string searchTerms) {
+            return SqliteDataAcces.FilterCaseEntryInterpretation(searchTerms);                           
+        }
+
+        private List<CaseEntry> SearchFilterByResult(string searchTerms) {
+            return SqliteDataAcces.FilterCaseEntryResult(searchTerms);
+        }
+
+        private List<CaseEntry> SearchFilterByComment(string searchTerms) {
+            return SqliteDataAcces.FilterCaseEntryComment(searchTerms);
+        }
+
+        private List<CaseEntry> SearchFilterByTumorSynoptic(string searchTerms) {
+            return SqliteDataAcces.FilterCaseEntryTumorSynoptic(searchTerms);
         }
 
         private void lbFilteredCaseEntry_SelectionChanged(object sender, SelectionChangedEventArgs e) {
@@ -67,20 +116,19 @@ namespace Casely {
         private void cmbAuthor_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             txtStatus.Text = "Searching...";
             SearchDatabase();
+            txtStatus.Text = "Done";
         }
 
-        private void txtSearchInterpretation_LostFocus(object sender, RoutedEventArgs e) {
-            if (txtSearchInterpretation.Text != "") {
-                var listFiltCE = SqliteDataAcces.FilterCaseEntryInterpretation(txtSearchInterpretation.Text);
-                listFilteredCaseEntry.Clear();
-                foreach(var c in listFiltCE) {
-                    listFilteredCaseEntry.Add(c);
-                }
+
+        private void txtFilter_LostFocus(object sender, RoutedEventArgs e) {
+            SearchDatabase();
+        }
+
+        private void txtFilter_KeyDown(object sender, KeyEventArgs e) {
+            if (e.Key == Key.Enter) {
+                SearchDatabase();
             }
         }
 
-        private void txtSearchInterpretation_KeyDown(object sender, KeyEventArgs e) {
-
-        }
     }
 }

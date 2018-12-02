@@ -370,6 +370,28 @@ namespace CaselyData {
             }
         }
 
+        public static List<CaseEntry> GetListAllCaseEntries() {
+            var sql = @"SELECT * FROM (SELECT case_number AS CaseNumber,
+                        author_id AS AuthorID,
+	                    date_modified AS DateModifiedString,
+	                    time_modified AS TimeModifiedString,
+	                    tumor_synoptic AS TumorSynoptic,
+	                    comment,
+	                    result,
+	                    material,
+	                    history,
+	                    interpretation,
+	                    gross,
+	                    microscopic FROM case_entry 
+                        ORDER BY date_modified ASC,
+                                 time_modified ASC) GROUP BY CaseNumber";
+            using (var cn = new SQLiteConnection(DbConnectionString)) {
+                DynamicParameters dp = new DynamicParameters();
+                var output = cn.Query<CaseEntry>(sql, new DynamicParameters()).ToList();
+                return output;
+            }
+        }
+
         /// <summary>
         /// Returns a list of all case entries entered after the supplied start_date.
         /// </summary>
@@ -563,28 +585,45 @@ namespace CaselyData {
         }
 
         public static List<CaseEntry> FilterCaseEntryInterpretation(string strFilterInterpretation) {
+            return FilterCaseEntry(strFilterInterpretation, "fts5_case_entry_interpretation");
+        }
+
+        public static List<CaseEntry> FilterCaseEntryResult(string strFilterResult) {
+            return FilterCaseEntry(strFilterResult, "fts5_case_entry_result");
+        }
+
+        public static List<CaseEntry> FilterCaseEntryComment(string strFilterComment) {
+            return FilterCaseEntry(strFilterComment, "fts5_case_entry_comment");
+        }
+
+        public static List<CaseEntry> FilterCaseEntryTumorSynoptic(string strFilterTumorSynoptic) {
+            return FilterCaseEntry(strFilterTumorSynoptic, "fts5_case_entry_tumor_synoptic");
+        }
+
+
+        private static List<CaseEntry> FilterCaseEntry(string strFilter, string fts5TableName) {
             var sql = @"SELECT id,
-	                    author_id AS AuthorID,
+	                    case_entry.author_id AS AuthorID,
 	                    case_entry.case_number AS CaseNumber,
-	                    date_modified AS DateModifiedString,
-	                    time_modified AS TimeModifiedString,
-	                    tumor_synoptic AS TumorSynoptic,
-	                    comment,
-	                    result,
-	                    material,
-	                    history,
+	                    case_entry.date_modified AS DateModifiedString,
+	                    case_entry.time_modified AS TimeModifiedString,
+	                    case_entry.tumor_synoptic AS TumorSynoptic,
+	                    case_entry.comment,
+	                    case_entry.result,
+	                    case_entry.material,
+	                    case_entry.history,
 	                    case_entry.interpretation,
-	                    gross,
-	                    microscopic FROM fts5_case_entry_interpretation
-                        INNER JOIN case_entry ON case_entry.case_number = fts5_case_entry_interpretation.case_number
-                        where fts5_case_entry_interpretation match @strFilterInterpretation;";
+	                    case_entry.gross,
+	                    case_entry.microscopic FROM " + fts5TableName.Trim() + @"
+                        INNER JOIN case_entry ON case_entry.case_number = "+ fts5TableName.Trim() +@".case_number
+                        WHERE "+ fts5TableName.Trim() + @" MATCH @strFilter;";
 
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 cn.Open();
                 cn.EnableExtensions(true);
                 cn.LoadExtension("SQLite.Interop.dll", "sqlite3_fts5_init");
                 DynamicParameters dp = new DynamicParameters();
-                dp.Add("@strFilterInterpretation", strFilterInterpretation, System.Data.DbType.String);
+                dp.Add("@strFilter", strFilter, System.Data.DbType.String);
                 var output = cn.Query<CaseEntry>(sql, dp).ToList();
                 cn.Close();
                 return output;
