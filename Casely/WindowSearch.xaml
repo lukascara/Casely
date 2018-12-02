@@ -43,6 +43,7 @@
         <StatusBar HorizontalAlignment="Left" Height="29" VerticalAlignment="Bottom" Width="1230.7">
             <TextBlock x:Name="txtStatus" TextWrapping="Wrap" Text=""/>
         </StatusBar>
+        <xctk:WatermarkTextBox Watermark="Search Intrepretation" x:Name="txtSearchInterpretation" HorizontalAlignment="Left" Height="23" Margin="150,8.96,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="243" LostFocus="txtSearchInterpretation_LostFocus" KeyDown="txtSearchInterpretation_KeyDown"/>
 
     </Grid>
 </Window>

@@ -21,6 +21,12 @@ namespace CaselyData {
     `date_of_service` TEXT
 );
 
+CREATE TABLE IF NOT EXISTS `casely_data` (
+`database_version` TEXT
+);
+
+INSERT INTO `casely_data` (database_version) VALUES (0.24);
+
 CREATE TABLE IF NOT EXISTS `case_entry` (
 	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,	
 	`author_id`	TEXT,
@@ -82,9 +88,11 @@ BEGIN
 INSERT INTO staff (author_id) VALUES (new.author_id);
 END;
 
-CREATE TRIGGER insert_case_entry_author AFTER INSERT  ON case_entry
+CREATE TRIGGER insert_case_entry AFTER INSERT  ON case_entry
 BEGIN
 INSERT INTO staff (author_id) VALUES (new.author_id);
+INSERT INTO fts5_case_entry_result (case_number, result) VALUES (new.case_number, new.result);
+INSERT INTO fts5_case_entry_interpretation (case_number, interpretation) VALUES (new.case_number, new.interpretation);
 END;
 
 CREATE TABLE IF NOT EXISTS `specimen` (
@@ -166,11 +174,13 @@ BEGIN
 INSERT INTO service (service) VALUES (new.service);
 END;
 
+CREATE VIRTUAL TABLE fts5_case_entry_result USING fts5(case_number, result);
+CREATE VIRTUAL TABLE fts5_case_entry_interpretation USING fts5(case_number, interpretation);
+
 CREATE INDEX casenum_case_entry ON case_entry (case_number);
 CREATE INDEX casenum_part_entry ON part_entry (case_number);
 CREATE INDEX casenum_path_case ON path_case (case_number);
 CREATE INDEX casenum_part_diagnosis ON part_diagnosis (case_number);
-
 	";
 
 

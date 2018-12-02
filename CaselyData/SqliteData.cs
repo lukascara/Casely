@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data.SQLite;
 using Dapper;
-using System.Diagnostics;
-using System.ComponentModel;
-using System.Reflection;
 using System.IO;
+using System.Data.SQLite;
 
 namespace CaselyData {
     public class PathCase {
@@ -205,22 +200,25 @@ namespace CaselyData {
         }
 
         public static void BatchInsertNewCaseEntry(List<CaseEntry> listCasesToInsert) {
-            
-                using (var cn = new SQLiteConnection(DbConnectionString)) {
-                    cn.Open();
-                    var sqliteTransaction = cn.BeginTransaction();
-                    foreach (var ce in listCasesToInsert) {
-                        var sql = @"INSERT INTO path_case (case_number)
+
+            using (var cn = new SQLiteConnection(DbConnectionString)) {
+                cn.Open();
+                cn.EnableExtensions(true);
+                cn.LoadExtension("SQLite.Interop.dll", "sqlite3_fts5_init"); // this line is required to enable full text search support
+                var sqliteTransaction = cn.BeginTransaction();
+
+                foreach (var ce in listCasesToInsert) {
+                    var sql = @"INSERT INTO path_case (case_number)
                                  VALUES (@CaseNumber);
 
                                 INSERT INTO case_entry (author_id, case_number, date_modified,
                                        time_modified, tumor_synoptic, comment, result, material, history, interpretation, gross, microscopic)
                                 VALUES (@AuthorID, @CaseNumber,@DateModifiedString,@TimeModifiedString,@TumorSynoptic, @Comment, @Result, @Material, @History, 
                                         @Interpretation, @Gross, @Microscopic);";
-                        cn.Execute(sql, ce);
-                    }
-                    sqliteTransaction.Commit();
-                
+                    cn.Execute(sql, ce);
+                }
+                sqliteTransaction.Commit();
+
             }
         }
 
@@ -564,6 +562,34 @@ namespace CaselyData {
             }
         }
 
+        public static List<CaseEntry> FilterCaseEntryInterpretation(string strFilterInterpretation) {
+            var sql = @"SELECT id,
+	                    author_id AS AuthorID,
+	                    case_entry.case_number AS CaseNumber,
+	                    date_modified AS DateModifiedString,
+	                    time_modified AS TimeModifiedString,
+	                    tumor_synoptic AS TumorSynoptic,
+	                    comment,
+	                    result,
+	                    material,
+	                    history,
+	                    case_entry.interpretation,
+	                    gross,
+	                    microscopic FROM fts5_case_entry_interpretation
+                        INNER JOIN case_entry ON case_entry.case_number = fts5_case_entry_interpretation.case_number
+                        where fts5_case_entry_interpretation match @strFilterInterpretation;";
+
+            using (var cn = new SQLiteConnection(DbConnectionString)) {
+                cn.Open();
+                cn.EnableExtensions(true);
+                cn.LoadExtension("SQLite.Interop.dll", "sqlite3_fts5_init");
+                DynamicParameters dp = new DynamicParameters();
+                dp.Add("@strFilterInterpretation", strFilterInterpretation, System.Data.DbType.String);
+                var output = cn.Query<CaseEntry>(sql, dp).ToList();
+                cn.Close();
+                return output;
+            }
+        }
 
         public static string DbConnectionString {
             get {
@@ -574,7 +600,7 @@ namespace CaselyData {
 
         public static string DBPath {
             get {
-                var dbPath = Properties.Settings.Default.DatabasePath;
+                var  dbPath = Properties.Settings.Default.DatabasePath;
                 return dbPath;
             }
             set {
@@ -599,7 +625,11 @@ namespace CaselyData {
             }
             
             using (var cn = new SQLiteConnection(DbConnectionString)) {
-                cn.Execute(DBCreationString.sqlCreateDBString);
+               cn.Open();
+               cn.EnableExtensions(true);
+               cn.LoadExtension("SQLite.Interop.dll", "sqlite3_fts5_init");
+               cn.Execute(DBCreationString.sqlCreateDBString);
+               cn.Close();
             }
         }
 

@@ -68,5 +68,19 @@ namespace Casely {
             txtStatus.Text = "Searching...";
             SearchDatabase();
         }
+
+        private void txtSearchInterpretation_LostFocus(object sender, RoutedEventArgs e) {
+            if (txtSearchInterpretation.Text != "") {
+                var listFiltCE = SqliteDataAcces.FilterCaseEntryInterpretation(txtSearchInterpretation.Text);
+                listFilteredCaseEntry.Clear();
+                foreach(var c in listFiltCE) {
+                    listFilteredCaseEntry.Add(c);
+                }
+            }
+        }
+
+        private void txtSearchInterpretation_KeyDown(object sender, KeyEventArgs e) {
+
+        }
     }
 }
