@@ -659,6 +659,7 @@ namespace CaselyData {
                     f.Close();
                 } else {
                     System.Windows.Forms.MessageBox.Show($"Could not create database at {SqliteDataAcces.DBPath}. Does the folder exist?","",System.Windows.Forms.MessageBoxButtons.OK,System.Windows.Forms.MessageBoxIcon.Error);
+                    return;
                 }
               
             }

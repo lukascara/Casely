@@ -47,19 +47,38 @@ namespace Casely {
             WindowDiagnosis wn = new WindowDiagnosis();
             wn.ShowDialog();
         }
-        
+
         private void Window_Loaded(object sender, RoutedEventArgs e) {
-            tbDBPath.Text = SqliteDataAcces.DBPath;
             connectToDB();
         }
 
         private void connectToDB() {
             if (!(File.Exists(SqliteDataAcces.DBPath))) {
-                MessageBoxResult dialogResult = System.Windows.MessageBox.Show($"Casely database does not exist at {SqliteDataAcces.DBPath}. Should it be created?", "Create Database", MessageBoxButton.YesNo,MessageBoxImage.None);
+                MessageBoxResult dialogResult = System.Windows.MessageBox.Show($"Casely database does not exist at {SqliteDataAcces.DBPath}. Should it be created?", "Create Database", MessageBoxButton.YesNo, MessageBoxImage.None);
                 if (dialogResult == MessageBoxResult.Yes) {
                     SqliteDataAcces.CreateDatabase();
-                }
-            } 
+                    tbDBPath.Text = SqliteDataAcces.DBPath;
+                } 
+            }
+            CheckDatabaseExists();
+        }
+
+        private void CheckDatabaseExists() {
+            if (!File.Exists(SqliteDataAcces.DBPath)){
+                tbDBPath.Text = "Casely database cannot be found! Create or open it in File->Create Database/Open Database.";
+                LockButtons(false);
+            } else {
+                LockButtons(true);
+                tbDBPath.Text = SqliteDataAcces.DBPath;
+            }
+        }
+
+        private void LockButtons(bool ButtonsShouldBeActive) {
+            btnSelfEvaluate.IsEnabled = ButtonsShouldBeActive;
+            btnSearch.IsEnabled = ButtonsShouldBeActive;
+            btnSignout.IsEnabled = ButtonsShouldBeActive;
+            btnImportSoftPathData.IsEnabled = ButtonsShouldBeActive;
+            MenuImportSoftPath.IsEnabled = ButtonsShouldBeActive;
         }
 
         private void MenuShowLicense_Click(object sender, RoutedEventArgs e) {
