@@ -382,9 +382,10 @@ namespace CaselyData {
 	                    history,
 	                    interpretation,
 	                    gross,
-	                    microscopic FROM case_entry 
-                        ORDER BY date_modified ASC,
-                                 time_modified ASC) GROUP BY CaseNumber";
+	                    microscopic FROM case_entry )
+                                    GROUP BY CaseNumber
+                                    ORDER BY DateModifiedString DESC,
+                                    TimeModifiedString DESC;";
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 DynamicParameters dp = new DynamicParameters();
                 var output = cn.Query<CaseEntry>(sql, new DynamicParameters()).ToList();
@@ -397,7 +398,7 @@ namespace CaselyData {
         /// </summary>
         /// <param name="startDate"></param>
         /// <returns></returns>
-        public static List<CaseEntry> GetListCaseEntriesPastDays(DateTime startDate) {
+        public static List<CaseEntry> FilterCaseEntryDateModified(DateTime startDate) {
             var sql = @"SELECT * FROM (SELECT case_number AS CaseNumber,
                         author_id AS AuthorID,
 	                    date_modified AS DateModifiedString,
@@ -410,13 +411,14 @@ namespace CaselyData {
 	                    interpretation,
 	                    gross,
 	                    microscopic FROM case_entry 
-                        WHERE date_modified >= 2018-10-30
-                        ORDER BY date_modified ASC,
-                                 time_modified ASC) GROUP BY CaseNumber";
-            var strStartDate = startDate.ToString("yyyy-MM-dd");
+                        WHERE date_modified >= @startDate) 
+                                  GROUP BY CaseNumber
+                                  ORDER BY DateModifiedString DESC,
+                                  TimeModifiedString DESC ";
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 DynamicParameters dp = new DynamicParameters();
-                dp.Add("@startDate", strStartDate, System.Data.DbType.String);
+                // SqlLite requires date to be in year-month-day format for sorting purposes
+                dp.Add("@startDate", startDate.ToString("yyyy-MM-dd"), System.Data.DbType.String);
                 var output = cn.Query<CaseEntry>(sql, dp).ToList();
                 return output;
             }

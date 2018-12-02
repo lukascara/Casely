@@ -44,7 +44,7 @@ namespace Casely {
 
         private void btnDiagnosis_Click(object sender, RoutedEventArgs e) {
             connectToDB();
-            WindowDiagnosis wn = new WindowDiagnosis();
+            WindowSelfEvaluation wn = new WindowSelfEvaluation();
             wn.ShowDialog();
         }
 

@@ -4,9 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Casely"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" xmlns:WPF="clr-namespace:TheArtOfDev.HtmlRenderer.WPF;assembly=HtmlRenderer.WPF" x:Class="Casely.WindowDiagnosis"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" xmlns:WPF="clr-namespace:TheArtOfDev.HtmlRenderer.WPF;assembly=HtmlRenderer.WPF" xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid" x:Class="Casely.WindowSelfEvaluation"
         mc:Ignorable="d"
-        Title="Casely: Diagnosis" Height="731" Width="1150" Loaded="Window_Loaded">
+        Title="Casely: Self-Evaluation" Height="731" Width="1150" Loaded="Window_Loaded">
     <Grid>
         <WrapPanel Orientation="Horizontal">
 
@@ -20,7 +20,7 @@
                     <RowDefinition Height="359*"/>
                 </Grid.RowDefinitions>
                 <xctk:WatermarkComboBox x:Name="cmbCaseNumber" HorizontalAlignment="Left" Margin="10.001,18.669,0,19.371" Width="319.27"  TabIndex="1" SelectionChanged="cmbCaseNumber_SelectionChanged">
-                    <ComboBox.ItemTemplate>
+                    <xctk:WatermarkComboBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{Binding CaseNumber}"/>
@@ -30,10 +30,10 @@
                                 <TextBlock Text="{Binding ShortDateModifiedString}"/>
                                 <TextBlock Text=") "/>
                                 <TextBlock Text="-"/>
-                                <TextBlock Text="{Binding Material}"/>                                
+                                <TextBlock Text="{Binding Material}"/>
                             </StackPanel>
                         </DataTemplate>
-                    </ComboBox.ItemTemplate>
+                    </xctk:WatermarkComboBox.ItemTemplate>
                 </xctk:WatermarkComboBox>
                 <Label Visibility="Hidden" Content="Load # of past days" Margin="334.271,15.56,373.459,18.48"/>
 
@@ -41,10 +41,11 @@
                 <Button x:Name="btnSubmit" Content="Submit Diagnosis" HorizontalAlignment="Right" Margin="0,20.669,25.118,19.371" Click="btnSubmitDiagnosis_Click" Width="141" TabIndex="4" Grid.Column="1"/>
                 <CheckBox x:Name="chkFilterCompleted" Content="List uncompleted only" Margin="10,3.57,0,0" VerticalAlignment="Top" Click="chkFilterCompleted_Click" HorizontalAlignment="Left" IsChecked="True"/>
                 <Button Visibility="Hidden" x:Name="btnRefresh" Content="R" HorizontalAlignment="Right" Margin="0,18.56,310.459,21.48" Width="17" TabIndex="12" IsTabStop="False" Click="btnRefresh_Click"/>
-                <xctk:WatermarkComboBox x:Name="cmbSelfEvaluation" Watermark="Self-evaulation" HorizontalAlignment="Left" Margin="784.882,19.56,0,0" VerticalAlignment="Top" Width="183" IsEditable="True" TabIndex="3" Grid.ColumnSpan="2"/>
-                <xctk:WatermarkComboBox x:Name="cmbService" Watermark="Service" HorizontalAlignment="Left" Margin="595.452,19.56,0,0" VerticalAlignment="Top" Width="120" IsEditable="True" TabIndex="2"/>
-                <Label Content="Service" HorizontalAlignment="Left" Margin="543.155,16.56,0,0" VerticalAlignment="Top"/>
-                <Label Content="Self Eval:" HorizontalAlignment="Left" Margin="728.852,17.669,0,0" VerticalAlignment="Top"/>
+                <xctk:WatermarkComboBox x:Name="cmbSelfEvaluation" Watermark="Self-evaulation" HorizontalAlignment="Left" Margin="779.882,19.56,0,0" VerticalAlignment="Top" Width="188" IsEditable="True" TabIndex="3" Grid.ColumnSpan="2"/>
+                <xctk:WatermarkComboBox x:Name="cmbService" Watermark="Service" HorizontalAlignment="Left" Margin="654.882,20.669,0,0" VerticalAlignment="Top" Width="120" IsEditable="True" TabIndex="2"/>
+                <xctk:DateTimePicker x:Name="dtFilterDate" HorizontalAlignment="Left" Margin="359,19.56,0,0" VerticalAlignment="Top" Width="134.541" Format="ShortDate" LostFocus="dtFilterDate_LostFocus"/>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Filter by Date" VerticalAlignment="Top" Margin="359,2.708,0,0"/>
+
 
             </Grid>
 

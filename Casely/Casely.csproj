@@ -130,7 +130,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WindowDiagnosis.xaml">
+    <Page Include="WindowSelfEvaluation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -162,8 +162,8 @@
     <Compile Include="WindowCompareReports.xaml.cs">
       <DependentUpon>WindowCompareReports.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WindowDiagnosis.xaml.cs">
-      <DependentUpon>WindowDiagnosis.xaml</DependentUpon>
+    <Compile Include="WindowSelfEvaluation.xaml.cs">
+      <DependentUpon>WindowSelfEvaluation.xaml</DependentUpon>
     </Compile>
     <Compile Include="WindowGrossingEditor.xaml.cs">
       <DependentUpon>WindowGrossingEditor.xaml</DependentUpon>

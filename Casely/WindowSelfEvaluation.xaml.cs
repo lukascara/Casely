@@ -19,7 +19,7 @@ namespace Casely {
     /// <summary>
     /// Interaction logic for WindowDiagnosis.xaml
     /// </summary>
-    public partial class WindowDiagnosis : Window {
+    public partial class WindowSelfEvaluation : Window {
 
         private List<string> suggestionOrgan = new List<string>();
         private List<string> suggestionOrganSystem = new List<string>();
@@ -29,7 +29,7 @@ namespace Casely {
         private List<string> suggestionEvaluation = new List<string>();
         private ObservableCollection<CaseEntry> listFilteredCaseEntry = new ObservableCollection<CaseEntry>();
 
-        public WindowDiagnosis() {
+        public WindowSelfEvaluation() {
             InitializeComponent();
             RefreshPartDiagnosis();
             refreshSuggestions();
@@ -38,8 +38,8 @@ namespace Casely {
         private void Window_Loaded(object sender, RoutedEventArgs e) {
             cmbCaseNumber.ItemsSource = listFilteredCaseEntry;
             cmbCaseNumber.SelectedValuePath = "CaseNumber";
+            dtFilterDate.Text = "07/20/2018";
             RefreshCaseList();
-
             if (cmbCaseNumber.Items.Count > 0) cmbCaseNumber.SelectedIndex = 0;
             cmbService.ItemsSource = suggestionService;
             cmbSelfEvaluation.ItemsSource = suggestionEvaluation;
@@ -47,9 +47,8 @@ namespace Casely {
 
 
         private void RefreshCaseList() {
-            DateTime startDate = DateTime.Now.AddDays(-Double.Parse(txtDaysToLoad.Text));
-            DateTime endDate = DateTime.Now;
-            var filteredList = SqliteDataAcces.GetListCaseEntriesPastDays(startDate);
+            DateTime startDate = DateTime.Parse(dtFilterDate.Text);
+            var filteredList = SqliteDataAcces.FilterCaseEntryDateModified(startDate);
             listFilteredCaseEntry.Clear();
             cmbCaseNumber.SelectedValuePath = "CaseNumber";
             foreach (var s in filteredList) {
@@ -281,6 +280,10 @@ namespace Casely {
             refreshCaseData();
         }
         private void btnRefresh_Click(object sender, RoutedEventArgs e) {
+            RefreshCaseList();
+        }
+
+        private void dtFilterDate_LostFocus(object sender, RoutedEventArgs e) {
             RefreshCaseList();
         }
     }
