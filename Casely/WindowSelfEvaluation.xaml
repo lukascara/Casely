@@ -16,8 +16,7 @@
                     <ColumnDefinition Width="313*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="60*"/>
-                    <RowDefinition Height="359*"/>
+                    <RowDefinition/>
                 </Grid.RowDefinitions>
                 <xctk:WatermarkComboBox x:Name="cmbCaseNumber" HorizontalAlignment="Left" Margin="10.001,18.669,0,19.371" Width="319.27"  TabIndex="1" SelectionChanged="cmbCaseNumber_SelectionChanged">
                     <xctk:WatermarkComboBox.ItemTemplate>
@@ -37,15 +36,14 @@
                 </xctk:WatermarkComboBox>
                 <Label Visibility="Hidden" Content="Load # of past days" Margin="334.271,15.56,373.459,18.48"/>
 
-                <xctk:IntegerUpDown Visibility="Hidden" x:Name="txtDaysToLoad" HorizontalAlignment="Right" Margin="0,19.52,332.459,20.48" Value="7" DefaultValue="7" TabIndex="5" IsTabStop="False" Minimum="0" />
-                <Button x:Name="btnSubmit" Content="Submit Diagnosis" HorizontalAlignment="Right" Margin="0,20.669,25.118,19.371" Click="btnSubmitDiagnosis_Click" Width="141" TabIndex="4" Grid.Column="1"/>
-                <CheckBox x:Name="chkFilterCompleted" Content="List uncompleted only" Margin="10,3.57,0,0" VerticalAlignment="Top" Click="chkFilterCompleted_Click" HorizontalAlignment="Left" IsChecked="True"/>
-                <Button Visibility="Hidden" x:Name="btnRefresh" Content="R" HorizontalAlignment="Right" Margin="0,18.56,310.459,21.48" Width="17" TabIndex="12" IsTabStop="False" Click="btnRefresh_Click"/>
-                <xctk:WatermarkComboBox x:Name="cmbSelfEvaluation" Watermark="Self-evaulation" HorizontalAlignment="Left" Margin="779.882,19.56,0,0" VerticalAlignment="Top" Width="188" IsEditable="True" TabIndex="3" Grid.ColumnSpan="2"/>
-                <xctk:WatermarkComboBox x:Name="cmbService" Watermark="Service" HorizontalAlignment="Left" Margin="654.882,20.669,0,0" VerticalAlignment="Top" Width="120" IsEditable="True" TabIndex="2"/>
-                <xctk:DateTimePicker x:Name="dtFilterDate" HorizontalAlignment="Left" Margin="359,19.56,0,0" VerticalAlignment="Top" Width="134.541" Format="ShortDate" LostFocus="dtFilterDate_LostFocus"/>
-                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Filter by Date" VerticalAlignment="Top" Margin="359,2.708,0,0"/>
-                <xctk:WatermarkComboBox x:Name="cmbAuthor"  Watermark="Author (i.e. APXYX)" IsEditable="True" HorizontalAlignment="Left" Margin="515.541,18.669,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="cmbAuthor_SelectionChanged">
+                <xctk:IntegerUpDown Visibility="Hidden" x:Name="txtDaysToLoad" HorizontalAlignment="Right" Margin="0,19.52,332.459,20.48" Value="7" DefaultValue="7" TabIndex="5" IsTabStop="False" Minimum="0" Width="41" />
+                <Button x:Name="btnSubmit" Content="Submit Diagnosis" HorizontalAlignment="Right" Margin="0,18.669,25.118,0" Click="btnSubmitDiagnosis_Click" Width="141" TabIndex="4" Grid.Column="1" Height="19.96" VerticalAlignment="Top"/>
+                <CheckBox x:Name="chkFilterCompleted" Content="List uncompleted only" Margin="10,3.57,0,0" VerticalAlignment="Top" Click="chkFilterCompleted_Click" HorizontalAlignment="Left" IsChecked="True" Height="15.098" Width="136.935"/>
+                <xctk:WatermarkComboBox x:Name="cmbSelfEvaluation" Watermark="Self-evaulation" HorizontalAlignment="Left" Margin="779.882,17.56,0,0" VerticalAlignment="Top" Width="188" IsEditable="True" TabIndex="3" Grid.ColumnSpan="2" Height="21.96"/>
+                <xctk:WatermarkComboBox x:Name="cmbService" Watermark="Service" HorizontalAlignment="Left" Margin="654.882,5,0,0" VerticalAlignment="Top" Width="120" IsEditable="True" TabIndex="2" Height="21.96"/>
+                <xctk:DateTimePicker x:Name="dtFilterDate" HorizontalAlignment="Left" Margin="359,19.56,0,0" VerticalAlignment="Top" Width="134.541" Format="ShortDate" LostFocus="dtFilterDate_LostFocus" Height="20"/>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Filter by Date" VerticalAlignment="Top" Margin="359,2.708,0,0" Height="15.96" Width="70.487"/>
+                <xctk:WatermarkComboBox x:Name="cmbAuthor"  Watermark="Author (i.e. APXYX)" IsEditable="True" HorizontalAlignment="Left" Margin="515.541,18.669,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="cmbAuthor_SelectionChanged" Height="21.96">
                     <xctk:WatermarkComboBox.ItemContainerStyle>
                         <Style TargetType="{x:Type ComboBoxItem}">
                             <Setter Property="TextSearch.Text" Value="{Binding AuthorID}" />
@@ -59,16 +57,21 @@
                         </DataTemplate>
                     </xctk:WatermarkComboBox.ItemTemplate>
                 </xctk:WatermarkComboBox>
-                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Filter by Author ID" VerticalAlignment="Top" Margin="515.541,2.57,0,0"/>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Filter by Author ID" VerticalAlignment="Top" Margin="515.541,2.57,0,0" Height="15.96" Width="97.107"/>
+                <xctk:WatermarkComboBox x:Name="cmbVersion" Watermark="Version" HorizontalAlignment="Left" Margin="654.882,31.96,0,0" VerticalAlignment="Top" Width="120" IsEditable="True" TabIndex="2" Height="21.96" SelectionChanged="cmbVersion_SelectionChanged"/>
 
 
             </Grid>
 
-            <Grid Height="633">
-                <StackPanel Visibility="Hidden" x:Name="spPartDiagnosis"  Margin="0,5,10,10" HorizontalAlignment="Right" Width="524">
+            <Grid Height="613">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="20*"/>
+                    <ColumnDefinition Width="551*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Visibility="Hidden" x:Name="spPartDiagnosis"  Margin="0,5,10,10" HorizontalAlignment="Right" Width="524" Grid.Column="1">
                     <Button x:Name="btnAddDiagnosis" Width="96.5" Content="Add Diagnosis" TabIndex="2" HorizontalAlignment="Center" Click="btnAddDiagnosis_Click"/>
                 </StackPanel>
-                <WPF:HtmlPanel x:Name="wbDiffText" Margin="10" BorderBrush="#FDA6A6A6" BorderThickness="3"/>
+                <WPF:HtmlPanel x:Name="wbDiffText" Margin="10" BorderBrush="#FDA6A6A6" BorderThickness="3" Grid.ColumnSpan="2"/>
 
             </Grid>
         </WrapPanel>

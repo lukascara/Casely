@@ -30,6 +30,14 @@ namespace CaselyData {
         public string ResultText { get; set; } = "";
         public string CommentText { get; set; } = "";
         public string TumorSynopticText { get; set; } = "";
+        public PathReportFields() {
+
+        }
+        public PathReportFields(PathReportFields oldVersion) {
+            foreach(var f in oldVersion.sectionCodes) {
+                this.setFieldValue(oldVersion.getFieldValue(f),f);
+            }
+        }
 
         public void setFieldValue(string content, string sectionCode) {
             switch (sectionCode) {
@@ -48,6 +56,22 @@ namespace CaselyData {
                 default:
                     Debug.WriteLine($"Section code {sectionCode} is not handled. Ignoring.");
                     break;
+            }
+        }
+
+        public string getFieldValue(string sectionCode) {
+            switch (sectionCode) {
+                case "RESLT":
+                    return ResultText;
+                case "INTER":
+                    return InterpretationText;
+                case "COMM":
+                    return CommentText;
+                case "XTUMO":
+                    return TumorSynopticText;
+                default:
+                    Debug.WriteLine($"Section code {sectionCode} is not handled. Ignoring.");
+                    return "";
             }
         }
     }
@@ -105,17 +129,10 @@ namespace CaselyData {
             var distCaseNums = listSoftData.GroupBy(x => x.caseNum).Select(y => y.First()).Distinct().Select(x => x.caseNum);
             foreach (var c in distCaseNums) {
                 // get the entries for the current case
-                var entriesCurrentCase = listSoftData.Where(x => x.caseNum == c).OrderByDescending(f => f.enteredDateTime);
-                var residentEntry = new PathReportFields();
-               
-                // Go through each section of the report and find the corresponding row in the exported softpath data
-                // for the residents report.
-                // Since the data is sorted by descending date, we can return the first matching value for that section
-                foreach (var sectCode in residentEntry.sectionCodes) {
-                    var sectText = entriesCurrentCase.Where(x => x.residentReportSectionCode == sectCode)
-                        .Select(x=> x.residentSectionText).DefaultIfEmpty("").First();
-                    residentEntry.setFieldValue(sectText, sectCode);
-                }
+                var entriesCurrentCase = listSoftData.Where(x => x.caseNum == c).OrderBy(f => f.enteredDateTime);
+                var entrieVersionByDateTime = entriesCurrentCase.Select(x => x.enteredDateTime).Distinct().OrderBy(x => x).ToList();
+                var listResidentEntry = new List<PathReportFields>();
+
                 // Each row of the softpath data contains the entire final report, therefore we just need to read 
                 // the first copy.
                 var firstSoftRow = entriesCurrentCase.First();
@@ -125,17 +142,7 @@ namespace CaselyData {
                     TumorSynopticText = firstSoftRow.attendingSynopticText,
                     CommentText = firstSoftRow.attendingCommentText
                 };
-
-                CaseEntry resCE = new CaseEntry() {
-                    DateTimeModifiedObject =firstSoftRow.enteredDateTime,
-                    CaseNumber = firstSoftRow.caseNum,
-                    Interpretation = residentEntry.InterpretationText,
-                    Result = residentEntry.ResultText,
-                    Comment = residentEntry.CommentText,
-                    TumorSynoptic = residentEntry.TumorSynopticText,
-                    AuthorID = firstSoftRow.residentID
-                };
-
+                // Get the attending version of the report
                 CaseEntry attendCE = new CaseEntry() {
                     DateTimeModifiedObject = firstSoftRow.enteredDateTime.AddHours(1), // make the attending report added later than the resident report
                     CaseNumber = firstSoftRow.caseNum,
@@ -145,8 +152,37 @@ namespace CaselyData {
                     TumorSynoptic = attendingEntry.TumorSynopticText,
                     AuthorID = firstSoftRow.attendingID
                 };
-                caseEntries.Add(attendCE);
-                caseEntries.Add(resCE);
+                
+
+                // Iterate through each version of the resident report grouped by date.
+                foreach (var entryDateTime in entrieVersionByDateTime) {
+                    var newRE = listResidentEntry.Count == 0 ? new PathReportFields() : new PathReportFields(listResidentEntry.Last());
+                    var residentVersions = entriesCurrentCase.Where(x => x.enteredDateTime == entryDateTime);
+                    foreach (var sectCode in newRE.sectionCodes) {
+                        var sectText = residentVersions.Where(x => x.residentReportSectionCode == sectCode)
+                            .Select(x => x.residentSectionText).DefaultIfEmpty(null).First();
+                        if (sectText != null) {
+                            newRE.setFieldValue(sectText, sectCode);
+                        }
+                    }
+
+                    CaseEntry resCE = new CaseEntry() {
+                        DateTimeModifiedObject = entryDateTime,
+                        CaseNumber = firstSoftRow.caseNum,
+                        Interpretation = newRE.InterpretationText,
+                        Result = newRE.ResultText,
+                        Comment = newRE.CommentText,
+                        TumorSynoptic = newRE.TumorSynopticText,
+                        AuthorID = firstSoftRow.residentID
+                    };
+                    listResidentEntry.Add(newRE);
+                    caseEntries.Add(resCE);
+                }
+
+                caseEntries.Add(attendCE); // Add attending report after resident version to keep it sorted for debuggin
+
+
+
             }
             return caseEntries;
 

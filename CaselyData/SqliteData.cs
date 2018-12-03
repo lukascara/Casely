@@ -480,7 +480,7 @@ namespace CaselyData {
 	                    history,
 	                    interpretation,
 	                    gross,
-	                    microscopic FROM case_entry WHERE case_number = @caseNumber;";
+	                    microscopic FROM case_entry WHERE case_number = @caseNumber ORDER By DateModifiedString ASC, TimeModifiedString ASC;";
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 DynamicParameters dp = new DynamicParameters();
                 dp.Add("@caseNumber", caseNumber, System.Data.DbType.String);
@@ -513,6 +513,24 @@ namespace CaselyData {
                                    select p).FirstOrDefault();
             }
             return latestCaseEntry;
+        }
+
+        public static List<DateTime> GetCaseEntryListDateTimeModified(string caseNumber) {
+            var sql = @"select author_id, date_modified, time_modified from case_entry 
+                                                    WHERE case_number = @caseNumber
+                                        ORDER BY date_modified ASC,
+                                        time_modified ASC;";
+            using (var cn = new SQLiteConnection(DbConnectionString)) {
+                DynamicParameters dp = new DynamicParameters();
+                dp.Add("@caseNumber", caseNumber, System.Data.DbType.String);
+                var output = cn.Query(sql, dp).ToList();
+                var listDateTimeModified = new List<DateTime>();
+                for (int i =0; i < output.Count -1; i++) { // we want to skip the last entry, which is the attending's entry
+                    var data = (IDictionary<string, object>)output[i];
+                     listDateTimeModified.Add(DateTime.Parse(data["date_modified"].ToString() + " " + data["time_modified"].ToString()));
+                }
+                return listDateTimeModified;
+            }
         }
 
         public static List<Staff> GetListAuthor() {

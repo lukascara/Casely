@@ -239,21 +239,16 @@ namespace Casely {
         /// Loads the last two versions of the report. Use LoadCaseData to refresh UI as it loads the diagnosis for the case as well.
         /// </summary>
         private void RefreshComparison() {
-              if (cmbCaseNumber.SelectedValue != null) {
+              if (cmbCaseNumber.SelectedValue != null && cmbVersion.SelectedIndex != -1) {
                 wbDiffText.Text = "";
                 string html = "";
                 var listCase = SqliteDataAcces.GetListCaseEntry(cmbCaseNumber.SelectedValue.ToString());
 
                 // gets the case entrys, groups them by author and then selects the last two author entries to compare.
-                var listCaseToCompare = listCase.OrderByDescending(x => x.DateTimeModifiedObject).GroupBy(t => t.AuthorID).Select(x => x.FirstOrDefault()).ToList();
-                // if we only have
-                if (listCaseToCompare.Count < 2) {
-                    wbDiffText.Text += "<h3>Need at least a report from two different authors to compare</h3>";
-                    return;
-                }
-                CaseEntry attendingEntry = listCaseToCompare[0];
-                CaseEntry residentEntry= listCaseToCompare[1];
-               
+                var dt =  DateTime.Parse(cmbVersion.SelectedItem.ToString());
+                CaseEntry residentEntry = listCase.Where(x => x.DateTimeModifiedObject == dt).First();
+                CaseEntry attendingEntry = listCase.Last();
+                
 
                 html += DiffToHTML(residentEntry.Interpretation, attendingEntry.Interpretation, "Interpretation");
                 html += DiffToHTML(residentEntry.Material, attendingEntry.Material, "Material");
@@ -281,16 +276,24 @@ namespace Casely {
        
        
         private void cmbCaseNumber_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            
-
+            if (cmbCaseNumber.SelectedIndex == -1) {
+                return;
+            }
+            var listDateModified = SqliteDataAcces.GetCaseEntryListDateTimeModified(cmbCaseNumber.SelectedValue.ToString());
+            cmbVersion.Items.Clear();
+            foreach (var l in listDateModified) {
+                cmbVersion.Items.Add(l.ToString("MM-dd-yyyy HH:mm:ss"));
+            }
+            cmbVersion.SelectedIndex = cmbVersion.Items.Count - 1;
             refreshCaseData();
-        }
-        private void btnRefresh_Click(object sender, RoutedEventArgs e) {
-            RefreshCaseList();
         }
 
         private void dtFilterDate_LostFocus(object sender, RoutedEventArgs e) {
             RefreshCaseList();
+        }
+
+        private void cmbVersion_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            refreshCaseData();
         }
     }
 
