@@ -37,10 +37,10 @@
                 <Label Visibility="Hidden" Content="Load # of past days" Margin="334.271,15.56,373.459,18.48"/>
 
                 <xctk:IntegerUpDown Visibility="Hidden" x:Name="txtDaysToLoad" HorizontalAlignment="Right" Margin="0,19.52,332.459,20.48" Value="7" DefaultValue="7" TabIndex="5" IsTabStop="False" Minimum="0" Width="41" />
-                <Button x:Name="btnSubmit" Content="Submit Diagnosis" HorizontalAlignment="Right" Margin="0,18.669,25.118,0" Click="btnSubmitDiagnosis_Click" Width="141" TabIndex="4" Grid.Column="1" Height="19.96" VerticalAlignment="Top"/>
+                <Button x:Name="btnSubmit" Content="Submit Diagnosis" HorizontalAlignment="Right" Margin="0,21.56,26.118,0" Click="btnSubmitDiagnosis_Click" Width="141" TabIndex="4" Grid.Column="1" Height="19.96" VerticalAlignment="Top"/>
                 <CheckBox x:Name="chkFilterCompleted" Content="List uncompleted only" Margin="10,3.57,0,0" VerticalAlignment="Top" Click="chkFilterCompleted_Click" HorizontalAlignment="Left" IsChecked="True" Height="15.098" Width="136.935"/>
-                <xctk:WatermarkComboBox x:Name="cmbSelfEvaluation" Watermark="Self-evaulation" HorizontalAlignment="Left" Margin="779.882,17.56,0,0" VerticalAlignment="Top" Width="188" IsEditable="True" TabIndex="3" Grid.ColumnSpan="2" Height="21.96"/>
-                <xctk:WatermarkComboBox x:Name="cmbService" Watermark="Service" HorizontalAlignment="Left" Margin="654.882,5,0,0" VerticalAlignment="Top" Width="120" IsEditable="True" TabIndex="2" Height="21.96"/>
+                <xctk:WatermarkComboBox x:Name="cmbSelfEvaluation" Watermark="Self-evaulation" HorizontalAlignment="Left" Margin="778.882,20.451,0,0" VerticalAlignment="Top" Width="188" IsEditable="True" TabIndex="3" Grid.ColumnSpan="2" Height="21.96"/>
+                <xctk:WatermarkComboBox x:Name="cmbService" Watermark="Service" HorizontalAlignment="Left" Margin="653.882,20.491,0,0" VerticalAlignment="Top" Width="120" IsEditable="True" TabIndex="2" Height="21.96"/>
                 <xctk:DateTimePicker x:Name="dtFilterDate" HorizontalAlignment="Left" Margin="359,19.56,0,0" VerticalAlignment="Top" Width="134.541" Format="ShortDate" LostFocus="dtFilterDate_LostFocus" Height="20"/>
                 <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Filter by Date" VerticalAlignment="Top" Margin="359,2.708,0,0" Height="15.96" Width="70.487"/>
                 <xctk:WatermarkComboBox x:Name="cmbAuthor"  Watermark="Author (i.e. APXYX)" IsEditable="True" HorizontalAlignment="Left" Margin="515.541,18.669,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="cmbAuthor_SelectionChanged" Height="21.96">
@@ -58,7 +58,9 @@
                     </xctk:WatermarkComboBox.ItemTemplate>
                 </xctk:WatermarkComboBox>
                 <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Filter by Author ID" VerticalAlignment="Top" Margin="515.541,2.57,0,0" Height="15.96" Width="97.107"/>
-                <xctk:WatermarkComboBox x:Name="cmbVersion" Watermark="Version" HorizontalAlignment="Left" Margin="654.882,31.96,0,0" VerticalAlignment="Top" Width="120" IsEditable="True" TabIndex="2" Height="21.96" SelectionChanged="cmbVersion_SelectionChanged"/>
+                <xctk:WatermarkComboBox x:Name="cmbVersion" Watermark="Version" HorizontalAlignment="Left" Margin="515.541,45.629,0,-7.589" VerticalAlignment="Top" Width="120" IsEditable="True" TabIndex="2" Height="21.96" SelectionChanged="cmbVersion_SelectionChanged"/>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Enter service" VerticalAlignment="Top" Margin="653.882,2.891,0,0" Height="15.96" Width="97.107"/>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Enter self-valuation score" VerticalAlignment="Top" Margin="778.882,2.891,0,0" Height="15.96" Width="154.107" Grid.ColumnSpan="2"/>
 
 
             </Grid>

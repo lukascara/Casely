@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="Casely: Search" Height="703" Width="1238.7" Loaded="Window_Loaded">
     <Grid>
-        <xctk:WatermarkComboBox x:Name="cmbAuthor"  Watermark="Author (i.e. APXYX)" IsEditable="True" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="cmbAuthor_SelectionChanged">
+        <xctk:WatermarkComboBox x:Name="cmbAuthor"  Watermark="Author (i.e. APXYX)" IsEditable="True" HorizontalAlignment="Left" Margin="10,10.087,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="cmbAuthor_SelectionChanged" Height="23.786">
             <xctk:WatermarkComboBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ComboBoxItem}">
                     <Setter Property="TextSearch.Text" Value="{Binding AuthorID}" />
@@ -43,10 +43,10 @@
         <StatusBar Height="29" VerticalAlignment="Bottom">
             <TextBlock x:Name="txtStatus" TextWrapping="Wrap" Text=""/>
         </StatusBar>
-        <xctk:WatermarkTextBox Watermark="Filter by Intrepretation" x:Name="txtFilterInterpretation" HorizontalAlignment="Left" Height="24.04" Margin="150,8.96,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="243" LostFocus="txtFilter_LostFocus" KeyDown="txtFilter_KeyDown"/>
-        <xctk:WatermarkTextBox x:Name="txtFilterResult" Watermark="Filter by Result" HorizontalAlignment="Left" Height="23" Margin="398,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="229" KeyDown="txtFilter_KeyDown" LostFocus="txtFilter_LostFocus"/>
-        <xctk:WatermarkTextBox x:Name="txtFilterTumorSynoptic" Watermark="Filter by Tumor Synoptic" HorizontalAlignment="Left" Height="23" Margin="632,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="204" KeyDown="txtFilter_KeyDown" LostFocus="txtFilter_LostFocus"/>
-        <xctk:WatermarkTextBox x:Name="txtFilterComment" Watermark="Filter by Comment" HorizontalAlignment="Left" Height="23" Margin="841,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="244" KeyDown="txtFilter_KeyDown" LostFocus="txtFilter_LostFocus"/>
+        <xctk:WatermarkTextBox Watermark="Filter by Intrepretation" x:Name="txtFilterInterpretation" HorizontalAlignment="Left" Height="26.04" Margin="150,8.96,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="243" LostFocus="txtFilter_LostFocus" KeyDown="txtFilter_KeyDown"/>
+        <xctk:WatermarkTextBox x:Name="txtFilterResult" Watermark="Filter by Result" HorizontalAlignment="Left" Height="24.913" Margin="398,10.087,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="229" KeyDown="txtFilter_KeyDown" LostFocus="txtFilter_LostFocus"/>
+        <xctk:WatermarkTextBox x:Name="txtFilterTumorSynoptic" Watermark="Filter by Tumor Synoptic" HorizontalAlignment="Left" Height="24.913" Margin="632,10.087,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="204" KeyDown="txtFilter_KeyDown" LostFocus="txtFilter_LostFocus"/>
+        <xctk:WatermarkTextBox x:Name="txtFilterComment" Watermark="Filter by Comment" HorizontalAlignment="Left" Height="23.786" Margin="841,10.087,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="244" KeyDown="txtFilter_KeyDown" LostFocus="txtFilter_LostFocus"/>
 
     </Grid>
 </Window>

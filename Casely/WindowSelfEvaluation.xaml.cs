@@ -59,6 +59,10 @@ namespace Casely {
                     listFilteredCaseEntry.Add(s);
                 }
             }
+
+            if (listFilteredCaseEntry.Count != 0) {
+                cmbCaseNumber.SelectedIndex = 0;
+            }
         }
 
         public void refreshSuggestions() {

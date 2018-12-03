@@ -58,7 +58,8 @@ namespace CaselyData {
         public List<PartEntry> ListPartEntry { get; set; }
 
         public string toHtml() {
-            string htmlCaseEntry = $"<h3><u>Interpretation</u></h3>{Interpretation}";
+            string htmlCaseEntry = $"Author ID: {AuthorID}";
+            htmlCaseEntry += $"<h3><u>Interpretation</u></h3>{Interpretation}";
             htmlCaseEntry += $"<h3><u>Material</u></h3>{Material}";
             htmlCaseEntry += $"<h3><u>History</u></h3>{History}";
             htmlCaseEntry += $"<h3><u>Gross</u></h3>{Gross}";
