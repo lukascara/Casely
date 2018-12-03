@@ -2,16 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using CaselyData;
 using DiffMatchPatch;
 
@@ -38,7 +30,7 @@ namespace Casely {
         private void Window_Loaded(object sender, RoutedEventArgs e) {
             cmbCaseNumber.ItemsSource = listFilteredCaseEntry;
             cmbCaseNumber.SelectedValuePath = "CaseNumber";
-            dtFilterDate.Text = "07/20/2018";
+            dtFilterDate.Text = "";
             RefreshCaseList();
             if (cmbCaseNumber.Items.Count > 0) cmbCaseNumber.SelectedIndex = 0;
             cmbService.ItemsSource = suggestionService;
@@ -47,8 +39,9 @@ namespace Casely {
 
 
         private void RefreshCaseList() {
-            DateTime startDate = DateTime.Parse(dtFilterDate.Text);
-            var filteredList = SqliteDataAcces.FilterCaseEntryDateModified(startDate);
+
+            var filteredList = dtFilterDate.Text != "" ?  SqliteDataAcces.FilterCaseEntryDateModified(DateTime.Parse(dtFilterDate.Text)) : SqliteDataAcces.GetListAllCaseEntries();
+
             listFilteredCaseEntry.Clear();
             cmbCaseNumber.SelectedValuePath = "CaseNumber";
             foreach (var s in filteredList) {

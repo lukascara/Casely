@@ -1,18 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using Superpower;
-using Superpower.Parsers;
-using Superpower.Tokenizers;
-using Superpower.Model;
-using System.Windows.Forms;
-using System.Diagnostics;
-using System.Data;
-
-namespace CaselyData {
+﻿namespace CaselyData {
 	public class DBCreationString {
         public static string sqlCreateDBString = @"CREATE TABLE `path_case` (
 	`case_number`	TEXT NOT NULL UNIQUE PRIMARY KEY ON CONFLICT IGNORE,
