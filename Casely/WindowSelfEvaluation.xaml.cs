@@ -19,6 +19,7 @@ namespace Casely {
         private List<string> suggestionCategory = new List<string>();
         private List<string> suggestionService = new List<string>();
         private List<string> suggestionEvaluation = new List<string>();
+        public ObservableCollection<Staff> listStaff = new ObservableCollection<Staff>();
         private ObservableCollection<CaseEntry> listFilteredCaseEntry = new ObservableCollection<CaseEntry>();
 
         public WindowSelfEvaluation() {
@@ -28,6 +29,10 @@ namespace Casely {
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
+            // load the names of authors
+            listStaff = new ObservableCollection<Staff>(SqliteDataAcces.GetListAuthor());
+            cmbAuthor.ItemsSource = listStaff;
+            cmbAuthor.SelectedValuePath = "AuthorID";
             cmbCaseNumber.ItemsSource = listFilteredCaseEntry;
             cmbCaseNumber.SelectedValuePath = "CaseNumber";
             dtFilterDate.Text = "";
@@ -39,12 +44,17 @@ namespace Casely {
 
 
         private void RefreshCaseList() {
-
-            var filteredList = dtFilterDate.Text != "" ?  SqliteDataAcces.FilterCaseEntryDateModified(DateTime.Parse(dtFilterDate.Text)) : SqliteDataAcces.GetListAllCaseEntries();
-
+            // Filter by date
+            var listFilteredCE = dtFilterDate.Text != "" ?  SqliteDataAcces.FilterCaseEntryDateModified(DateTime.Parse(dtFilterDate.Text)) : SqliteDataAcces.GetListAllCaseEntries();
+            // Filter by Author ID
+            if (cmbAuthor.SelectedIndex != -1) {
+                var listFilter = SqliteDataAcces.GetCaseEntryFilterAuthorID(cmbAuthor.SelectedValue.ToString());
+                listFilteredCE = listFilteredCE.Where(x => listFilter.ToList()
+                                        .FindIndex(c => c.CaseNumber == x.CaseNumber) != -1).ToList();
+            }
             listFilteredCaseEntry.Clear();
             cmbCaseNumber.SelectedValuePath = "CaseNumber";
-            foreach (var s in filteredList) {
+            foreach (var s in listFilteredCE) {
                 if (chkFilterCompleted.IsChecked == false || !(SqliteDataAcces.CaseEntryEvaluated(s.CaseNumber))) {
                     listFilteredCaseEntry.Add(s);
                 }
@@ -107,6 +117,9 @@ namespace Casely {
 
         }
 
+        private void cmbAuthor_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            RefreshCaseList();
+        }
 
         /// <summary>
         /// Loads the diagnosis for the selected case in to the UI.

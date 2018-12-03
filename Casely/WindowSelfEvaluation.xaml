@@ -45,6 +45,21 @@
                 <xctk:WatermarkComboBox x:Name="cmbService" Watermark="Service" HorizontalAlignment="Left" Margin="654.882,20.669,0,0" VerticalAlignment="Top" Width="120" IsEditable="True" TabIndex="2"/>
                 <xctk:DateTimePicker x:Name="dtFilterDate" HorizontalAlignment="Left" Margin="359,19.56,0,0" VerticalAlignment="Top" Width="134.541" Format="ShortDate" LostFocus="dtFilterDate_LostFocus"/>
                 <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Filter by Date" VerticalAlignment="Top" Margin="359,2.708,0,0"/>
+                <xctk:WatermarkComboBox x:Name="cmbAuthor"  Watermark="Author (i.e. APXYX)" IsEditable="True" HorizontalAlignment="Left" Margin="515.541,18.669,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="cmbAuthor_SelectionChanged">
+                    <xctk:WatermarkComboBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ComboBoxItem}">
+                            <Setter Property="TextSearch.Text" Value="{Binding AuthorID}" />
+                        </Style>
+                    </xctk:WatermarkComboBox.ItemContainerStyle>
+                    <xctk:WatermarkComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding AuthorID}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </xctk:WatermarkComboBox.ItemTemplate>
+                </xctk:WatermarkComboBox>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Filter by Author ID" VerticalAlignment="Top" Margin="515.541,2.57,0,0"/>
 
 
             </Grid>

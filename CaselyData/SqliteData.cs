@@ -382,7 +382,9 @@ namespace CaselyData {
 	                    history,
 	                    interpretation,
 	                    gross,
-	                    microscopic FROM case_entry )
+	                    microscopic FROM case_entry 
+                                        ORDER BY DateModifiedString ASC,
+                                        TimeModifiedString ASC)
                                     GROUP BY CaseNumber
                                     ORDER BY DateModifiedString DESC,
                                     TimeModifiedString DESC;";
@@ -411,7 +413,9 @@ namespace CaselyData {
 	                    interpretation,
 	                    gross,
 	                    microscopic FROM case_entry 
-                        WHERE date_modified >= @startDate) 
+                        WHERE date_modified >= @startDate 
+                                        ORDER BY DateModifiedString ASC,
+                                        TimeModifiedString ASC)
                                   GROUP BY CaseNumber
                                   ORDER BY DateModifiedString DESC,
                                   TimeModifiedString DESC ";
