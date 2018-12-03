@@ -58,13 +58,13 @@ namespace CaselyData {
         public List<PartEntry> ListPartEntry { get; set; }
 
         public string toHtml() {
-            string htmlCaseEntry = $"<h3><u>Interpretation</u></h3><p>{Interpretation}</p>";
-            htmlCaseEntry += $"<h3><u>Material</u></h3><p>{Material}</p>";
-            htmlCaseEntry += $"<h3><u>History</u></h3><p>{History}</p>";
-            htmlCaseEntry += $"<h3><u>Gross</u></h3><p>{Gross}</p>";
-            htmlCaseEntry += $"<h3><u>Microscopic</u></h3><p>{Microscopic}</p>";
-            htmlCaseEntry += $"<h3><u>Tumor Synoptic</u></h3><p>{TumorSynoptic}</p>";
-            htmlCaseEntry += $"<h3><u>Comment</u></h3><p>{Comment}</p>";
+            string htmlCaseEntry = $"<h3><u>Interpretation</u></h3>{Interpretation}";
+            htmlCaseEntry += $"<h3><u>Material</u></h3>{Material}";
+            htmlCaseEntry += $"<h3><u>History</u></h3>{History}";
+            htmlCaseEntry += $"<h3><u>Gross</u></h3>{Gross}";
+            htmlCaseEntry += $"<h3><u>Microscopic</u></h3>{Microscopic}";
+            htmlCaseEntry += $"<h3><u>Tumor Synoptic</u></h3>{TumorSynoptic}";
+            htmlCaseEntry += $"<h3><u>Comment</u></h3>{Comment}";
             htmlCaseEntry = "<head><style>P { white-space: pre; }</style></head>" + htmlCaseEntry;
 
             return htmlCaseEntry.Replace("\n","<br>");
