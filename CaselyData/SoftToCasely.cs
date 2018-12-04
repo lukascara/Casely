@@ -133,24 +133,23 @@ namespace CaselyData {
                 var entrieVersionByDateTime = entriesCurrentCase.Select(x => x.enteredDateTime).Distinct().OrderBy(x => x).ToList();
                 var listResidentEntry = new List<PathReportFields>();
 
-                // Each row of the softpath data contains the entire final report, therefore we just need to read 
-                // the first copy.
-                var firstSoftRow = entriesCurrentCase.First();
+                // Each row of the softpath data contains the entire final report, therefore we just need to read last row.
+                var lastSoftRowEntry = entriesCurrentCase.Last();
                 var attendingEntry = new PathReportFields() {
-                    InterpretationText = firstSoftRow.attendingInterpretationText,
-                    ResultText = firstSoftRow.attendingResultText,
-                    TumorSynopticText = firstSoftRow.attendingSynopticText,
-                    CommentText = firstSoftRow.attendingCommentText
+                    InterpretationText = lastSoftRowEntry.attendingInterpretationText,
+                    ResultText = lastSoftRowEntry.attendingResultText,
+                    TumorSynopticText = lastSoftRowEntry.attendingSynopticText,
+                    CommentText = lastSoftRowEntry.attendingCommentText
                 };
                 // Get the attending version of the report
                 CaseEntry attendCE = new CaseEntry() {
-                    DateTimeModifiedObject = firstSoftRow.enteredDateTime.AddHours(1), // make the attending report added later than the resident report
-                    CaseNumber = firstSoftRow.caseNum,
+                    DateTimeModifiedObject = lastSoftRowEntry.enteredDateTime.AddHours(1), // make the attending report added later than the resident report
+                    CaseNumber = lastSoftRowEntry.caseNum,
                     Interpretation = attendingEntry.InterpretationText,
                     Result = attendingEntry.ResultText,
                     Comment = attendingEntry.CommentText,
                     TumorSynoptic = attendingEntry.TumorSynopticText,
-                    AuthorID = firstSoftRow.attendingID
+                    AuthorID = lastSoftRowEntry.attendingID
                 };
                 
 
@@ -168,12 +167,12 @@ namespace CaselyData {
 
                     CaseEntry resCE = new CaseEntry() {
                         DateTimeModifiedObject = entryDateTime,
-                        CaseNumber = firstSoftRow.caseNum,
+                        CaseNumber = lastSoftRowEntry.caseNum,
                         Interpretation = newRE.InterpretationText,
                         Result = newRE.ResultText,
                         Comment = newRE.CommentText,
                         TumorSynoptic = newRE.TumorSynopticText,
-                        AuthorID = firstSoftRow.residentID
+                        AuthorID = lastSoftRowEntry.residentID
                     };
                     listResidentEntry.Add(newRE);
                     caseEntries.Add(resCE);

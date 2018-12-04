@@ -624,8 +624,7 @@ namespace CaselyData {
         public static List<CaseEntry> FilterCaseEntryTumorSynoptic(string strFilterTumorSynoptic) {
             return FilterCaseEntry(strFilterTumorSynoptic, "fts5_case_entry_tumor_synoptic");
         }
-
-
+        
         private static List<CaseEntry> FilterCaseEntry(string strFilter, string fts5TableName) {
             var sql = @"SELECT id,
 	                    case_entry.author_id AS AuthorID,
@@ -646,7 +645,7 @@ namespace CaselyData {
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 cn.Open();
                 cn.EnableExtensions(true);
-                cn.LoadExtension("SQLite.Interop.dll", "sqlite3_fts5_init");
+                cn.LoadExtension("SQLite.Interop.dll", "sqlite3_fts5_init"); // required extension in order to do FTS5 search
                 DynamicParameters dp = new DynamicParameters();
                 dp.Add("@strFilter", strFilter, System.Data.DbType.String);
                 var output = cn.Query<CaseEntry>(sql, dp).ToList();

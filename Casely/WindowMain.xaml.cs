@@ -4,6 +4,7 @@ using System.Windows;
 using CaselyData;
 using System.IO;
 using System.Windows.Forms;
+using System.Windows.Input;
 
 namespace Casely {
     /// <summary>
@@ -38,7 +39,9 @@ namespace Casely {
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
+            txtUserID.Text = Properties.Settings.Default.UserID;
             connectToDB();
+            
         }
 
         private void connectToDB() {
@@ -100,7 +103,7 @@ SOFTWARE.");
             theDialog.Filter = "Excel files (.xls)|*.xls";
             if (theDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 try {
-                    
+                    ChangeStatusText("Importing data. Please wait...");
                     var softText = File.ReadAllText(theDialog.FileName);
                     CaselyData.SoftToCaselyConverter sc = new SoftToCaselyConverter();
                     var importedData = sc.importSoftPathCSVData(theDialog.FileName);
@@ -121,8 +124,8 @@ SOFTWARE.");
                    
                     
                     System.Windows.Forms.MessageBox.Show($"{casesImportedCount/2} cases imported. {casesAlreadImported} already existed in Casely.");
-                    
-                       
+                    ChangeStatusText("");
+
                 } catch (Exception ex) {
                     System.Windows.MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);
                 }
@@ -150,6 +153,7 @@ SOFTWARE.");
             fileDialog.Filter = "Casely database files (.db)|*.db";
             Nullable<bool> result = fileDialog.ShowDialog();
             if (result == true) {
+                ChangeStatusText("Creating database");
                 //var path = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
                 //var path = Properties.Settings.Default.DatabasePath;
                 //var dbPath = Path.Combine(path, "Casely.db");
@@ -159,12 +163,33 @@ SOFTWARE.");
                 tbDBPath.Text = fileDialog.FileName;
                 CaselyData.SqliteDataAcces.DBPath = fileDialog.FileName;
                 connectToDB();
+                ChangeStatusText("Finished");
             }
+        }
+
+        private void ChangeStatusText(string status) {
+            txtStatus.Text = status;
         }
 
         private void btnSearch_Click(object sender, RoutedEventArgs e) {
             WindowCaseSearch wn = new WindowCaseSearch();
             wn.ShowDialog();
+        }
+
+        private void ChangeUserID() {
+            var oldUID = Properties.Settings.Default.UserID;
+            Properties.Settings.Default.UserID = txtUserID.Text;
+            txtStatus.Text = $"User ID changed from '{oldUID}' to '{txtUserID.Text}'";
+        }
+
+        private void txtUserID_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
+            if (e.Key == Key.Enter) {
+                ChangeUserID();
+            }
+        }
+
+        private void txtUserID_LostFocus(object sender, RoutedEventArgs e) {
+            ChangeUserID();
         }
     }
 }

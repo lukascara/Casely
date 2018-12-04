@@ -25,6 +25,11 @@
         <Button x:Name="btnImportSoftPathData" Content="Import Soft Path Data" HorizontalAlignment="Left" Margin="10,60.724,0,0" VerticalAlignment="Top" Width="283.835" Click="btnImportData_Click" Height="24.96"/>
         <TextBlock HorizontalAlignment="Left" Margin="4.293,28.144,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="275.804" FontSize="14"><Run Text="Database path: "/><Run/></TextBlock>
         <TextBox IsReadOnly="True"  x:Name="tbDBPath" HorizontalAlignment="Left" Margin="102.293,28.804,0,0" TextWrapping="Wrap" VerticalAlignment="Top">Data Base Path</TextBox>
+        <TextBox x:Name="txtUserID" HorizontalAlignment="Left" Height="23" Margin="662,23.764,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" KeyDown="txtUserID_KeyDown" LostFocus="txtUserID_LostFocus"/>
+        <TextBlock HorizontalAlignment="Left" Margin="615.936,28.804,0,0" TextWrapping="Wrap" Text="Your ID:" VerticalAlignment="Top"/>
+        <StatusBar Height="22" VerticalAlignment="Bottom">
+            <TextBlock x:Name="txtStatus" TextWrapping="Wrap"/>
+        </StatusBar>
 
     </Grid>
 </Window>
