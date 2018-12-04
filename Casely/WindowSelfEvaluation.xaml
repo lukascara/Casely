@@ -73,7 +73,7 @@
                 <StackPanel Visibility="Hidden" x:Name="spPartDiagnosis"  Margin="0,5,10,10" HorizontalAlignment="Right" Width="524" Grid.Column="1">
                     <Button x:Name="btnAddDiagnosis" Width="96.5" Content="Add Diagnosis" TabIndex="2" HorizontalAlignment="Center" Click="btnAddDiagnosis_Click"/>
                 </StackPanel>
-                <WPF:HtmlPanel x:Name="wbDiffText" Margin="10" BorderBrush="#FDA6A6A6" BorderThickness="3" Grid.ColumnSpan="2"/>
+                <WPF:HtmlPanel x:Name="wbDiffText" Margin="10,21,10,10" BorderBrush="#FDA6A6A6" BorderThickness="3" Grid.ColumnSpan="2"/>
 
             </Grid>
         </WrapPanel>
