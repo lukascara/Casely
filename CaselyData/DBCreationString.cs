@@ -77,10 +77,10 @@ END;
 CREATE TRIGGER insert_case_entry AFTER INSERT  ON case_entry
 BEGIN
 INSERT INTO staff (author_id) VALUES (new.author_id);
-INSERT INTO fts5_case_entry_result (case_number, date_modified, time_modified, result) VALUES (new.case_number, new.date_modified, new.time_modified, new.result);
-INSERT INTO fts5_case_entry_interpretation (case_number, date_modified, time_modified,interpretation) VALUES (new.case_number, new.date_modified, new.time_modified,new.interpretation);
-INSERT INTO  fts5_case_entry_comment (case_number, date_modified, time_modified, comment)  VALUES (new.case_number,new.date_modified, new.time_modified, new.comment);
-INSERT INTO  fts5_case_entry_tumor_synoptic (case_number, date_modified, time_modified, tumor_synoptic)  VALUES (new.case_number, new.date_modified, new.time_modified,new.tumor_synoptic);
+INSERT INTO fts5_case_entry_result (author_id, case_number, date_modified, time_modified, result) VALUES (new.author_id, new.case_number, new.date_modified, new.time_modified, new.result);
+INSERT INTO fts5_case_entry_interpretation (author_id, case_number, date_modified, time_modified,interpretation) VALUES (new.author_id, new.case_number, new.date_modified, new.time_modified,new.interpretation);
+INSERT INTO  fts5_case_entry_comment (author_id, case_number, date_modified, time_modified, comment)  VALUES (new.author_id, new.case_number,new.date_modified, new.time_modified, new.comment);
+INSERT INTO  fts5_case_entry_tumor_synoptic (author_id, case_number, date_modified, time_modified, tumor_synoptic)  VALUES (new.author_id, new.case_number, new.date_modified, new.time_modified,new.tumor_synoptic);
 END;
 
 CREATE TABLE IF NOT EXISTS `specimen` (
@@ -162,10 +162,10 @@ BEGIN
 INSERT INTO service (service) VALUES (new.service);
 END;
 
-CREATE VIRTUAL TABLE fts5_case_entry_result USING fts5(case_number, date_modified, time_modified, result);
-CREATE VIRTUAL TABLE fts5_case_entry_interpretation USING fts5(case_number, date_modified, time_modified, interpretation);
-CREATE VIRTUAL TABLE fts5_case_entry_comment USING fts5(case_number, date_modified, time_modified, comment);
-CREATE VIRTUAL TABLE fts5_case_entry_tumor_synoptic USING fts5(case_number, date_modified, time_modified, tumor_synoptic);
+CREATE VIRTUAL TABLE fts5_case_entry_result USING fts5(author_id, case_number, date_modified, time_modified, result);
+CREATE VIRTUAL TABLE fts5_case_entry_interpretation USING fts5(author_id, case_number, date_modified, time_modified, interpretation);
+CREATE VIRTUAL TABLE fts5_case_entry_comment USING fts5(author_id, case_number, date_modified, time_modified, comment);
+CREATE VIRTUAL TABLE fts5_case_entry_tumor_synoptic USING fts5(author_id, case_number, date_modified, time_modified, tumor_synoptic);
 
 CREATE INDEX casenum_case_entry ON case_entry (case_number);
 CREATE INDEX casenum_part_entry ON part_entry (case_number);

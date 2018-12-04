@@ -12,7 +12,7 @@
         <TextBlock Visibility="Hidden" HorizontalAlignment="Left" Margin="338.293,64,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="275.804" Text="What analysis would you like to do?" FontSize="14"/>
         <Button x:Name="btnSearch" Content="Search Reports" Margin="10,188.416,0,0" Click="btnSearch_Click" HorizontalAlignment="Left" Width="283.835" Height="59.165" VerticalAlignment="Top"/>
         <Button x:Name="btnSelfEvaluate" Content="Self-Evaluate Reports" Margin="10,124.251,0,0" Click="btnDiagnosis_Click" HorizontalAlignment="Left" Width="283.835" Height="59.165" VerticalAlignment="Top"/>
-        <Menu Height="19" Margin="0,0,10,0" VerticalAlignment="Top">
+        <Menu Height="19" VerticalAlignment="Top">
             <MenuItem Header="File">
                 <MenuItem x:Name="MenuImportSoftPath" Header="Import Soft Path Data" Click="btnImportData_Click"></MenuItem>
                 <MenuItem Header="Create Database" Click="btnCreateDatabase_Click"></MenuItem>
@@ -25,7 +25,7 @@
         <Button x:Name="btnImportSoftPathData" Content="Import Soft Path Data" HorizontalAlignment="Left" Margin="10,60.724,0,0" VerticalAlignment="Top" Width="283.835" Click="btnImportData_Click" Height="24.96"/>
         <TextBlock HorizontalAlignment="Left" Margin="4.293,28.144,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="275.804" FontSize="14"><Run Text="Database path: "/><Run/></TextBlock>
         <TextBox IsReadOnly="True"  x:Name="tbDBPath" HorizontalAlignment="Left" Margin="102.293,28.804,0,0" TextWrapping="Wrap" VerticalAlignment="Top">Data Base Path</TextBox>
-        <TextBox x:Name="txtUserID" HorizontalAlignment="Left" Height="23" Margin="662,23.764,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" KeyDown="txtUserID_KeyDown" LostFocus="txtUserID_LostFocus"/>
+        <TextBox x:Name="txtUserID" Height="23" Margin="662,23.764,10,0" TextWrapping="Wrap" VerticalAlignment="Top" KeyDown="txtUserID_KeyDown" LostFocus="txtUserID_LostFocus"/>
         <TextBlock HorizontalAlignment="Left" Margin="615.936,28.804,0,0" TextWrapping="Wrap" Text="Your ID:" VerticalAlignment="Top"/>
         <StatusBar Height="22" VerticalAlignment="Bottom">
             <TextBlock x:Name="txtStatus" TextWrapping="Wrap"/>

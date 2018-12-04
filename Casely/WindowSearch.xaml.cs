@@ -83,19 +83,19 @@ namespace Casely {
         }
 
         private List<CaseEntry> SearchFilterByInterpretation(string searchTerms) {
-            return SqliteDataAcces.FilterCaseEntryInterpretation(searchTerms);                           
+            return SqliteDataAcces.FilterCaseEntryInterpretation(searchTerms, Properties.Settings.Default.UserID);                           
         }
 
         private List<CaseEntry> SearchFilterByResult(string searchTerms) {
-            return SqliteDataAcces.FilterCaseEntryResult(searchTerms);
+            return SqliteDataAcces.FilterCaseEntryResult(searchTerms, Properties.Settings.Default.UserID);
         }
 
         private List<CaseEntry> SearchFilterByComment(string searchTerms) {
-            return SqliteDataAcces.FilterCaseEntryComment(searchTerms);
+            return SqliteDataAcces.FilterCaseEntryComment(searchTerms, Properties.Settings.Default.UserID);
         }
 
         private List<CaseEntry> SearchFilterByTumorSynoptic(string searchTerms) {
-            return SqliteDataAcces.FilterCaseEntryTumorSynoptic(searchTerms);
+            return SqliteDataAcces.FilterCaseEntryTumorSynoptic(searchTerms, Properties.Settings.Default.UserID);
         }
 
         private void lbFilteredCaseEntry_SelectionChanged(object sender, SelectionChangedEventArgs e) {

@@ -609,23 +609,30 @@ namespace CaselyData {
             }
         }
 
-        public static List<CaseEntry> FilterCaseEntryInterpretation(string strFilterInterpretation) {
-            return FilterCaseEntry(strFilterInterpretation, "fts5_case_entry_interpretation");
+        public static List<CaseEntry> FilterCaseEntryInterpretation(string strFilterInterpretation, string userID) {
+            return FilterCaseEntry(strFilterInterpretation, "fts5_case_entry_interpretation",  userID);
         }
 
-        public static List<CaseEntry> FilterCaseEntryResult(string strFilterResult) {
-            return FilterCaseEntry(strFilterResult, "fts5_case_entry_result");
+        public static List<CaseEntry> FilterCaseEntryResult(string strFilterResult, string userID) {
+            return FilterCaseEntry(strFilterResult, "fts5_case_entry_result",  userID);
         }
 
-        public static List<CaseEntry> FilterCaseEntryComment(string strFilterComment) {
-            return FilterCaseEntry(strFilterComment, "fts5_case_entry_comment");
+        public static List<CaseEntry> FilterCaseEntryComment(string strFilterComment, string userID) {
+            return FilterCaseEntry(strFilterComment, "fts5_case_entry_comment",  userID);
         }
 
-        public static List<CaseEntry> FilterCaseEntryTumorSynoptic(string strFilterTumorSynoptic) {
-            return FilterCaseEntry(strFilterTumorSynoptic, "fts5_case_entry_tumor_synoptic");
+        public static List<CaseEntry> FilterCaseEntryTumorSynoptic(string strFilterTumorSynoptic, string userID) {
+            return FilterCaseEntry(strFilterTumorSynoptic, "fts5_case_entry_tumor_synoptic",  userID);
         }
         
-        private static List<CaseEntry> FilterCaseEntry(string strFilter, string fts5TableName) {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="strFilter"></param>
+        /// <param name="fts5TableName"></param>
+        /// <param name="userID">This UserID result is filtered out so that we only have results from the attendings</param>
+        /// <returns></returns>
+        private static List<CaseEntry> FilterCaseEntry(string strFilter, string fts5TableName, string userID) {
             var sql = @"SELECT id,
 	                    case_entry.author_id AS AuthorID,
 	                    case_entry.case_number AS CaseNumber,
@@ -639,8 +646,9 @@ namespace CaselyData {
 	                    case_entry.interpretation,
 	                    case_entry.gross,
 	                    case_entry.microscopic FROM " + fts5TableName.Trim() + @"
-                        INNER JOIN case_entry ON case_entry.case_number = "+ fts5TableName.Trim() +@".case_number
-                        WHERE "+ fts5TableName.Trim() + @" MATCH @strFilter;";
+                        INNER JOIN case_entry ON case_entry.case_number = " + fts5TableName.Trim() + @".case_number AND DateModifiedString = " + fts5TableName.Trim() 
+                        + @".date_modified AND TimeModifiedString = " + fts5TableName.Trim() + @".time_modified 
+                        WHERE " + fts5TableName.Trim() + @" MATCH @strFilter AND case_entry.author_id != @userID;";
 
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 cn.Open();
@@ -648,6 +656,7 @@ namespace CaselyData {
                 cn.LoadExtension("SQLite.Interop.dll", "sqlite3_fts5_init"); // required extension in order to do FTS5 search
                 DynamicParameters dp = new DynamicParameters();
                 dp.Add("@strFilter", strFilter, System.Data.DbType.String);
+                dp.Add("@userID", userID, System.Data.DbType.String);
                 var output = cn.Query<CaseEntry>(sql, dp).ToList();
                 cn.Close();
                 return output;
