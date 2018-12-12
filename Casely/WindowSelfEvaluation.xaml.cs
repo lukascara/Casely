@@ -24,8 +24,8 @@ namespace Casely {
 
         public WindowSelfEvaluation() {
             InitializeComponent();
-            RefreshPartDiagnosis();
             refreshSuggestions();
+            this.DataContext = this;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
@@ -40,6 +40,8 @@ namespace Casely {
             if (cmbCaseNumber.Items.Count > 0) cmbCaseNumber.SelectedIndex = 0;
             cmbService.ItemsSource = suggestionService;
             cmbSelfEvaluation.ItemsSource = suggestionEvaluation;
+            
+            
         }
 
 
@@ -125,94 +127,15 @@ namespace Casely {
             RefreshCaseList();
         }
 
-        /// <summary>
-        /// Loads the diagnosis for the selected case in to the UI.
-        /// </summary>
-        private void RefreshPartDiagnosis() {
-            List<PartDiagnosis> listPartDiagnosis = SqliteDataAcces.GetListPartDiagnosisLatestVersion(cmbCaseNumber.Text);
-            clearDiagnosisControls();
-            // Check if a valid case number is selected
-            string cmbCaseText = cmbCaseNumber.Text;
-            if (cmbCaseText != "" && cmbCaseText != SqliteDataAcces.DbConnectionString) {
-                btnAddDiagnosis.IsEnabled = true;
-                // create new ones from the partDiagnosis loaded from the database
-                foreach (var p in listPartDiagnosis) {
-                    spPartDiagnosis.Children.Add(new UCdiagnosis(p, suggestionOrgan, suggestionOrganSystem, suggestionCategory, suggestionDiagnosis));
-                }
-            } else {
-                // blank case number entered, prevent addition of diagnosis
-                btnAddDiagnosis.IsEnabled = false;
-            }
-        }
-        /// <summary>
-        /// clear old UC controls
-        /// </summary>
-        private void clearDiagnosisControls() {            
-            for (int i = 0; i < spPartDiagnosis.Children.Count; i++) {
-                if (spPartDiagnosis.Children[i] is UCdiagnosis) {
-                    spPartDiagnosis.Children.RemoveAt(i);
-                    i--; // go back one since we removed a control
-                }
-            }
-        }
-
-        private void AddPartDiagnosis() {
-            if (spPartDiagnosis.Children.Count > 1) {
-                UCdiagnosis lastPart = spPartDiagnosis.Children[spPartDiagnosis.Children.Count - 1] as UCdiagnosis;
-                char lstParLetter = lastPart.tbPart.Text.Length != 0 ? lastPart.tbPart.Text[0] : 'A';
-                UCdiagnosis newPart = new UCdiagnosis(new PartDiagnosis {
-                    // keep the same part letter as preveious entry to allow multiple diagnosis for the same part
-                    Part = (lstParLetter).ToString(),
-                    Organ = lastPart.cmbOrgan.Text,
-                    OrganSystem = lastPart.cmbOrganSystem.Text
-                }, suggestionOrgan, suggestionOrganSystem, suggestionCategory, suggestionDiagnosis);
-                spPartDiagnosis.Children.Add(newPart);
-            } else {
-                UCdiagnosis newPart = new UCdiagnosis(new PartDiagnosis {
-                    Part = "A",
-                    Organ = "",
-                    OrganSystem = "",
-                    Diagnosis = "",
-                    DiagnosisDetailed = "",
-                }, suggestionOrgan, suggestionOrganSystem, suggestionCategory, suggestionDiagnosis);
-                spPartDiagnosis.Children.Add(newPart);
-            }
-
-        }
-
-        private void btnAddDiagnosis_Click(object sender, RoutedEventArgs e) {
-            AddPartDiagnosis();
-        }
+      
 
         private void btnSubmitDiagnosis_Click(object sender, RoutedEventArgs e) {
             submitDiagnosis();
         }
 
         private void submitDiagnosis() {
-            List<PartDiagnosis> partsToAdd = new List<PartDiagnosis>();
-            // get the current date and time to save the same modified time for all parts being added to the database
-            DateTime currentTime = DateTime.Now;
-            foreach (var p in spPartDiagnosis.Children) {
-                if (p is UCdiagnosis) {
-                    var pt = (UCdiagnosis)p;
-                    PartDiagnosis newPartDiagnosis = new PartDiagnosis() {
-                        Part = pt.partDiagnosis.Part,
-                        OrganSystem = pt.partDiagnosis.OrganSystem,
-                        Organ = pt.partDiagnosis.Organ,
-                        Diagnosis = pt.partDiagnosis.Diagnosis,
-                        DiagnosisDetailed = pt.partDiagnosis.DiagnosisDetailed,
-                        Category = pt.partDiagnosis.Category,
-                        DateModifiedString = currentTime.ToString("yyyy-MM-dd"),
-                        TimeModifiedString = currentTime.ToString("HH:mm:ss"),
-                        CaseNumber = cmbCaseNumber.Text
-                    };
-                    partsToAdd.Add(newPartDiagnosis);
-                }
-            }
             PathCase pathCase = new PathCase() { CaseNumber = cmbCaseNumber.SelectedValue.ToString(), Service = cmbService.Text, Evaluation = cmbSelfEvaluation.Text };
-            // save the assigned diagnosis to the case
-            SqliteDataAcces.InsertNewPartDiagnosisEntry(partsToAdd, pathCase);
-
+          
             // Save the evaluation and other data for the case, essentially completing it.
             SqliteDataAcces.UpdateCompletedCase(pathCase);
             cmbSelfEvaluation.Text = "";
@@ -228,13 +151,11 @@ namespace Casely {
 
         private void refreshCaseData() {
             RefreshComparison();
-            RefreshPartDiagnosis();
             var cn = cmbCaseNumber.SelectedValue;
             if (cn != null) {
                 var pathCase = SqliteDataAcces.GetPathCase(cn.ToString());
-                cmbSelfEvaluation.Text = pathCase.Evaluation;
-                cmbService.Text = pathCase.Service;
-
+                cmbSelfEvaluation.Text = pathCase.Evaluation != null ? pathCase.Evaluation : "";
+                cmbService.Text = pathCase.Service != null ? pathCase.Service : "";
             }
         }
 
@@ -266,7 +187,6 @@ namespace Casely {
                 wbDiffText.Text = html;
             } else {
                 wbDiffText.Text = "";
-                clearDiagnosisControls();
             }
         }
 
@@ -296,9 +216,19 @@ namespace Casely {
             RefreshCaseList();
         }
 
+
         private void cmbVersion_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             refreshCaseData();
+            lbReportVersion.Content = SelectedVersionFormated;
         }
+
+        private string SelectedVersionFormated {
+            get {
+                var selIndexPlusOne = cmbVersion.SelectedIndex != -1 ? cmbVersion.SelectedIndex + 1 : 0;
+                return $"Version ({selIndexPlusOne}/{cmbVersion.Items.Count})";
+            }
+        }
+
     }
 
 }

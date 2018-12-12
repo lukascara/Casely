@@ -38,12 +38,6 @@ namespace Casely {
             wn.ShowDialog();
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e) {
-            txtUserID.Text = Properties.Settings.Default.UserID;
-            connectToDB();
-            
-        }
-
         private void connectToDB() {
             if (!(File.Exists(SqliteDataAcces.DBPath))) {
                 MessageBoxResult dialogResult = System.Windows.MessageBox.Show($"Casely database does not exist at {SqliteDataAcces.DBPath}. Should it be created?", "Create Database", MessageBoxButton.YesNo, MessageBoxImage.None);
@@ -179,6 +173,7 @@ SOFTWARE.");
         private void ChangeUserID() {
             var oldUID = Properties.Settings.Default.UserID;
             Properties.Settings.Default.UserID = txtUserID.Text;
+            Properties.Settings.Default.Save();
             txtStatus.Text = $"User ID changed from '{oldUID}' to '{txtUserID.Text}'";
         }
 
@@ -190,6 +185,16 @@ SOFTWARE.");
 
         private void txtUserID_LostFocus(object sender, RoutedEventArgs e) {
             ChangeUserID();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e) {
+            txtUserID.Text = Properties.Settings.Default.UserID;
+            
+            connectToDB();
+        }
+
+        private void ImportCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e) {
+           
         }
     }
 }
