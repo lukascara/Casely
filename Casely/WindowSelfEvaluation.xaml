@@ -89,8 +89,8 @@
             </WrapPanel>
         </GroupBox>
 
-        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Enter service" VerticalAlignment="Top" Margin="653.882,2.891,0,0" Height="15.96" Width="97.107"/>
-        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Enter self-valuation score" VerticalAlignment="Top" Margin="778.882,2.891,0,0" Height="15.96" Width="154.107" Grid.ColumnSpan="2"/>
+        <TextBlock Visibility="Hidden" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Enter service" VerticalAlignment="Top" Margin="653.882,2.891,0,0" Height="15.96" Width="97.107"/>
+        <TextBlock Visibility="Hidden" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Enter self-valuation score" VerticalAlignment="Top" Margin="778.882,2.891,0,0" Height="15.96" Width="154.107" Grid.ColumnSpan="2"/>
 
         <WPF:HtmlPanel Grid.Row="1" x:Name="wbDiffText" Margin="10,0,10,10" BorderBrush="#FDA6A6A6" BorderThickness="3" Grid.ColumnSpan="3"/>
     </Grid>
