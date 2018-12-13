@@ -170,10 +170,8 @@ namespace Casely {
             SqliteDataAcces.UpdateCompletedCase(pathCase);
             cmbSelfEvaluation.Text = "";
             var indx = cmbCaseNumber.SelectedIndex;
-            listFilteredCaseEntry.RemoveAt(indx);
             cmbService.Focus();
-            // select the first case
-            if (cmbCaseNumber.Items.Count > 0) cmbCaseNumber.SelectedIndex = 0;
+            ApplyFiltersToCaseListAndRefresh();
         }
 
         private void chkFilterCompleted_Click(object sender, RoutedEventArgs e) {
