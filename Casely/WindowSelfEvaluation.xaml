@@ -30,8 +30,8 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <CheckBox Grid.Column="0" Grid.Row="0" x:Name="chkFilterCompleted" Content="List uncompleted only" VerticalAlignment="Top" Click="chkFilterCompleted_Click" HorizontalAlignment="Left" IsChecked="True" Height="15.098" Width="136.935"/>
-            <xctk:WatermarkComboBox Margin="0,5,0,0" MinWidth="175" Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="1" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}" x:Name="cmbCaseNumber" HorizontalAlignment="Left" TabIndex="1" SelectionChanged="cmbCaseNumber_SelectionChanged">
-                <xctk:WatermarkComboBox.ItemTemplate>
+            <ComboBox Margin="0,5,0,0" MinWidth="175" Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="1" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}" x:Name="cmbCaseNumber" HorizontalAlignment="Left" TabIndex="1" SelectionChanged="cmbCaseNumber_SelectionChanged">
+                <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding CaseNumber}"/>
@@ -44,8 +44,14 @@
                             <TextBlock Text="{Binding Material}"/>
                         </StackPanel>
                     </DataTemplate>
-                </xctk:WatermarkComboBox.ItemTemplate>
-            </xctk:WatermarkComboBox>
+                </ComboBox.ItemTemplate>
+                <ComboBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel >                            
+                        </VirtualizingStackPanel>
+                    </ItemsPanelTemplate>
+                </ComboBox.ItemsPanel>
+            </ComboBox>
             <StackPanel Orientation="Horizontal" Grid.Column="1">
                 <Label x:Name="lbReportVersion" Padding="0" Margin="0,0,4,0"></Label>
                 <xctk:WatermarkComboBox x:Name="cmbVersion" Watermark="Version" HorizontalAlignment="Left" VerticalAlignment="Top" IsEditable="False" TabIndex="2" SelectionChanged="cmbVersion_SelectionChanged" Grid.Column="1" Grid.RowSpan="2" Padding="0"/>

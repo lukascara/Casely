@@ -293,14 +293,14 @@ namespace CaselyData {
                
         }
 
-        public static bool CaseEntryEvaluated(string caseNumber) {
-             using (var cn = new SQLiteConnection(DbConnectionString)) {
-                var sql = @"select count(*) from path_case where case_number = @caseNumber and evaluation not NULL;";
-                DynamicParameters dp = new DynamicParameters();
-                dp.Add("@caseNumber", caseNumber, System.Data.DbType.String);
-                int v = cn.Query<int>(sql, dp).FirstOrDefault();
-                bool entryExists = v >= 1 ? true : false;
-                return entryExists;
+        public static List<PathCase> GetAllPathCase() {
+            var sql = @"SELECT case_number AS CaseNumber,
+                            service,
+                            evaluation
+                            FROM path_case;";
+            using (var cn = new SQLiteConnection(DbConnectionString)) {
+                var output = cn.Query<PathCase>(sql, new DynamicParameters()).ToList();
+                return output;
             }
         }
 

@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using CaselyData;
 using DiffMatchPatch;
+using System.Diagnostics;
 
 namespace Casely {
     /// <summary>
@@ -20,6 +21,7 @@ namespace Casely {
         private List<string> suggestionCategory = new List<string>();
         private List<string> suggestionService = new List<string>();
         private List<string> suggestionEvaluation = new List<string>();
+        private List<PathCase> listAllPathCase = new List<PathCase>();
         public ObservableCollection<Staff> listStaff = new ObservableCollection<Staff>();
         private ObservableCollection<CaseEntry> listFilteredCaseEntry = new ObservableCollection<CaseEntry>();
 
@@ -38,7 +40,8 @@ namespace Casely {
             cmbCaseNumber.SelectedValuePath = "CaseNumber";
             dtFilterDate.Text = "";
             // load all the cases from the database
-            var listCaseEntries = await GetAllCasesAsync();
+            var listCaseEntries = await GetAllCaseEntryAsync();
+            listAllPathCase = await GetAllPathCaseAsync();
             RefreshCaseListUI(listCaseEntries);
             cmbService.ItemsSource = suggestionService;
             cmbSelfEvaluation.ItemsSource = suggestionEvaluation;
@@ -47,9 +50,14 @@ namespace Casely {
         }
 
 
-        private async Task<List<CaseEntry>> GetAllCasesAsync() {
+        private async Task<List<CaseEntry>> GetAllCaseEntryAsync() {
             var result = await Task.Run(() => SqliteDataAcces.GetListAllCaseEntries());
             return result; 
+        }
+
+        private async Task<List<PathCase>> GetAllPathCaseAsync() {
+            var result = await Task.Run(() => SqliteDataAcces.GetAllPathCase());
+            return result;
         }
 
         private void ApplyFiltersToCaseListAndRefresh() {
@@ -68,10 +76,15 @@ namespace Casely {
            
         }
 
+        private bool CaseEvaluated(CaseEntry CE) {
+            var xy = listAllPathCase.Where(x => x.CaseNumber == CE.CaseNumber).Where(y => y.Evaluation != null);
+            return xy.Count() != 0;
+        }
+
         private void RefreshCaseListUI(List<CaseEntry> listCaseEntries) {
             listFilteredCaseEntry.Clear();
             foreach (var s in listCaseEntries) {
-                if (chkFilterCompleted.IsChecked == false || !(SqliteDataAcces.CaseEntryEvaluated(s.CaseNumber))) {
+                if (chkFilterCompleted.IsChecked == false || !(CaseEvaluated(s))) {
                     listFilteredCaseEntry.Add(s);
                 }
             }
