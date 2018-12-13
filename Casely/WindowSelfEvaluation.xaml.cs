@@ -22,6 +22,7 @@ namespace Casely {
         private List<string> suggestionService = new List<string>();
         private List<string> suggestionEvaluation = new List<string>();
         private List<PathCase> listAllPathCase = new List<PathCase>();
+        private List<CaseEntry> listAllCaseEntry = new List<CaseEntry>();
         public ObservableCollection<Staff> listStaff = new ObservableCollection<Staff>();
         private ObservableCollection<CaseEntry> listFilteredCaseEntry = new ObservableCollection<CaseEntry>();
 
@@ -40,9 +41,9 @@ namespace Casely {
             cmbCaseNumber.SelectedValuePath = "CaseNumber";
             dtFilterDate.Text = "";
             // load all the cases from the database
-            var listCaseEntries = await GetAllCaseEntryAsync();
+            listAllCaseEntry = await GetAllCaseEntryAsync();
             listAllPathCase = await GetAllPathCaseAsync();
-            RefreshCaseListUI(listCaseEntries);
+            RefreshCaseListUI(listAllCaseEntry);
             cmbService.ItemsSource = suggestionService;
             cmbSelfEvaluation.ItemsSource = suggestionEvaluation;
             ApplyFiltersToCaseListAndRefresh();
@@ -61,11 +62,12 @@ namespace Casely {
         }
 
         private void ApplyFiltersToCaseListAndRefresh() {
-            var listAllCases = listFilteredCaseEntry.ToList();
-            var listFilteredCases = new List<CaseEntry>();
+            var listFilteredCases = listAllCaseEntry.ToList();
+            if (chkOnlyShowUncompleted.IsChecked == true) {
+                listFilteredCases = listAllCaseEntry.Where(x => !(IsCaseEvaluated(x))).ToList();
+            }
             // Filter by date
-            
-            listFilteredCases = dtFilterDate.Text != "" ? listAllCases.Where(x => x.DateTimeModifiedObject.Date >= dtFilterDate.Value).ToList() : listAllCases.ToList();
+            listFilteredCases = dtFilterDate.Text != "" ? listFilteredCases.Where(x => x.DateTimeModifiedObject.Date >= dtFilterDate.Value).ToList() : listFilteredCases.ToList();
             var listResults = new List<CaseEntry>();
             // Filter by Author ID
             if (cmbAuthor.SelectedIndex != -1) {
@@ -73,20 +75,24 @@ namespace Casely {
                 listFilteredCases = listFilteredCases.Where(x => listFilter.ToList()
                                         .FindIndex(c => c.CaseNumber == x.CaseNumber) != -1).ToList();
             }
+
+            RefreshCaseListUI(listFilteredCases);
            
         }
 
-        private bool CaseEvaluated(CaseEntry CE) {
+        private bool IsCaseEvaluated(CaseEntry CE) {
             var xy = listAllPathCase.Where(x => x.CaseNumber == CE.CaseNumber).Where(y => y.Evaluation != null);
             return xy.Count() != 0;
         }
 
+        /// <summary>
+        /// This method loads all the cases into the dropdownlist
+        /// </summary>
+        /// <param name="listCaseEntries"></param>
         private void RefreshCaseListUI(List<CaseEntry> listCaseEntries) {
             listFilteredCaseEntry.Clear();
-            foreach (var s in listCaseEntries) {
-                if (chkFilterCompleted.IsChecked == false || !(CaseEvaluated(s))) {
+            foreach (var s in listCaseEntries) {               
                     listFilteredCaseEntry.Add(s);
-                }
             }
             // select the first case
             if (cmbCaseNumber.Items.Count > 0) cmbCaseNumber.SelectedIndex = 0;
@@ -166,7 +172,6 @@ namespace Casely {
             cmbSelfEvaluation.Text = "";
             var indx = cmbCaseNumber.SelectedIndex;
             listFilteredCaseEntry.RemoveAt(indx);
-            cmbCaseNumber.SelectedIndex = cmbCaseNumber.Items.Count == 0 ? 0 : cmbCaseNumber.Items.Count - 1;
             cmbService.Focus();
         }
 

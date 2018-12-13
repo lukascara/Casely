@@ -29,7 +29,7 @@
                 <RowDefinition Height="20"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <CheckBox Grid.Column="0" Grid.Row="0" x:Name="chkFilterCompleted" Content="List uncompleted only" VerticalAlignment="Top" Click="chkFilterCompleted_Click" HorizontalAlignment="Left" IsChecked="True" Height="15.098" Width="136.935"/>
+            <CheckBox Grid.Column="0" Grid.Row="0" x:Name="chkOnlyShowUncompleted" Content="List uncompleted only" VerticalAlignment="Top" Click="chkFilterCompleted_Click" HorizontalAlignment="Left" IsChecked="True" Height="15.098" Width="136.935"/>
             <ComboBox Margin="0,5,0,0" MinWidth="175" Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="1" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}" x:Name="cmbCaseNumber" HorizontalAlignment="Left" TabIndex="1" SelectionChanged="cmbCaseNumber_SelectionChanged">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
