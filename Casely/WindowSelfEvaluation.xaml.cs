@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using CaselyData;
@@ -28,7 +29,7 @@ namespace Casely {
             this.DataContext = this;
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e) {
+        private async void Window_Loaded(object sender, RoutedEventArgs e) {
             // load the names of authors
             listStaff = new ObservableCollection<Staff>(SqliteDataAcces.GetListAuthor());
             cmbAuthor.ItemsSource = listStaff;
@@ -36,35 +37,46 @@ namespace Casely {
             cmbCaseNumber.ItemsSource = listFilteredCaseEntry;
             cmbCaseNumber.SelectedValuePath = "CaseNumber";
             dtFilterDate.Text = "";
-            RefreshCaseList();
-            if (cmbCaseNumber.Items.Count > 0) cmbCaseNumber.SelectedIndex = 0;
+            // load all the cases from the database
+            var listCaseEntries = await GetAllCasesAsync();
+            RefreshCaseListUI(listCaseEntries);
             cmbService.ItemsSource = suggestionService;
             cmbSelfEvaluation.ItemsSource = suggestionEvaluation;
-            
-            
+            ApplyFiltersToCaseListAndRefresh();
+
         }
 
 
-        private void RefreshCaseList() {
+        private async Task<List<CaseEntry>> GetAllCasesAsync() {
+            var result = await Task.Run(() => SqliteDataAcces.GetListAllCaseEntries());
+            return result; 
+        }
+
+        private void ApplyFiltersToCaseListAndRefresh() {
+            var listAllCases = listFilteredCaseEntry.ToList();
+            var listFilteredCases = new List<CaseEntry>();
             // Filter by date
-            var listFilteredCE = dtFilterDate.Text != "" ?  SqliteDataAcces.FilterCaseEntryDateModified(DateTime.Parse(dtFilterDate.Text)) : SqliteDataAcces.GetListAllCaseEntries();
+            
+            listFilteredCases = dtFilterDate.Text != "" ? listAllCases.Where(x => x.DateTimeModifiedObject.Date >= dtFilterDate.Value).ToList() : listAllCases.ToList();
+            var listResults = new List<CaseEntry>();
             // Filter by Author ID
             if (cmbAuthor.SelectedIndex != -1) {
                 var listFilter = SqliteDataAcces.GetCaseEntryFilterAuthorID(cmbAuthor.SelectedValue.ToString());
-                listFilteredCE = listFilteredCE.Where(x => listFilter.ToList()
+                listFilteredCases = listFilteredCases.Where(x => listFilter.ToList()
                                         .FindIndex(c => c.CaseNumber == x.CaseNumber) != -1).ToList();
             }
+           
+        }
+
+        private void RefreshCaseListUI(List<CaseEntry> listCaseEntries) {
             listFilteredCaseEntry.Clear();
-            cmbCaseNumber.SelectedValuePath = "CaseNumber";
-            foreach (var s in listFilteredCE) {
+            foreach (var s in listCaseEntries) {
                 if (chkFilterCompleted.IsChecked == false || !(SqliteDataAcces.CaseEntryEvaluated(s.CaseNumber))) {
                     listFilteredCaseEntry.Add(s);
                 }
             }
-
-            if (listFilteredCaseEntry.Count != 0) {
-                cmbCaseNumber.SelectedIndex = 0;
-            }
+            // select the first case
+            if (cmbCaseNumber.Items.Count > 0) cmbCaseNumber.SelectedIndex = 0;
         }
 
         public void refreshSuggestions() {
@@ -124,7 +136,7 @@ namespace Casely {
         }
 
         private void cmbAuthor_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            RefreshCaseList();
+            ApplyFiltersToCaseListAndRefresh();
         }
 
       
@@ -146,7 +158,7 @@ namespace Casely {
         }
 
         private void chkFilterCompleted_Click(object sender, RoutedEventArgs e) {
-            RefreshCaseList();
+            ApplyFiltersToCaseListAndRefresh();
         }
 
         private void refreshCaseData() {
@@ -158,6 +170,7 @@ namespace Casely {
                 cmbService.Text = pathCase.Service != null ? pathCase.Service : "";
             }
         }
+
 
 
         /// <summary>
@@ -213,7 +226,7 @@ namespace Casely {
         }
 
         private void dtFilterDate_LostFocus(object sender, RoutedEventArgs e) {
-            RefreshCaseList();
+            ApplyFiltersToCaseListAndRefresh();
         }
 
 
