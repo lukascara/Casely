@@ -94,7 +94,6 @@ namespace Casely {
             foreach (var s in listCaseEntries) {               
                     listFilteredCaseEntry.Add(s);
             }
-            // select the first case
             if (cmbCaseNumber.Items.Count > 0) cmbCaseNumber.SelectedIndex = 0;
         }
 
@@ -173,6 +172,8 @@ namespace Casely {
             var indx = cmbCaseNumber.SelectedIndex;
             listFilteredCaseEntry.RemoveAt(indx);
             cmbService.Focus();
+            // select the first case
+            if (cmbCaseNumber.Items.Count > 0) cmbCaseNumber.SelectedIndex = 0;
         }
 
         private void chkFilterCompleted_Click(object sender, RoutedEventArgs e) {
