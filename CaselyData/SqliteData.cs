@@ -648,7 +648,7 @@ namespace CaselyData {
 	                    case_entry.microscopic FROM " + fts5TableName.Trim() + @"
                         INNER JOIN case_entry ON case_entry.case_number = " + fts5TableName.Trim() + @".case_number AND DateModifiedString = " + fts5TableName.Trim() 
                         + @".date_modified AND TimeModifiedString = " + fts5TableName.Trim() + @".time_modified 
-                        WHERE " + fts5TableName.Trim() + @" MATCH @strFilter AND case_entry.author_id != @userID;";
+                        WHERE " + fts5TableName.Trim() + " MATCH @strFilter AND case_entry.author_id != @userID;";
 
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 cn.Open();

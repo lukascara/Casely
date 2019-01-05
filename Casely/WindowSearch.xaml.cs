@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -41,41 +42,58 @@ namespace Casely {
         /// Searches the database using the search terms and restrictions inputed by the user.
         /// </summary>
         private void SearchDatabase() {
-            // create a copy of all the case entries which will be filtered in the following steps
-            List<CaseEntry> listFilteredCE = new List<CaseEntry>(listAllCaseEntries);
-            // Find cases that match the authorID
-            if (cmbAuthor.SelectedIndex != -1) {
-                var listFilter = SearchByAuthor(cmbAuthor.SelectedValue.ToString());
-                listFilteredCE = listFilteredCE.Where(x => listFilter.ToList()
-                                        .FindIndex(c => c.CaseNumber == x.CaseNumber) != -1).ToList();
+            SanitizeSearchBoxes();
+            try {
+                // create a copy of all the case entries which will be filtered in the following steps
+                List<CaseEntry> listFilteredCE = new List<CaseEntry>(listAllCaseEntries);
+                // Apply the filters based on the values in the gui
+                if (cmbAuthor.SelectedIndex != -1) {
+                    var listFilter = SearchByAuthor(cmbAuthor.SelectedValue.ToString());
+                    listFilteredCE = listFilteredCE.Where(x => listFilter.ToList()
+                                            .FindIndex(c => c.CaseNumber == x.CaseNumber) != -1).ToList();
+                }
+                if (txtFilterInterpretation.Text != "") {
+                    var listFilter = SearchFilterByInterpretation(txtFilterInterpretation.Text);
+                    listFilteredCE = listFilteredCE.Where(x => listFilter.ToList()
+                                            .FindIndex(c => c.CaseNumber == x.CaseNumber) != -1).ToList();
+                }
+                if (txtFilterResult.Text != "") {
+                    var listFilter = SearchFilterByResult(txtFilterResult.Text);  // Search for cases that match the filter query supplied
+                                                                                  // Filter out all the cases by case numbers that are not returned in the listFilter (which is returned from the database)
+                    listFilteredCE = listFilteredCE.Where(x => listFilter.ToList()
+                                            .FindIndex(c => c.CaseNumber == x.CaseNumber) != -1).ToList();
+                }
+                if (txtFilterComment.Text != "") {
+                    var listFilter = SearchFilterByComment(txtFilterComment.Text);
+                    listFilteredCE = listFilteredCE.Where(x => listFilter.ToList()
+                                            .FindIndex(c => c.CaseNumber == x.CaseNumber) != -1).ToList();
+                }
+                if (txtFilterTumorSynoptic.Text != "") {
+                    var listFilter = SearchFilterByTumorSynoptic(txtFilterTumorSynoptic.Text);
+                    listFilteredCE = listFilteredCE.Where(x => listFilter.ToList()
+                                            .FindIndex(c => c.CaseNumber == x.CaseNumber) != -1).ToList();
+                }
+                listFilteredCaseEntry.Clear();
+                foreach (var c in listFilteredCE) {
+                    listFilteredCaseEntry.Add(c);
+                }
+                if (listFilteredCaseEntry.Count != 0) {
+                    lbFilteredCaseEntry.SelectedIndex = 0;
+                }
+            } catch (Exception ex) {
+                System.Windows.MessageBox.Show("Error searching the database. Please check your search terms and syntax. Certain case-sensitive words are reserved (NOT, OR, AND, i.e.) and can cause and error if used incorrectly. " +
+                    " Original error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            if (txtFilterInterpretation.Text != "") {
-                var listFilter = SearchFilterByInterpretation(txtFilterInterpretation.Text);
-                listFilteredCE = listFilteredCE.Where(x => listFilter.ToList()
-                                        .FindIndex(c => c.CaseNumber == x.CaseNumber) != -1).ToList();              
-            }
-            if (txtFilterResult.Text != "") {
-                var listFilter = SearchFilterByResult(txtFilterResult.Text);
-                listFilteredCE = listFilteredCE.Where(x => listFilter.ToList()
-                                        .FindIndex(c => c.CaseNumber == x.CaseNumber) != -1).ToList();
-            }
-            if (txtFilterComment.Text != "") {
-                var listFilter = SearchFilterByComment(txtFilterComment.Text);
-                listFilteredCE = listFilteredCE.Where(x => listFilter.ToList()
-                                        .FindIndex(c => c.CaseNumber == x.CaseNumber) != -1).ToList();
-            }
-            if (txtFilterTumorSynoptic.Text != "") {
-                var listFilter = SearchFilterByTumorSynoptic(txtFilterTumorSynoptic.Text);
-                listFilteredCE = listFilteredCE.Where(x => listFilter.ToList()
-                                        .FindIndex(c => c.CaseNumber == x.CaseNumber) != -1).ToList();
-            }
-            listFilteredCaseEntry.Clear();
-            foreach(var c in listFilteredCE) {
-                listFilteredCaseEntry.Add(c);
-            }
-            if (listFilteredCaseEntry.Count != 0) {
-                lbFilteredCaseEntry.SelectedIndex = 0;
-            }
+        }
+
+        /// <summary>
+        /// Removes certain characters from the search terms, i.e. ', in order to prevent a SQL syntax error for search terms.
+        /// </summary>
+        private void SanitizeSearchBoxes() {
+            txtFilterInterpretation.Text = txtFilterInterpretation.Text.Replace("\"", "").Replace("'", "");
+            txtFilterResult.Text = txtFilterResult.Text.Replace("\"", "").Replace("'", "");
+            txtFilterComment.Text = txtFilterComment.Text.Replace("\"", "").Replace("'", "");
+            txtFilterTumorSynoptic.Text = txtFilterTumorSynoptic.Text.Replace("\"", "").Replace("'", "");
         }
 
         private List<CaseEntry> SearchByAuthor(string authorID) {
