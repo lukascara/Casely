@@ -68,7 +68,7 @@ namespace Casely {
                     listFilteredCE = listFilteredCE.Where(x => listFilter.ToList()
                                             .FindIndex(c => c.CaseNumber == x.CaseNumber) != -1).ToList();
                 }
-                if (txtFilterTumorSynoptic.Text != "") {
+                 if (txtFilterTumorSynoptic.Text != "") {
                     var listFilter = SearchFilterByTumorSynoptic(txtFilterTumorSynoptic.Text);
                     listFilteredCE = listFilteredCE.Where(x => listFilter.ToList()
                                             .FindIndex(c => c.CaseNumber == x.CaseNumber) != -1).ToList();

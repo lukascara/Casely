@@ -99,7 +99,7 @@ SOFTWARE.");
                 try {
                     ChangeStatusText("Importing data. Please wait...");
                     var softText = File.ReadAllText(theDialog.FileName);
-                    CaselyData.SoftToCaselyConverter sc = new SoftToCaselyConverter();
+                    CaselyData.SoftPathExcelConvert sc = new SoftPathExcelConvert();
                     var importedData = sc.importSoftPathCSVData(theDialog.FileName);
                     
                     var pathCaseEntriesToAdd = new List<CaseEntry>();
