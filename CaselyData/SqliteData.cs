@@ -10,6 +10,7 @@ namespace CaselyData {
         public string CaseNumber { get; set; }
         public string Service { get; set; }
         public string Evaluation { get; set; }
+        public string EvaluationComment { get; set; }
     }
     public class CaseEntry {
         string result = "";
@@ -226,7 +227,7 @@ namespace CaselyData {
         public static void UpdateCompletedCase(PathCase pathCase) {
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 var sql = @"UPDATE path_case 
-                                SET case_number = @CaseNumber, service = @Service, evaluation = @Evaluation
+                                SET case_number = @CaseNumber, service = @Service, evaluation = @Evaluation, evaluation_comment = @EvaluationComment
                                 WHERE case_number = @CaseNumber;";
                 cn.Execute(sql, pathCase);
             }
@@ -296,7 +297,8 @@ namespace CaselyData {
         public static List<PathCase> GetAllPathCase() {
             var sql = @"SELECT case_number AS CaseNumber,
                             service,
-                            evaluation
+                            evaluation,
+                            evaluation_comment AS EvaluationComment
                             FROM path_case;";
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 var output = cn.Query<PathCase>(sql, new DynamicParameters()).ToList();
@@ -493,7 +495,9 @@ namespace CaselyData {
         public static PathCase GetPathCase(string caseNumber) {
             var sql = @"SELECT 
 	                    case_number AS CaseNumber,
-	                   evaluation, service FROM path_case WHERE case_number = @caseNumber;";
+	                    evaluation, 
+                        evaluation_comment AS EvaluationComment, 
+                        service FROM path_case WHERE case_number = @caseNumber;";
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 DynamicParameters dp = new DynamicParameters();
                 dp.Add("@caseNumber", caseNumber, System.Data.DbType.String);

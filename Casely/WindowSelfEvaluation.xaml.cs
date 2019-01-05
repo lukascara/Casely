@@ -164,7 +164,7 @@ namespace Casely {
         }
 
         private void submitEvaluation() {
-            PathCase pathCase = new PathCase() { CaseNumber = cmbCaseNumber.SelectedValue.ToString(), Service = cmbService.Text, Evaluation = cmbSelfEvaluation.Text };
+            PathCase pathCase = new PathCase() { CaseNumber = cmbCaseNumber.SelectedValue.ToString(), Service = cmbService.Text, Evaluation = cmbSelfEvaluation.Text, EvaluationComment = txtSelfEvalComments.Text };
           
             // Save the evaluation and other data for the case, essentially completing it.
             SqliteDataAcces.UpdateCompletedCase(pathCase);
@@ -184,6 +184,7 @@ namespace Casely {
             if (cn != null) {
                 var pathCase = SqliteDataAcces.GetPathCase(cn.ToString());
                 cmbSelfEvaluation.Text = pathCase.Evaluation != null ? pathCase.Evaluation : "";
+                txtSelfEvalComments.Text = pathCase.EvaluationComment != null ? pathCase.EvaluationComment : "";
                 cmbService.Text = pathCase.Service != null ? pathCase.Service : "";
             }
         }

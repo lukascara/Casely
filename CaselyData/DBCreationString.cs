@@ -4,6 +4,7 @@
 	`case_number`	TEXT NOT NULL UNIQUE PRIMARY KEY ON CONFLICT IGNORE,
 	`service`	TEXT,
 	`evaluation` TEXT,
+    `evaluation_comment` TEXT,
     `date_of_service` TEXT
 );
 
