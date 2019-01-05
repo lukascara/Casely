@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Casely"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" xmlns:WPF="clr-namespace:TheArtOfDev.HtmlRenderer.WPF;assembly=HtmlRenderer.WPF" x:Class="Casely.WindowCaseSearch"
         mc:Ignorable="d"
-        Title="Casely: Search" Height="703" Width="1238.7" Loaded="Window_Loaded">
+        Title="Casely: Search" Height="703" Width="1238.7" Loaded="Window_Loaded" Background="#FFE3F1F7">
     <Grid>
         <xctk:WatermarkComboBox x:Name="cmbAuthor"  Watermark="Author (i.e. APXYX)" IsEditable="True" HorizontalAlignment="Left" Margin="10,10.087,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="cmbAuthor_SelectionChanged" Height="23.786">
             <xctk:WatermarkComboBox.ItemContainerStyle>

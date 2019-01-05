@@ -160,10 +160,10 @@ namespace Casely {
       
 
         private void btnSubmitDiagnosis_Click(object sender, RoutedEventArgs e) {
-            submitDiagnosis();
+            submitEvaluation();
         }
 
-        private void submitDiagnosis() {
+        private void submitEvaluation() {
             PathCase pathCase = new PathCase() { CaseNumber = cmbCaseNumber.SelectedValue.ToString(), Service = cmbService.Text, Evaluation = cmbSelfEvaluation.Text };
           
             // Save the evaluation and other data for the case, essentially completing it.
@@ -230,6 +230,8 @@ namespace Casely {
        
        
         private void cmbCaseNumber_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            btnPreviousCase.IsEnabled = cmbCaseNumber.SelectedIndex > 0;
+            btnNextCase.IsEnabled = cmbCaseNumber.SelectedIndex < cmbCaseNumber.Items.Count - 1;
             if (cmbCaseNumber.SelectedIndex == -1) {
                 return;
             }
@@ -256,6 +258,18 @@ namespace Casely {
             get {
                 var selIndexPlusOne = cmbVersion.SelectedIndex != -1 ? cmbVersion.SelectedIndex + 1 : 0;
                 return $"Version ({selIndexPlusOne}/{cmbVersion.Items.Count})";
+            }
+        }
+
+        private void btnNextCase_Click(object sender, RoutedEventArgs e) {
+            if (cmbCaseNumber.SelectedIndex < cmbCaseNumber.Items.Count - 1) {
+                cmbCaseNumber.SelectedIndex = cmbCaseNumber.SelectedIndex + 1;
+            }
+        }
+
+        private void btnPreviousCase_Click(object sender, RoutedEventArgs e) {
+            if (cmbCaseNumber.SelectedIndex > 0) {
+                cmbCaseNumber.SelectedIndex = cmbCaseNumber.SelectedIndex - 1;
             }
         }
 
