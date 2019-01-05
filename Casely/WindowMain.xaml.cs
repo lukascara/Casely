@@ -62,7 +62,7 @@ namespace Casely {
         private void LockButtons(bool ButtonsShouldBeActive) {
             btnSelfEvaluate.IsEnabled = ButtonsShouldBeActive;
             btnSearch.IsEnabled = ButtonsShouldBeActive;
-            btnSignout.IsEnabled = ButtonsShouldBeActive;
+            btnAddSignoutCase.IsEnabled = ButtonsShouldBeActive;
             btnImportSoftPathData.IsEnabled = ButtonsShouldBeActive;
             MenuImportSoftPath.IsEnabled = ButtonsShouldBeActive;
         }

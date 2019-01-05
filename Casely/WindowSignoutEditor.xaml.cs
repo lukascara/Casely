@@ -25,6 +25,12 @@ namespace Casely {
         public WindowReportEditor() {
             InitializeComponent();
             txtCaseNumber.Text = SqliteDataAcces.CaseNumberPrefix;
+            foreach (var a in SqliteDataAcces.GetListAuthor()) {
+                cmbAuthor.Items.Add(a.AuthorID);
+            }
+            foreach (var a in SqliteDataAcces.GetUniqueService()) {
+                cmbService.Items.Add(a);
+            }
 
         }
 

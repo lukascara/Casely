@@ -190,6 +190,10 @@ namespace CaselyData {
 
         public static void InsertNewCaseEntry(CaseEntry ce, PathCase pathCase) {
             using (var cn = new SQLiteConnection(DbConnectionString)) {
+                cn.Open();
+                cn.EnableExtensions(true);
+                cn.LoadExtension("SQLite.Interop.dll", "sqlite3_fts5_init"); // this line is required to enable full text search support
+
                 var sql = @"INSERT INTO path_case (case_number, service)
                              VALUES (@CaseNumber, @Service);";
                 cn.Execute(sql, pathCase);
