@@ -91,6 +91,7 @@
                         </DataTemplate>
                     </xctk:WatermarkComboBox.ItemTemplate>
                 </xctk:WatermarkComboBox>
+                <xctk:WatermarkTextBox x:Name="txtFilterCaseNumber" Watermark="Case Number" Width="166" TextChanged="txtFilterCaseNumber_TextChanged" LostFocus="txtFilterCaseNumber_LostFocus" ToolTip="Search by case number. Ignores all other filters when searching."/>
 
             </WrapPanel>
         </GroupBox>

@@ -31,7 +31,7 @@ namespace Casely {
             refreshSuggestions();
             this.DataContext = this;
         }
-
+        
         private async void Window_Loaded(object sender, RoutedEventArgs e) {
             // load the names of authors
             listStaff = new ObservableCollection<Staff>(SqliteDataAcces.GetListAuthor());
@@ -66,6 +66,7 @@ namespace Casely {
             if (chkOnlyShowUncompleted.IsChecked == true) {
                 listFilteredCases = listAllCaseEntry.Where(x => !(IsCaseEvaluated(x))).ToList();
             }
+           
             // Filter by date
             listFilteredCases = dtFilterDate.Text != "" ? listFilteredCases.Where(x => x.DateTimeModifiedObject.Date >= dtFilterDate.Value).ToList() : listFilteredCases.ToList();
             var listResults = new List<CaseEntry>();
@@ -74,6 +75,12 @@ namespace Casely {
                 var listFilter = SqliteDataAcces.GetCaseEntryFilterAuthorID(cmbAuthor.SelectedValue.ToString());
                 listFilteredCases = listFilteredCases.Where(x => listFilter.ToList()
                                         .FindIndex(c => c.CaseNumber == x.CaseNumber) != -1).ToList();
+            }
+
+            // Filter by case number, this trumps all filters and will return even if the case does not satisfy the other filters
+            var stCaseNum = txtFilterCaseNumber.Text;
+            if (stCaseNum != "") {
+                listFilteredCases = listAllCaseEntry.Where(x => x.CaseNumber == stCaseNum).ToList();
             }
 
             RefreshCaseListUI(listFilteredCases);
@@ -274,6 +281,15 @@ namespace Casely {
             }
         }
 
+        private void txtFilterCaseNumber_TextChanged(object sender, TextChangedEventArgs e) {
+            var locCaret = txtFilterCaseNumber.CaretIndex;
+            txtFilterCaseNumber.Text = txtFilterCaseNumber.Text.ToUpper();
+            txtFilterCaseNumber.CaretIndex = locCaret;
+        }
+
+        private void txtFilterCaseNumber_LostFocus(object sender, RoutedEventArgs e) {
+            ApplyFiltersToCaseListAndRefresh();
+        }
     }
 
 }

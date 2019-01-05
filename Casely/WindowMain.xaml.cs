@@ -70,7 +70,7 @@ namespace Casely {
         private void MenuShowLicense_Click(object sender, RoutedEventArgs e) {
             System.Windows.MessageBox.Show(@"MIT License
 
-Copyright (c) 2018 Lukas Cara
+Copyright (c) 2018-2019 Lukas Cara
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the 'Software'), to deal

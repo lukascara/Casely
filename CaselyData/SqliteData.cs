@@ -184,7 +184,7 @@ namespace CaselyData {
 
     public class SqliteDataAcces {
 
-        public static string CaseNumberPrefix = "SMP-18-";
+        public static string CaseNumberPrefix = "SMP-19-";
 
         
 
