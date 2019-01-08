@@ -1,10 +1,15 @@
-﻿namespace CaselyData {
+﻿using System.Collections.Generic;
+
+namespace CaselyData {
 	public class DBCreationString {
-        public static string sqlCreateDBString = @"CREATE TABLE `path_case` (
+        /// <summary>
+        /// Dictionary with a key of the PRAGMA user_version of the sqlite database and a value with the creation/update SQL query needed to creation that version of the db
+        /// </summary>
+        public static Dictionary<int, string> dictSQVersion = new Dictionary<int, string>() {
+                                                {0, @"CREATE TABLE `path_case` (
 	`case_number`	TEXT NOT NULL UNIQUE PRIMARY KEY ON CONFLICT IGNORE,
 	`service`	TEXT,
 	`evaluation` TEXT,
-    `evaluation_comment` TEXT,
     `date_of_service` TEXT
 );
 
@@ -75,6 +80,7 @@ BEGIN
 INSERT INTO staff (author_id) VALUES (new.author_id);
 END;
 
+-- trigger to add case entry content to the full search table
 CREATE TRIGGER insert_case_entry AFTER INSERT  ON case_entry
 BEGIN
 INSERT INTO staff (author_id) VALUES (new.author_id);
@@ -172,7 +178,24 @@ CREATE INDEX casenum_case_entry ON case_entry (case_number);
 CREATE INDEX casenum_part_entry ON part_entry (case_number);
 CREATE INDEX casenum_path_case ON path_case (case_number);
 CREATE INDEX casenum_part_diagnosis ON part_diagnosis (case_number);
-	";
+	"}, 
+// VERSION 1
+                                                {1, @"ALTER TABLE path_case ADD COLUMN `evaluation_comment` TEXT;
+CREATE VIRTUAL TABLE fts5_path_case_evaluation_comment USING fts5(case_number, evaluation_comment);
 
+-- trigger to add case entry content to the full search table
+CREATE TRIGGER insert_path_case AFTER INSERT  ON path_case
+BEGIN
+INSERT INTO fts5_path_case_evaluation_comment(case_number, evaluation_comment)  VALUES(new.case_number, new.evaluation_comment);
+END;
+
+CREATE TRIGGER update_path_case UPDATE OF evaluation_comment ON path_case
+BEGIN
+  UPDATE fts5_path_case_evaluation_comment SET evaluation_comment = new.evaluation_comment WHERE case_number = old.case_number;
+        END;"}
+        };
+      
     }
 }
+
+    

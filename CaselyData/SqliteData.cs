@@ -4,6 +4,8 @@ using System.Linq;
 using Dapper;
 using System.IO;
 using System.Data.SQLite;
+using System.Windows;
+using System.Windows.Forms;
 
 namespace CaselyData {
     public class PathCase {
@@ -232,8 +234,12 @@ namespace CaselyData {
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 var sql = @"UPDATE path_case 
                                 SET case_number = @CaseNumber, service = @Service, evaluation = @Evaluation, evaluation_comment = @EvaluationComment
-                                WHERE case_number = @CaseNumber;";
+                                WHERE case_number = @CaseNumber;";               
+                cn.Open();
+                cn.EnableExtensions(true);
+                cn.LoadExtension("SQLite.Interop.dll", "sqlite3_fts5_init"); // needed in order to modify the full text table
                 cn.Execute(sql, pathCase);
+                cn.Close();
             }
         }
 
@@ -617,6 +623,14 @@ namespace CaselyData {
             }
         }
 
+        public static int GetDatabaseVersion() {
+            var sql = @"PRAGMA user_version;";
+            using (var cn = new SQLiteConnection(DbConnectionString)) {
+                var output = cn.Query<int>(sql, new DynamicParameters()).ToList().FirstOrDefault();
+                return output;
+            }
+        }
+
         public static List<CaseEntry> FilterCaseEntryInterpretation(string strFilterInterpretation, string userID) {
             return FilterCaseEntry(strFilterInterpretation, "fts5_case_entry_interpretation",  userID);
         }
@@ -691,26 +705,60 @@ namespace CaselyData {
         }
 
         /// <summary>
-        /// Creates the Casely database
+        /// Creates the Casely database or updates it to the latest version
         /// </summary>
-        public static void CreateDatabase() {
+        /// <returns>Returns true if the database is created AND up to date</returns>
+        public static bool CreateOrUpdateDatabase() {
+
+
             if (!(File.Exists(DBPath))) {
+                MessageBoxResult dialogResult = System.Windows.MessageBox.Show($"Casely database does not exist at {SqliteDataAcces.DBPath}. Should it be created?", "Create Database", MessageBoxButton.YesNo, MessageBoxImage.None);
+                if (dialogResult == MessageBoxResult.No) {
+                    return false;                   
+                }
                 if (Directory.Exists(Path.GetDirectoryName(DBPath))) {
                     var f = File.Create(DBPath);
                     f.Close();
+                    // Create the initial database
+                    executeCommand(DBCreationString.dictSQVersion[0]);
                 } else {
                     System.Windows.Forms.MessageBox.Show($"Could not create database at {SqliteDataAcces.DBPath}. Does the folder exist?","",System.Windows.Forms.MessageBoxButtons.OK,System.Windows.Forms.MessageBoxIcon.Error);
-                    return;
+                    return false;
                 }
               
             }
-            
+            int currentDBVersion = GetDatabaseVersion();
+            List<int> versions = DBCreationString.dictSQVersion.Keys.AsList();
+            if (currentDBVersion > versions.Max()) {
+                System.Windows.MessageBox.Show($"Database version is new than the current version of Casely. Please open this database with the latest version of Casely. \nCurrent DB version {currentDBVersion}\nDB version supported {versions.Max()}","", MessageBoxButton.OK,MessageBoxImage.Error);
+                return false;
+            }
+
+
+            var dbUpdateToRun = versions.Where(x => x > currentDBVersion).ToList();
+            if (dbUpdateToRun.Count > 0) {
+                MessageBoxResult dialogResult = System.Windows.MessageBox.Show($"This version of Casely requires an update to your database. OK to proceed?", "", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                if (dialogResult == MessageBoxResult.No) {
+                    return false;
+                }
+                // Incrementally runs each update string until the database is up to date.
+                foreach (var v in dbUpdateToRun) {
+                    executeCommand(DBCreationString.dictSQVersion[v]);
+                    executeCommand($"PRAGMA user_version={v};" );
+                }
+                return true;
+            }
+            return true;
+           
+        }
+
+        private static void executeCommand(string sql) {
             using (var cn = new SQLiteConnection(DbConnectionString)) {
-               cn.Open();
-               cn.EnableExtensions(true);
-               cn.LoadExtension("SQLite.Interop.dll", "sqlite3_fts5_init");
-               cn.Execute(DBCreationString.sqlCreateDBString);
-               cn.Close();
+                cn.Open();
+                cn.EnableExtensions(true);
+                cn.LoadExtension("SQLite.Interop.dll", "sqlite3_fts5_init"); // needed in order to modify the full text table
+                cn.Execute(sql);
+                cn.Close();
             }
         }
 

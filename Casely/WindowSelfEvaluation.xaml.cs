@@ -168,6 +168,7 @@ namespace Casely {
 
         private void btnSubmitDiagnosis_Click(object sender, RoutedEventArgs e) {
             submitEvaluation();
+            txtStatus.Text = "Evaluation saved";
         }
 
         private void submitEvaluation() {
@@ -273,22 +274,26 @@ namespace Casely {
             if (cmbCaseNumber.SelectedIndex < cmbCaseNumber.Items.Count - 1) {
                 cmbCaseNumber.SelectedIndex = cmbCaseNumber.SelectedIndex + 1;
             }
+            txtStatus.Text = "";
         }
 
         private void btnPreviousCase_Click(object sender, RoutedEventArgs e) {
             if (cmbCaseNumber.SelectedIndex > 0) {
                 cmbCaseNumber.SelectedIndex = cmbCaseNumber.SelectedIndex - 1;
             }
+            txtStatus.Text = "";
         }
 
         private void txtFilterCaseNumber_TextChanged(object sender, TextChangedEventArgs e) {
             var locCaret = txtFilterCaseNumber.CaretIndex;
             txtFilterCaseNumber.Text = txtFilterCaseNumber.Text.ToUpper();
             txtFilterCaseNumber.CaretIndex = locCaret;
+            txtStatus.Text = "";
         }
 
         private void txtFilterCaseNumber_LostFocus(object sender, RoutedEventArgs e) {
             ApplyFiltersToCaseListAndRefresh();
+            txtStatus.Text = "";
         }
     }
 

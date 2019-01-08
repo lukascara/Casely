@@ -33,33 +33,23 @@ namespace Casely {
         }
 
         private void btnDiagnosis_Click(object sender, RoutedEventArgs e) {
-            connectToDB();
+            ConnectOrUpdateDB();
             WindowSelfEvaluation wn = new WindowSelfEvaluation();
             wn.ShowDialog();
         }
 
-        private void connectToDB() {
-            if (!(File.Exists(SqliteDataAcces.DBPath))) {
-                MessageBoxResult dialogResult = System.Windows.MessageBox.Show($"Casely database does not exist at {SqliteDataAcces.DBPath}. Should it be created?", "Create Database", MessageBoxButton.YesNo, MessageBoxImage.None);
-                if (dialogResult == MessageBoxResult.Yes) {
-                    SqliteDataAcces.CreateDatabase();
-                    tbDBPath.Text = SqliteDataAcces.DBPath;
-                } 
-            }
-            CheckDatabaseExists();
-        }
-
-        private void CheckDatabaseExists() {
-            if (!File.Exists(SqliteDataAcces.DBPath)){
-                tbDBPath.Text = "Casely database cannot be found! Create or open it in File->Create Database/Open Database.";
-                LockButtons(false);
+        private void ConnectOrUpdateDB() {
+            var isValid = SqliteDataAcces.CreateOrUpdateDatabase();
+            tbDBPath.Text = SqliteDataAcces.DBPath;
+            if (!(isValid)) {
+                ActivateButtons(false);
             } else {
-                LockButtons(true);
+                ActivateButtons(true);
                 tbDBPath.Text = SqliteDataAcces.DBPath;
             }
         }
 
-        private void LockButtons(bool ButtonsShouldBeActive) {
+        private void ActivateButtons(bool ButtonsShouldBeActive) {
             btnSelfEvaluate.IsEnabled = ButtonsShouldBeActive;
             btnSearch.IsEnabled = ButtonsShouldBeActive;
             btnAddSignoutCase.IsEnabled = ButtonsShouldBeActive;
@@ -137,7 +127,7 @@ SOFTWARE.");
                 //var dbPath = Path.Combine(path, "Casely.db");
                 tbDBPath.Text = fileDialog.FileName;
                 CaselyData.SqliteDataAcces.DBPath = fileDialog.FileName;
-                connectToDB();
+                ConnectOrUpdateDB();
             }
         }
 
@@ -156,7 +146,7 @@ SOFTWARE.");
                 }
                 tbDBPath.Text = fileDialog.FileName;
                 CaselyData.SqliteDataAcces.DBPath = fileDialog.FileName;
-                connectToDB();
+                ConnectOrUpdateDB();
                 ChangeStatusText("Finished");
             }
         }
@@ -190,7 +180,7 @@ SOFTWARE.");
         private void Window_Loaded(object sender, RoutedEventArgs e) {
             txtUserID.Text = Properties.Settings.Default.UserID;
             
-            connectToDB();
+            ConnectOrUpdateDB();
         }
 
         private void ImportCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e) {
