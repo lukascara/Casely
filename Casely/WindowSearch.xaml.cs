@@ -68,8 +68,13 @@ namespace Casely {
                     listFilteredCE = listFilteredCE.Where(x => listFilter.ToList()
                                             .FindIndex(c => c.CaseNumber == x.CaseNumber) != -1).ToList();
                 }
-                 if (txtFilterTumorSynoptic.Text != "") {
+                if (txtFilterTumorSynoptic.Text != "") {
                     var listFilter = SearchFilterByTumorSynoptic(txtFilterTumorSynoptic.Text);
+                    listFilteredCE = listFilteredCE.Where(x => listFilter.ToList()
+                                            .FindIndex(c => c.CaseNumber == x.CaseNumber) != -1).ToList();
+                }
+                if (txtFilterEvaluationComment.Text != "") {
+                    List<PathCase> listFilter = SearchFilterByEvaluationComment(txtFilterEvaluationComment.Text);
                     listFilteredCE = listFilteredCE.Where(x => listFilter.ToList()
                                             .FindIndex(c => c.CaseNumber == x.CaseNumber) != -1).ToList();
                 }
@@ -97,11 +102,11 @@ namespace Casely {
         }
 
         private List<CaseEntry> SearchByAuthor(string authorID) {
-           return  SqliteDataAcces.GetCaseEntryFilterAuthorID(authorID);
+            return SqliteDataAcces.GetCaseEntryFilterAuthorID(authorID);
         }
 
         private List<CaseEntry> SearchFilterByInterpretation(string searchTerms) {
-            return SqliteDataAcces.FilterCaseEntryInterpretation(searchTerms, Properties.Settings.Default.UserID);                           
+            return SqliteDataAcces.FilterCaseEntryInterpretation(searchTerms, Properties.Settings.Default.UserID);
         }
 
         private List<CaseEntry> SearchFilterByResult(string searchTerms) {
@@ -114,6 +119,10 @@ namespace Casely {
 
         private List<CaseEntry> SearchFilterByTumorSynoptic(string searchTerms) {
             return SqliteDataAcces.FilterCaseEntryTumorSynoptic(searchTerms, Properties.Settings.Default.UserID);
+        }
+
+        private List<PathCase> SearchFilterByEvaluationComment(string searchTerms) {
+            return SqliteDataAcces.FilterCaseEntryEvaluationComment(searchTerms);
         }
 
         private void lbFilteredCaseEntry_SelectionChanged(object sender, SelectionChangedEventArgs e) {

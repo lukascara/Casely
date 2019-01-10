@@ -646,7 +646,10 @@ namespace CaselyData {
         public static List<CaseEntry> FilterCaseEntryTumorSynoptic(string strFilterTumorSynoptic, string userID) {
             return FilterCaseEntry(strFilterTumorSynoptic, "fts5_case_entry_tumor_synoptic",  userID);
         }
-        
+        public static List<PathCase> FilterCaseEntryEvaluationComment(string strFilterEvaluationComment) {
+            return FilterPathCase(strFilterEvaluationComment, "fts5_path_case_evaluation_comment");
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -680,6 +683,32 @@ namespace CaselyData {
                 dp.Add("@strFilter", strFilter, System.Data.DbType.String);
                 dp.Add("@userID", userID, System.Data.DbType.String);
                 var output = cn.Query<CaseEntry>(sql, dp).ToList();
+                cn.Close();
+                return output;
+            }
+        }
+
+        
+        /// <summary>
+        /// Uses an inner join in order to filter path cases and return the case_entry rows that satisfy  the path_case filter
+        /// </summary>
+        /// <param name="strFilter"></param>
+        /// <param name="fts5TableName"></param>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        private static List<PathCase> FilterPathCase(string strFilter, string fts5TableName) {
+            var sql = @"SELECT path_case.case_number AS CaseNumber 
+                        FROM " + fts5TableName.Trim() + @"
+                        INNER JOIN path_case ON path_case.case_number = " + fts5TableName.Trim() + @".case_number 
+                        WHERE " + fts5TableName.Trim() + " MATCH @strFilter";
+
+            using (var cn = new SQLiteConnection(DbConnectionString)) {
+                cn.Open();
+                cn.EnableExtensions(true);
+                cn.LoadExtension("SQLite.Interop.dll", "sqlite3_fts5_init"); // required extension in order to do FTS5 search
+                DynamicParameters dp = new DynamicParameters();
+                dp.Add("@strFilter", strFilter, System.Data.DbType.String);
+                var output = cn.Query<PathCase>(sql, dp).ToList();
                 cn.Close();
                 return output;
             }
@@ -776,7 +805,7 @@ namespace CaselyData {
                 var result = cn.Execute(sql, dp);
             }
         }
-
+        
     }
 
 }

@@ -141,13 +141,18 @@ SOFTWARE.");
                 //var path = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
                 //var path = Properties.Settings.Default.DatabasePath;
                 //var dbPath = Path.Combine(path, "Casely.db");
-                if (File.Exists(fileDialog.FileName)) {
-                    File.Delete(fileDialog.FileName);
+                try {
+                    if (File.Exists(fileDialog.FileName)) {
+                        File.Delete(fileDialog.FileName);
+                    }
+                    tbDBPath.Text = fileDialog.FileName;
+                    CaselyData.SqliteDataAcces.DBPath = fileDialog.FileName;
+                    ConnectOrUpdateDB();
+                    ChangeStatusText("Finished");
+
+                } catch (Exception err) {
+                    System.Windows.MessageBox.Show($"Error creating database. Is it open in another program?\nOrignal Error: {err.Message}","",MessageBoxButton.OK,MessageBoxImage.Error);
                 }
-                tbDBPath.Text = fileDialog.FileName;
-                CaselyData.SqliteDataAcces.DBPath = fileDialog.FileName;
-                ConnectOrUpdateDB();
-                ChangeStatusText("Finished");
             }
         }
 
