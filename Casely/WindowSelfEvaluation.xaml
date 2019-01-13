@@ -107,8 +107,8 @@
             <GridSplitter HorizontalAlignment="Left" Height="615" VerticalAlignment="Top" Width="4" Grid.Column="1"/>
             <TextBox x:Name="txtSelfEvalComments" Grid.Column="1" Margin="9,22,10,27" TextWrapping="Wrap" AcceptsReturn="True"/>
             <Label Content="Resident case and self evaluation notes" Grid.Column="1" Margin="10,-7,6,0" VerticalAlignment="Top" FontSize="14" BorderBrush="Black"/>
-            <Button x:Name="btnNextCase" Content="Next Case" Margin="0,0,6,0" VerticalAlignment="Top" Click="btnNextCase_Click" HorizontalAlignment="Right" Width="83"/>
-            <Button x:Name="btnPreviousCase" Content="Previous Case" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="83" ToolTip="Go to the previous case" Click="btnPreviousCase_Click"/>
+            <Button x:Name="btnNextCase" Content="Save + Next Case" Margin="0,0,6,0" VerticalAlignment="Top" Click="btnNextCase_Click" HorizontalAlignment="Right" Width="122"/>
+            <Button x:Name="btnPreviousCase" Content="Save + Previous Case" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="125" ToolTip="Go to the previous case" Click="btnPreviousCase_Click"/>
             <StatusBar Height="22" VerticalAlignment="Bottom" Grid.ColumnSpan="2">
                 <TextBlock x:Name="txtStatus" TextWrapping="Wrap"/>
             </StatusBar>

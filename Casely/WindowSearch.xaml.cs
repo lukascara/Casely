@@ -16,6 +16,7 @@ namespace Casely {
         List<CaseEntry> listAllCaseEntries = new List<CaseEntry>();
         ObservableCollection<Staff> listStaff = new ObservableCollection<Staff>();
         ObservableCollection<CaseEntry> listFilteredCaseEntry = new ObservableCollection<CaseEntry>();
+        List<PathCase> listAllPathCases = new List<PathCase>();
 
 
         public WindowCaseSearch() {
@@ -30,6 +31,7 @@ namespace Casely {
             lbFilteredCaseEntry.ItemsSource = listFilteredCaseEntry;
             lbFilteredCaseEntry.SelectedValuePath = "CaseNumber";
             listAllCaseEntries = SqliteDataAcces.GetListAllCaseEntries();
+            listAllPathCases = SqliteDataAcces.GetAllPathCase();
             SearchDatabase();
 
         }
@@ -128,9 +130,12 @@ namespace Casely {
         private void lbFilteredCaseEntry_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             if (lbFilteredCaseEntry.SelectedIndex != -1) {
                 var ce = (CaseEntry)lbFilteredCaseEntry.SelectedItem;
-                wbReportViewer.Text = ce.toHtml();
+                var pc = listAllPathCases.Where(x => x.CaseNumber == ce.CaseNumber).First();
+                wbReportViewer.Text = $"<b>Self-Evluation: </b>{pc.Evaluation}<b><br>Self-Evaluation Comments: </b>{pc.EvaluationComment}";
+                wbReportViewer.Text +=  ce.toHtml();
             }
         }
+
 
         private void cmbAuthor_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             txtStatus.Text = "Searching...";

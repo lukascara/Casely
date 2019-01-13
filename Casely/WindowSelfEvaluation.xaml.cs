@@ -173,9 +173,17 @@ namespace Casely {
 
         private void submitEvaluation() {
             PathCase pathCase = new PathCase() { CaseNumber = cmbCaseNumber.SelectedValue.ToString(), Service = cmbService.Text, Evaluation = cmbSelfEvaluation.Text, EvaluationComment = txtSelfEvalComments.Text };
-          
             // Save the evaluation and other data for the case, essentially completing it.
             SqliteDataAcces.UpdateCompletedCase(pathCase);
+            // Update in-memory list of pathCases, that way do not have to go back to the database again to load.
+            foreach (var pc in listAllPathCase) {
+                if (pc.CaseNumber == pathCase.CaseNumber) {
+                    pc.Evaluation = pathCase.Evaluation;
+                    pc.EvaluationComment = pathCase.EvaluationComment;
+                    pc.Service = pathCase.Service;
+                }
+            }
+            listAllPathCase = listAllPathCase.Where(x => x.CaseNumber == pathCase.CaseNumber).Select(c => { c.EvaluationComment = cmbSelfEvaluation.Text; return c; }).ToList();
             cmbSelfEvaluation.Text = "";
             var indx = cmbCaseNumber.SelectedIndex;
             cmbService.Focus();
@@ -271,6 +279,7 @@ namespace Casely {
         }
 
         private void btnNextCase_Click(object sender, RoutedEventArgs e) {
+            submitEvaluation();
             if (cmbCaseNumber.SelectedIndex < cmbCaseNumber.Items.Count - 1) {
                 cmbCaseNumber.SelectedIndex = cmbCaseNumber.SelectedIndex + 1;
             }
@@ -278,10 +287,12 @@ namespace Casely {
         }
 
         private void btnPreviousCase_Click(object sender, RoutedEventArgs e) {
+            submitEvaluation();
             if (cmbCaseNumber.SelectedIndex > 0) {
                 cmbCaseNumber.SelectedIndex = cmbCaseNumber.SelectedIndex - 1;
             }
             txtStatus.Text = "";
+
         }
 
         private void txtFilterCaseNumber_TextChanged(object sender, TextChangedEventArgs e) {
