@@ -183,7 +183,6 @@ namespace Casely {
                     pc.Service = pathCase.Service;
                 }
             }
-            listAllPathCase = listAllPathCase.Where(x => x.CaseNumber == pathCase.CaseNumber).Select(c => { c.EvaluationComment = cmbSelfEvaluation.Text; return c; }).ToList();
             cmbSelfEvaluation.Text = "";
             var indx = cmbCaseNumber.SelectedIndex;
             cmbService.Focus();
