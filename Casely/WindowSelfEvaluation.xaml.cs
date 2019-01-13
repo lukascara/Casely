@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using CaselyData;
 using DiffMatchPatch;
 using System.Diagnostics;
+using System.Windows.Input;
 
 namespace Casely {
     /// <summary>
@@ -25,6 +26,7 @@ namespace Casely {
         private List<CaseEntry> listAllCaseEntry = new List<CaseEntry>();
         public ObservableCollection<Staff> listStaff = new ObservableCollection<Staff>();
         private ObservableCollection<CaseEntry> listFilteredCaseEntry = new ObservableCollection<CaseEntry>();
+        
 
         public WindowSelfEvaluation() {
             InitializeComponent();
@@ -47,6 +49,27 @@ namespace Casely {
             cmbService.ItemsSource = suggestionService;
             cmbSelfEvaluation.ItemsSource = suggestionEvaluation;
             ApplyFiltersToCaseListAndRefresh();
+
+            // instantiate keyboard shortcuts
+            RoutedCommand cmndSettingnext = new RoutedCommand();
+            cmndSettingnext.InputGestures.Add(new KeyGesture(Key.N, ModifierKeys.Control));
+            CommandBindings.Add(new CommandBinding(cmndSettingnext, btnNextCase_Click));
+
+            RoutedCommand cmndSettingPrev = new RoutedCommand();
+            cmndSettingPrev.InputGestures.Add(new KeyGesture(Key.P, ModifierKeys.Control));
+            CommandBindings.Add(new CommandBinding(cmndSettingPrev, btnPreviousCase_Click));
+
+            RoutedCommand cmndSettingService = new RoutedCommand();
+            cmndSettingService.InputGestures.Add(new KeyGesture(Key.R, ModifierKeys.Control));
+            CommandBindings.Add(new CommandBinding(cmndSettingService, focusService));
+
+            RoutedCommand cmndSettingEval = new RoutedCommand();
+            cmndSettingEval.InputGestures.Add(new KeyGesture(Key.E, ModifierKeys.Control));
+            CommandBindings.Add(new CommandBinding(cmndSettingEval, focusEvaluation));
+
+            RoutedCommand cmndSettingEvalComments = new RoutedCommand();
+            cmndSettingEvalComments.InputGestures.Add(new KeyGesture(Key.W, ModifierKeys.Control));
+            CommandBindings.Add(new CommandBinding(cmndSettingEvalComments, focusSelfEvalComments));
 
         }
 
@@ -83,12 +106,11 @@ namespace Casely {
                 listFilteredCases = listAllCaseEntry.Where(x => x.CaseNumber == stCaseNum).ToList();
             }
 
-            RefreshCaseListUI(listFilteredCases);
-           
+            RefreshCaseListUI(listFilteredCases);            
         }
 
         private bool IsCaseEvaluated(CaseEntry CE) {
-            var xy = listAllPathCase.Where(x => x.CaseNumber == CE.CaseNumber).Where(y => y.Evaluation != null);
+            var xy = listAllPathCase.Where(x => x.CaseNumber == CE.CaseNumber).Where(y => y.Evaluation != null && y.Evaluation.TrimStart(' ') != "");
             return xy.Count() != 0;
         }
 
@@ -97,11 +119,23 @@ namespace Casely {
         /// </summary>
         /// <param name="listCaseEntries"></param>
         private void RefreshCaseListUI(List<CaseEntry> listCaseEntries) {
+            var oldSelectedIndex = cmbCaseNumber.SelectedIndex; // store the old selected index before we reload the combobox with the new list
+            var oldCountFilteredCount = listFilteredCaseEntry.Count;
             listFilteredCaseEntry.Clear();
             foreach (var s in listCaseEntries) {               
                     listFilteredCaseEntry.Add(s);
             }
-            if (cmbCaseNumber.Items.Count > 0) cmbCaseNumber.SelectedIndex = 0;
+            // select the first case if a case exists, and none is currently selected
+            if (oldSelectedIndex == -1 && cmbCaseNumber.Items.Count > 0) {
+                cmbCaseNumber.SelectedIndex = 0;
+            } else if (oldSelectedIndex < cmbCaseNumber.Items.Count) {
+                cmbCaseNumber.SelectedIndex = oldSelectedIndex;
+                // A case was completed, change the index so that the next case is correctly selected
+                if (1 == (oldCountFilteredCount - listFilteredCaseEntry.Count)) {
+                    cmbCaseNumber.SelectedIndex -= 1;
+                }
+            }
+            
         }
 
         public void refreshSuggestions() {
@@ -185,13 +219,14 @@ namespace Casely {
             }
             cmbSelfEvaluation.Text = "";
             var indx = cmbCaseNumber.SelectedIndex;
-            cmbService.Focus();
+           // cmbService.Focus();
             ApplyFiltersToCaseListAndRefresh();
         }
 
         private void chkFilterCompleted_Click(object sender, RoutedEventArgs e) {
             ApplyFiltersToCaseListAndRefresh();
         }
+
 
         private void refreshCaseData() {
             RefreshComparison();
@@ -305,6 +340,19 @@ namespace Casely {
             ApplyFiltersToCaseListAndRefresh();
             txtStatus.Text = "";
         }
+        
+        private void focusService(object sender, RoutedEventArgs e) {
+            cmbService.Focus();
+        }
+
+        private void focusEvaluation(object sender, RoutedEventArgs e) {
+            cmbSelfEvaluation.Focus();
+        }
+
+        private void focusSelfEvalComments(object sender, RoutedEventArgs e) {
+            txtSelfEvalComments.Focus();
+        }
+
     }
 
 }

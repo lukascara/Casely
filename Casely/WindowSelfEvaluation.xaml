@@ -8,6 +8,9 @@
         mc:Ignorable="d"
         Title="Casely: Self-Evaluation" Height="731" Width="1150" Loaded="Window_Loaded" Background="#FFE3F1F7"
     >
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding myCommand}" Key="F2"/>
+    </Window.InputBindings>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="381*"/>
@@ -31,6 +34,7 @@
             </Grid.RowDefinitions>
             <CheckBox Grid.Column="0" Grid.Row="0" x:Name="chkOnlyShowUncompleted" Content="List uncompleted only" VerticalAlignment="Top" Click="chkFilterCompleted_Click" HorizontalAlignment="Left" IsChecked="True" Height="15" Width="137"/>
             <ComboBox Margin="0,5,0,0" MinWidth="175" Grid.Column="0" Grid.Row="1" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}" x:Name="cmbCaseNumber" HorizontalAlignment="Left" TabIndex="1" SelectionChanged="cmbCaseNumber_SelectionChanged">
+                
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
@@ -105,10 +109,10 @@
             </Grid.ColumnDefinitions>
             <WPF:HtmlPanel x:Name="wbDiffText" Margin="10,22,5,27" BorderBrush="#FDA6A6A6" BorderThickness="3"/>
             <GridSplitter HorizontalAlignment="Left" Height="615" VerticalAlignment="Top" Width="4" Grid.Column="1"/>
-            <TextBox x:Name="txtSelfEvalComments" Grid.Column="1" Margin="9,22,10,27" TextWrapping="Wrap" AcceptsReturn="True"/>
+            <TextBox x:Name="txtSelfEvalComments" Grid.Column="1" Margin="9,22,10,27" TextWrapping="Wrap" AcceptsReturn="True" TabIndex="4"/>
             <Label Content="Resident case and self evaluation notes" Grid.Column="1" Margin="10,-7,6,0" VerticalAlignment="Top" FontSize="14" BorderBrush="Black"/>
-            <Button x:Name="btnNextCase" Content="Save + Next Case" Margin="0,0,6,0" VerticalAlignment="Top" Click="btnNextCase_Click" HorizontalAlignment="Right" Width="122"/>
-            <Button x:Name="btnPreviousCase" Content="Save + Previous Case" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="125" ToolTip="Go to the previous case" Click="btnPreviousCase_Click"/>
+            <Button x:Name="btnNextCase" Content="Save + Next Case" Margin="0,0,6,0" VerticalAlignment="Top" Click="btnNextCase_Click" HorizontalAlignment="Right" Width="122" ToolTip="[Ctrl + n]"/>
+            <Button x:Name="btnPreviousCase" Content="Save + Previous Case" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="125" ToolTip="[Ctrl + p]" Click="btnPreviousCase_Click"/>
             <StatusBar Height="22" VerticalAlignment="Bottom" Grid.ColumnSpan="2">
                 <TextBlock x:Name="txtStatus" TextWrapping="Wrap"/>
             </StatusBar>
