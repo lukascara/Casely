@@ -49,7 +49,7 @@ namespace CaselyData {
                         });
                         var table = result.Tables[0];
                         foreach (DataRow r in table.Rows) {
-                            string frmCaseNum = formatCaseNumber(r["ORDERNUMBER"].ToString() ?? string.Empty);
+                            string frmCaseNum = r["FORMATTEDORDERNUMBER"].ToString() ?? string.Empty;
                             SoftSignoutData sft = new SoftSignoutData() {
                                 CaseNum = frmCaseNum,
                                 RegistrationDateTime = r["ORDERREGISTRATIONDATE"].ToString() ?? string.Empty,
@@ -94,9 +94,10 @@ namespace CaselyData {
                     TumorSynoptic = firstReportVersion.AttendingSynopticText,
                     Result = firstReportVersion.AttendingResultText,    
                     AuthorID = firstReportVersion.AttendingID
-                };                
+                };
 
                 // Iterate through each version of the resident report
+                List<CaseEntry> residentVersions = new List<CaseEntry>(); // This variable temporarily stores list of resident report versions
                 foreach (var curReportVersion in entriesCurrentCase) {
                     CaseEntry resCE = new CaseEntry() {
                         DateTimeModifiedObject = curReportVersion.EnteredDateTime,
@@ -107,22 +108,33 @@ namespace CaselyData {
                         TumorSynoptic = curReportVersion.ResidentSynopticText,
                         AuthorID = curReportVersion.ResidentID
                     };
-                    caseEntries.Add(resCE);
+                    residentVersions.Add(resCE);
                 }
+                // Each version of the resident report only stores fields that were changed.
+                // For example, if only the interpretation was changed and the report save, than result, comment, tumor synoptic will be blank
+                // This for loop fixes that problem by 'updating' even non-saved fields
+                for (int i =1; i < residentVersions.Count; i++) {
+                    if (residentVersions[i-1].Interpretation != "" && residentVersions[i].Interpretation == "") {
+                        residentVersions[i].Interpretation = residentVersions[i-1].Interpretation;
+                    }
+                    if (residentVersions[i - 1].Result != "" && residentVersions[i].Result == "") {
+                        residentVersions[i].Result = residentVersions[i - 1].Result;
+                    }
+                    if (residentVersions[i - 1].Comment != "" && residentVersions[i].Comment == "") {
+                        residentVersions[i].Comment = residentVersions[i - 1].Comment;
+                    }
+                    if (residentVersions[i - 1].TumorSynoptic != "" && residentVersions[i].TumorSynoptic == "") {
+                        residentVersions[i].TumorSynoptic = residentVersions[i - 1].TumorSynoptic;
+                    }
+                    
+                }
+                caseEntries.AddRange(residentVersions);
                 caseEntries.Add(attendCE); // Add attending report after resident version to keep it sorted for debugging                                
             }
             return caseEntries;            
         }
 
-        public string formatCaseNumber(string caseNumber) {
-            Superpower.TextParser<string> formatCaseNum =
-                from caseType in Character.Letter.Many()
-                from year in Character.Digit.Repeat(2)
-                from caseNum in Character.Digit.Many()
-                select $"{new String(caseType)}-{new String(year)}-{new String(caseNum).TrimStart('0')}";
-            var formCaseNum = formatCaseNum.Parse(caseNumber);
-            return formCaseNum;
-        }
+       
             
         /// <summary>
         /// Converts the rich text into a string. A slow function since it must use the rich textbox control.
