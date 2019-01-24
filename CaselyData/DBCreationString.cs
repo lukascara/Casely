@@ -192,7 +192,13 @@ END;
 CREATE TRIGGER update_path_case UPDATE OF evaluation_comment ON path_case
 BEGIN
   UPDATE fts5_path_case_evaluation_comment SET evaluation_comment = new.evaluation_comment WHERE case_number = old.case_number;
-        END;"}
+        END;"},
+// VERSION 2: update table names and migrate data
+            {2, @"CREATE TABLE casely_user_data AS
+                    SELECT case_number, service, evaluation, evaluation_comment
+                    FROM path_case;
+                  DROP TABLE path_case;"
+    }
         };
       
     }

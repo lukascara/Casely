@@ -92,19 +92,19 @@ SOFTWARE.");
                     CaselyData.SoftPathExcelConvert sc = new SoftPathExcelConvert();
                     var importedData = sc.importSoftPathCSVData(theDialog.FileName);
                     
-                    var pathCaseEntriesToAdd = new List<CaseEntry>();
+                    var caselyUserDataEntriesToAdd = new List<CaseEntry>();
                     int casesImportedCount = 0;
                     int casesAlreadImported = 0;
                     foreach(var d in importedData) {
                         // Import the cases only if there is not already a report version by both the attending and the resident.
                         if (!(SqliteDataAcces.HasMultipleAuthorEntries(d.CaseNumber))) {
-                            pathCaseEntriesToAdd.Add(d);
+                            caselyUserDataEntriesToAdd.Add(d);
                             casesImportedCount++;
                         } else {
                             casesAlreadImported++;
                         }
                     }
-                    SqliteDataAcces.BatchInsertNewCaseEntry(pathCaseEntriesToAdd);
+                    SqliteDataAcces.BatchInsertNewCaseEntry(caselyUserDataEntriesToAdd);
                    
                     
                     System.Windows.Forms.MessageBox.Show($"{casesImportedCount/2} cases imported. {casesAlreadImported} already existed in Casely.");

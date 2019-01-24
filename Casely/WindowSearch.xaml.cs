@@ -16,7 +16,7 @@ namespace Casely {
         List<CaseEntry> listAllCaseEntries = new List<CaseEntry>();
         ObservableCollection<Staff> listStaff = new ObservableCollection<Staff>();
         ObservableCollection<CaseEntry> listFilteredCaseEntry = new ObservableCollection<CaseEntry>();
-        List<PathCase> listAllPathCases = new List<PathCase>();
+        List<CaselyUserData> listAllCaselyUserDatas = new List<CaselyUserData>();
 
 
         public WindowCaseSearch() {
@@ -31,7 +31,7 @@ namespace Casely {
             lbFilteredCaseEntry.ItemsSource = listFilteredCaseEntry;
             lbFilteredCaseEntry.SelectedValuePath = "CaseNumber";
             listAllCaseEntries = SqliteDataAcces.GetListAllCaseEntries();
-            listAllPathCases = SqliteDataAcces.GetAllPathCase();
+            listAllCaselyUserDatas = SqliteDataAcces.GetAllCaselyUserData();
             SearchDatabase();
 
         }
@@ -76,7 +76,7 @@ namespace Casely {
                                             .FindIndex(c => c.CaseNumber == x.CaseNumber) != -1).ToList();
                 }
                 if (txtFilterEvaluationComment.Text != "") {
-                    List<PathCase> listFilter = SearchFilterByEvaluationComment(txtFilterEvaluationComment.Text);
+                    List<CaselyUserData> listFilter = SearchFilterByEvaluationComment(txtFilterEvaluationComment.Text);
                     listFilteredCE = listFilteredCE.Where(x => listFilter.ToList()
                                             .FindIndex(c => c.CaseNumber == x.CaseNumber) != -1).ToList();
                 }
@@ -123,14 +123,14 @@ namespace Casely {
             return SqliteDataAcces.FilterCaseEntryTumorSynoptic(searchTerms, Properties.Settings.Default.UserID);
         }
 
-        private List<PathCase> SearchFilterByEvaluationComment(string searchTerms) {
+        private List<CaselyUserData> SearchFilterByEvaluationComment(string searchTerms) {
             return SqliteDataAcces.FilterCaseEntryEvaluationComment(searchTerms);
         }
 
         private void lbFilteredCaseEntry_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             if (lbFilteredCaseEntry.SelectedIndex != -1) {
                 var ce = (CaseEntry)lbFilteredCaseEntry.SelectedItem;
-                var pc = listAllPathCases.Where(x => x.CaseNumber == ce.CaseNumber).First();
+                var pc = listAllCaselyUserDatas.Where(x => x.CaseNumber == ce.CaseNumber).First();
                 wbReportViewer.Text = $"<b>Self-Evluation: </b>{pc.Evaluation}<b><br>Self-Evaluation Comments: </b>{pc.EvaluationComment}";
                 wbReportViewer.Text +=  ce.toHtml();
             }

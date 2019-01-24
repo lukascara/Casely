@@ -106,7 +106,7 @@ namespace Casely {
                         partsToAdd.Add(newPart);
                     }
                 }
-                SqliteDataAcces.InsertNewParts(partsToAdd, new PathCase() { CaseNumber = txtCaseNumber.Text, Service = cbService.Text });
+                SqliteDataAcces.InsertNewParts(partsToAdd, new CaselyUserData() { CaseNumber = txtCaseNumber.Text, Service = cbService.Text });
                 txtCaseNumber.Text = SqliteDataAcces.CaseNumberPrefix;
                 refreshParts();
                 refreshSuggestions();

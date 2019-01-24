@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Forms;
 
 namespace CaselyData {
-    public class PathCase {
+    public class CaselyUserData {
         public string CaseNumber { get; set; }
         public string Service { get; set; }
         public string Evaluation { get; set; }
@@ -190,15 +190,15 @@ namespace CaselyData {
 
         
 
-        public static void InsertNewCaseEntry(CaseEntry ce, PathCase pathCase) {
+        public static void InsertNewCaseEntry(CaseEntry ce, CaselyUserData caselyUserData) {
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 cn.Open();
                 cn.EnableExtensions(true);
                 cn.LoadExtension("SQLite.Interop.dll", "sqlite3_fts5_init"); // this line is required to enable full text search support
 
-                var sql = @"INSERT INTO path_case (case_number, service)
+                var sql = @"INSERT INTO casely_user_data (case_number, service)
                              VALUES (@CaseNumber, @Service);";
-                cn.Execute(sql, pathCase);
+                cn.Execute(sql, caselyUserData);
                 sql = @"INSERT INTO case_entry (author_id, case_number, date_modified,
                                                 time_modified, tumor_synoptic, comment, result, material, history, interpretation, gross, microscopic)
                             VALUES (@AuthorID, @CaseNumber,@DateModifiedString,@TimeModifiedString,@TumorSynoptic, @Comment, @Result, @Material, @History, 
@@ -216,7 +216,7 @@ namespace CaselyData {
                 var sqliteTransaction = cn.BeginTransaction();
 
                 foreach (var ce in listCasesToInsert) {
-                    var sql = @"INSERT INTO path_case (case_number)
+                    var sql = @"INSERT INTO casely_user_data (case_number)
                                  VALUES (@CaseNumber);
 
                                 INSERT INTO case_entry (author_id, case_number, date_modified,
@@ -230,24 +230,24 @@ namespace CaselyData {
             }
         }
 
-        public static void UpdateCompletedCase(PathCase pathCase) {
+        public static void UpdateCompletedCase(CaselyUserData caselyUserData) {
             using (var cn = new SQLiteConnection(DbConnectionString)) {
-                var sql = @"UPDATE path_case 
+                var sql = @"UPDATE casely_user_data 
                                 SET case_number = @CaseNumber, service = @Service, evaluation = @Evaluation, evaluation_comment = @EvaluationComment
                                 WHERE case_number = @CaseNumber;";               
                 cn.Open();
                 cn.EnableExtensions(true);
                 cn.LoadExtension("SQLite.Interop.dll", "sqlite3_fts5_init"); // needed in order to modify the full text table
-                cn.Execute(sql, pathCase);
+                cn.Execute(sql, caselyUserData);
                 cn.Close();
             }
         }
 
-        public static void InsertNewPartDiagnosisEntry(List<PartDiagnosis> ce, PathCase pathCase) {
+        public static void InsertNewPartDiagnosisEntry(List<PartDiagnosis> ce, CaselyUserData caselyUserData) {
             using (var cn = new SQLiteConnection(DbConnectionString)) {
-                var sql = @"INSERT INTO path_case (case_number, service)
+                var sql = @"INSERT INTO casely_user_data (case_number, service)
                              VALUES (@CaseNumber, @Service);";
-                cn.Execute(sql, pathCase);
+                cn.Execute(sql, caselyUserData);
                 sql = @"INSERT INTO part_diagnosis ( case_number, part, date_modified, time_modified,
                                                 organ_system, organ, category, diagnosis, diagnosis_detailed)
                             VALUES (@CaseNumber, @Part, @DateModifiedString, @TimeModifiedString,@OrganSystem, @Organ, 
@@ -304,14 +304,14 @@ namespace CaselyData {
                
         }
 
-        public static List<PathCase> GetAllPathCase() {
+        public static List<CaselyUserData> GetAllCaselyUserData() {
             var sql = @"SELECT case_number AS CaseNumber,
                             service,
                             evaluation,
                             evaluation_comment AS EvaluationComment
-                            FROM path_case;";
+                            FROM casely_user_data;";
             using (var cn = new SQLiteConnection(DbConnectionString)) {
-                var output = cn.Query<PathCase>(sql, new DynamicParameters()).ToList();
+                var output = cn.Query<CaselyUserData>(sql, new DynamicParameters()).ToList();
                 return output;
             }
         }
@@ -333,11 +333,11 @@ namespace CaselyData {
             }
         }
 
-        public static void InsertNewParts(List<PartEntry> parts, PathCase pathCase) {
+        public static void InsertNewParts(List<PartEntry> parts, CaselyUserData caselyUserData) {
             using (var cn = new SQLiteConnection(DbConnectionString)) {
-                var sql = @"INSERT INTO path_case (case_number, service)
+                var sql = @"INSERT INTO casely_user_data (case_number, service)
                              VALUES (@CaseNumber, @Service);";
-                cn.Execute(sql, pathCase);
+                cn.Execute(sql, caselyUserData);
                 sql = @"INSERT INTO part_entry (part, procedure,
                             specimen, date_modified, time_modified, case_number, author_id)
                             VALUES (@Part, @Procedure, @Specimen, @DateModifiedString,@TimeModifiedString, @CaseNumber, @AuthorID);";
@@ -502,16 +502,16 @@ namespace CaselyData {
             }
         }
 
-        public static PathCase GetPathCase(string caseNumber) {
+        public static CaselyUserData GetCaselyUserData(string caseNumber) {
             var sql = @"SELECT 
 	                    case_number AS CaseNumber,
 	                    evaluation, 
                         evaluation_comment AS EvaluationComment, 
-                        service FROM path_case WHERE case_number = @caseNumber;";
+                        service FROM casely_user_data WHERE case_number = @caseNumber;";
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 DynamicParameters dp = new DynamicParameters();
                 dp.Add("@caseNumber", caseNumber, System.Data.DbType.String);
-                var output = cn.Query<PathCase>(sql, dp).ToList().FirstOrDefault();
+                var output = cn.Query<CaselyUserData>(sql, dp).ToList().FirstOrDefault();
                 return output;
             }
         }
@@ -646,8 +646,8 @@ namespace CaselyData {
         public static List<CaseEntry> FilterCaseEntryTumorSynoptic(string strFilterTumorSynoptic, string userID) {
             return FilterCaseEntry(strFilterTumorSynoptic, "fts5_case_entry_tumor_synoptic",  userID);
         }
-        public static List<PathCase> FilterCaseEntryEvaluationComment(string strFilterEvaluationComment) {
-            return FilterPathCase(strFilterEvaluationComment, "fts5_path_case_evaluation_comment");
+        public static List<CaselyUserData> FilterCaseEntryEvaluationComment(string strFilterEvaluationComment) {
+            return FilterCaselyUserData(strFilterEvaluationComment, "fts5_casely_user_data_evaluation_comment");
         }
 
         /// <summary>
@@ -690,16 +690,16 @@ namespace CaselyData {
 
         
         /// <summary>
-        /// Uses an inner join in order to filter path cases and return the case_entry rows that satisfy  the path_case filter
+        /// Uses an inner join in order to filter path cases and return the case_entry rows that satisfy  the casely_user_data filter
         /// </summary>
         /// <param name="strFilter"></param>
         /// <param name="fts5TableName"></param>
         /// <param name="userID"></param>
         /// <returns></returns>
-        private static List<PathCase> FilterPathCase(string strFilter, string fts5TableName) {
-            var sql = @"SELECT path_case.case_number AS CaseNumber 
+        private static List<CaselyUserData> FilterCaselyUserData(string strFilter, string fts5TableName) {
+            var sql = @"SELECT casely_user_data.case_number AS CaseNumber 
                         FROM " + fts5TableName.Trim() + @"
-                        INNER JOIN path_case ON path_case.case_number = " + fts5TableName.Trim() + @".case_number 
+                        INNER JOIN casely_user_data ON casely_user_data.case_number = " + fts5TableName.Trim() + @".case_number 
                         WHERE " + fts5TableName.Trim() + " MATCH @strFilter";
 
             using (var cn = new SQLiteConnection(DbConnectionString)) {
@@ -708,7 +708,7 @@ namespace CaselyData {
                 cn.LoadExtension("SQLite.Interop.dll", "sqlite3_fts5_init"); // required extension in order to do FTS5 search
                 DynamicParameters dp = new DynamicParameters();
                 dp.Add("@strFilter", strFilter, System.Data.DbType.String);
-                var output = cn.Query<PathCase>(sql, dp).ToList();
+                var output = cn.Query<CaselyUserData>(sql, dp).ToList();
                 cn.Close();
                 return output;
             }
@@ -795,13 +795,13 @@ namespace CaselyData {
         /// Inserts a new pathology case into the database.
         /// Case number must be unique. If not unique, insertion will be ignored by sqlite database.
         /// </summary>
-        /// <param name="pathCase"></param>
-        public static void InsertNewPathCase(PathCase pathCase) {
+        /// <param name="caselyUserData"></param>
+        public static void InsertNewCaselyUserData(CaselyUserData caselyUserData) {
             using (var cn = new SQLiteConnection(DbConnectionString)) {
-                var sql = @"INSERT INTO path_case (case_number, service) VALUES (@CaseNumber, @Service);";
+                var sql = @"INSERT INTO casely_user_data (case_number, service) VALUES (@CaseNumber, @Service);";
                 DynamicParameters dp = new DynamicParameters();
-                dp.Add("@CaseNumber", pathCase.CaseNumber, System.Data.DbType.String);
-                dp.Add("@Service", pathCase.Service, System.Data.DbType.String);
+                dp.Add("@CaseNumber", caselyUserData.CaseNumber, System.Data.DbType.String);
+                dp.Add("@Service", caselyUserData.Service, System.Data.DbType.String);
                 var result = cn.Execute(sql, dp);
             }
         }

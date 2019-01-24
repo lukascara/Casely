@@ -42,7 +42,7 @@ namespace Casely {
             } else if (cmbAuthor.Text == "") {
                 MessageBox.Show("Please choose an author");
             } else {
-                PathCase pc = new PathCase();
+                CaselyUserData pc = new CaselyUserData();
                 pc.CaseNumber = txtCaseNumber.Text;
                 pc.Service = cmbService.Text;
                 CaseEntry ce = new CaseEntry();

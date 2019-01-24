@@ -22,7 +22,7 @@ namespace Casely {
         private List<string> suggestionCategory = new List<string>();
         private List<string> suggestionService = new List<string>();
         private List<string> suggestionEvaluation = new List<string>();
-        private List<PathCase> listAllPathCase = new List<PathCase>();
+        private List<CaselyUserData> listAllCaselyUserData = new List<CaselyUserData>();
         private List<CaseEntry> listAllCaseEntry = new List<CaseEntry>();
         public ObservableCollection<Staff> listStaff = new ObservableCollection<Staff>();
         private ObservableCollection<CaseEntry> listFilteredCaseEntry = new ObservableCollection<CaseEntry>();
@@ -44,7 +44,7 @@ namespace Casely {
             dtFilterDate.Text = "";
             // load all the cases from the database
             listAllCaseEntry = await GetAllCaseEntryAsync();
-            listAllPathCase = await GetAllPathCaseAsync();
+            listAllCaselyUserData = await GetAllCaselyUserDataAsync();
             RefreshCaseListUI(listAllCaseEntry);
             cmbService.ItemsSource = suggestionService;
             cmbSelfEvaluation.ItemsSource = suggestionEvaluation;
@@ -79,8 +79,8 @@ namespace Casely {
             return result; 
         }
 
-        private async Task<List<PathCase>> GetAllPathCaseAsync() {
-            var result = await Task.Run(() => SqliteDataAcces.GetAllPathCase());
+        private async Task<List<CaselyUserData>> GetAllCaselyUserDataAsync() {
+            var result = await Task.Run(() => SqliteDataAcces.GetAllCaselyUserData());
             return result;
         }
 
@@ -110,7 +110,7 @@ namespace Casely {
         }
 
         private bool IsCaseEvaluated(CaseEntry CE) {
-            var xy = listAllPathCase.Where(x => x.CaseNumber == CE.CaseNumber).Where(y => y.Evaluation != null && y.Evaluation.TrimStart(' ') != "");
+            var xy = listAllCaselyUserData.Where(x => x.CaseNumber == CE.CaseNumber).Where(y => y.Evaluation != null && y.Evaluation.TrimStart(' ') != "");
             return xy.Count() != 0;
         }
 
@@ -206,15 +206,15 @@ namespace Casely {
         }
 
         private void submitEvaluation() {
-            PathCase pathCase = new PathCase() { CaseNumber = cmbCaseNumber.SelectedValue.ToString(), Service = cmbService.Text, Evaluation = cmbSelfEvaluation.Text, EvaluationComment = txtSelfEvalComments.Text };
+            CaselyUserData caselyUserData = new CaselyUserData() { CaseNumber = cmbCaseNumber.SelectedValue.ToString(), Service = cmbService.Text, Evaluation = cmbSelfEvaluation.Text, EvaluationComment = txtSelfEvalComments.Text };
             // Save the evaluation and other data for the case, essentially completing it.
-            SqliteDataAcces.UpdateCompletedCase(pathCase);
-            // Update in-memory list of pathCases, that way do not have to go back to the database again to load.
-            foreach (var pc in listAllPathCase) {
-                if (pc.CaseNumber == pathCase.CaseNumber) {
-                    pc.Evaluation = pathCase.Evaluation;
-                    pc.EvaluationComment = pathCase.EvaluationComment;
-                    pc.Service = pathCase.Service;
+            SqliteDataAcces.UpdateCompletedCase(caselyUserData);
+            // Update in-memory list of caselyUserDatas, that way do not have to go back to the database again to load.
+            foreach (var pc in listAllCaselyUserData) {
+                if (pc.CaseNumber == caselyUserData.CaseNumber) {
+                    pc.Evaluation = caselyUserData.Evaluation;
+                    pc.EvaluationComment = caselyUserData.EvaluationComment;
+                    pc.Service = caselyUserData.Service;
                 }
             }
             cmbSelfEvaluation.Text = "";
@@ -232,10 +232,10 @@ namespace Casely {
             RefreshComparison();
             var cn = cmbCaseNumber.SelectedValue;
             if (cn != null) {
-                var pathCase = SqliteDataAcces.GetPathCase(cn.ToString());
-                cmbSelfEvaluation.Text = pathCase.Evaluation != null ? pathCase.Evaluation : "";
-                txtSelfEvalComments.Text = pathCase.EvaluationComment != null ? pathCase.EvaluationComment : "";
-                cmbService.Text = pathCase.Service != null ? pathCase.Service : "";
+                var caselyUserData = SqliteDataAcces.GetCaselyUserData(cn.ToString());
+                cmbSelfEvaluation.Text = caselyUserData.Evaluation != null ? caselyUserData.Evaluation : "";
+                txtSelfEvalComments.Text = caselyUserData.EvaluationComment != null ? caselyUserData.EvaluationComment : "";
+                cmbService.Text = caselyUserData.Service != null ? caselyUserData.Service : "";
             }
         }
 
