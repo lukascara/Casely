@@ -13,11 +13,6 @@ namespace CaselyData {
     `date_of_service` TEXT
 );
 
-CREATE TABLE IF NOT EXISTS `casely_data` (
-`database_version` TEXT
-);
-
-INSERT INTO `casely_data` (database_version) VALUES (0.24);
 
 CREATE TABLE IF NOT EXISTS `case_entry` (
 	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,	
@@ -197,8 +192,57 @@ BEGIN
             {2, @"CREATE TABLE casely_user_data AS
                     SELECT case_number, service, evaluation, evaluation_comment
                     FROM path_case;
-                  DROP TABLE path_case;"
-    }
+                 "
+
+    },
+// VERSION 3: Updated triggers for search tables to use the new casely_user_data as trigger condition
+
+            {3, @"
+ CREATE INDEX casenum_casely_user_data ON casely_user_data (case_number);
+DROP TABLE IF EXISTS fts5_path_case_evaluation_comment;
+CREATE VIRTUAL TABLE fts5_casely_user_data_evaluation_comment USING fts5(case_number, evaluation_comment);
+
+                  DROP TABLE IF EXISTS path_case;
+                  DROP TRIGGER IF EXISTS insert_path_case;
+                  DROP TRIGGER IF EXISTS update_path_case;
+                  DROP TRIGGER IF EXISTS insert_case_entry_case_number;
+                  DROP TRIGGER IF EXISTS insert_part_entry_case_number;
+                  DROP TRIGGER IF EXISTS insert_path_case_case_number;
+                  DROP TRIGGER IF EXISTS insert_service_path_case;
+
+
+        
+-- Update triggers
+CREATE TRIGGER insert_casely_user_data AFTER INSERT  ON casely_user_data
+BEGIN
+INSERT INTO fts5_casely_user_data_evaluation_comment(case_number, evaluation_comment)  VALUES(new.case_number, new.evaluation_comment);
+END;
+
+CREATE TRIGGER update_casely_user_data UPDATE OF evaluation_comment ON casely_user_data
+BEGIN
+  UPDATE fts5_casely_user_data_evaluation_comment SET evaluation_comment = new.evaluation_comment WHERE case_number = old.case_number;
+        END;
+
+CREATE TRIGGER insert_case_entry_case_number AFTER INSERT ON case_entry
+BEGIN
+INSERT INTO casely_user_data (case_number) VALUES (new.case_number);
+END;
+
+CREATE TRIGGER insert_part_entry_case_number AFTER INSERT ON part_entry
+BEGIN
+INSERT INTO casely_user_data (case_number) VALUES (new.case_number);
+END;
+
+CREATE TRIGGER insert_casely_user_data_case_number AFTER UPDATE ON casely_user_data
+BEGIN
+INSERT INTO evaluation (evaluation) VALUES (new.evaluation);
+END;
+
+CREATE TRIGGER insert_service_casely_user_data AFTER UPDATE ON casely_user_data
+BEGIN
+INSERT INTO service (service) VALUES (new.service);
+END;
+" }
         };
       
     }
