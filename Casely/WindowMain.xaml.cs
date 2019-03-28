@@ -191,5 +191,9 @@ SOFTWARE.");
         private void ImportCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e) {
            
         }
+
+        private void MenuAbout_Click(object sender, RoutedEventArgs e) {
+            System.Windows.MessageBox.Show("Casely version is: 0.28");
+        }
     }
 }

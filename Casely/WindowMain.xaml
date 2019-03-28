@@ -8,7 +8,7 @@
         Title="Casely" Height="450" Width="800" Loaded="Window_Loaded" Background="#FFE3F1F7">
     <Grid>
         <Button   x:Name="btnGrossing" Content="Grossing" Margin="10,65.724,0,0" Height="58.527" Visibility="Hidden" VerticalAlignment="Top" Click="btnGrossing_Click" HorizontalAlignment="Left" Width="283.835"/>
-        <Button Visibility="Visible" x:Name="btnAddSignoutCase" Content="Add Signout Case" Margin="308,61,0,0" Click="btnSignout_Click" Height="25" VerticalAlignment="Top" HorizontalAlignment="Left" Width="284"/>
+        <Button Visibility="Visible" x:Name="btnAddSignoutCase" Content="Add Individual Signout Case" Margin="308,61,0,0" Click="btnSignout_Click" Height="25" VerticalAlignment="Top" HorizontalAlignment="Left" Width="284"/>
         <TextBlock Visibility="Hidden" HorizontalAlignment="Left" Margin="338.293,64,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="275.804" Text="What analysis would you like to do?" FontSize="14"/>
         <Button x:Name="btnSearch" Content="Search Reports" Margin="10,188,0,0" Click="btnSearch_Click" HorizontalAlignment="Left" Width="284" Height="65" VerticalAlignment="Top"/>
         <Button x:Name="btnSelfEvaluate" Content="Self-Evaluate Reports" Margin="10,124.251,0,0" Click="btnDiagnosis_Click" HorizontalAlignment="Left" Width="283.835" Height="59.165" VerticalAlignment="Top"/>
@@ -17,12 +17,15 @@
                 <MenuItem x:Name="MenuImportSoftPath" Header="Import Soft Path Data" Click="btnImportData_Click"></MenuItem>
                 <MenuItem Header="Create Database" Click="btnCreateDatabase_Click"></MenuItem>
                 <MenuItem Header="Open Database" Click="btnOpenDatabase_Click"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="About">
+                <MenuItem x:Name="MenuAbout" Header="Version" Click="MenuAbout_Click"></MenuItem>
                 <MenuItem Header="License" Click="MenuShowLicense_Click"></MenuItem>
             </MenuItem>
         </Menu>
         <ListBox Visibility="Hidden" x:Name="lbRecentlyAdded" Height="144.419" Margin="10,0" VerticalAlignment="Bottom"/>
         <TextBlock Visibility="Hidden" HorizontalAlignment="Left" Margin="10,0,0,147.799" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="275.804" Text="Recently added cases" FontSize="14" d:LayoutOverrides="HorizontalAlignment"/>
-        <Button x:Name="btnImportSoftPathData" Content="Import Soft Path Data" HorizontalAlignment="Left" Margin="10,60.724,0,0" VerticalAlignment="Top" Width="283.835" Click="btnImportData_Click" Height="24.96"/>
+        <Button x:Name="btnImportSoftPathData" Content="Import Soft Path Excel Data" HorizontalAlignment="Left" Margin="10,60.724,0,0" VerticalAlignment="Top" Width="283.835" Click="btnImportData_Click" Height="24.96"/>
         <TextBlock HorizontalAlignment="Left" Margin="4.293,28.144,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="275.804" FontSize="14"><Run Text="Database path: "/><Run/></TextBlock>
         <TextBox IsReadOnly="True"  x:Name="tbDBPath" HorizontalAlignment="Left" Margin="102.293,28.804,0,0" TextWrapping="Wrap" VerticalAlignment="Top">Data Base Path</TextBox>
         <TextBox x:Name="txtUserID" Height="23" Margin="662,23.764,10,0" TextWrapping="Wrap" VerticalAlignment="Top" KeyDown="txtUserID_KeyDown" LostFocus="txtUserID_LostFocus"/>

@@ -189,30 +189,28 @@ BEGIN
   UPDATE fts5_path_case_evaluation_comment SET evaluation_comment = new.evaluation_comment WHERE case_number = old.case_number;
         END;"},
 // VERSION 2: update table names and migrate data
-            {2, @"CREATE TABLE casely_user_data AS
-                    SELECT case_number, service, evaluation, evaluation_comment
-                    FROM path_case;
-                 "
+            {2, @"CREATE TABLE `casely_user_data` (
+	`case_number`	TEXT NOT NULL UNIQUE PRIMARY KEY ON CONFLICT IGNORE,
+	`service`	TEXT,
+	`evaluation` TEXT,
+    `date_of_service` TEXT,
+    `evaluation_comment` TEXT
+);
 
-    },
-// VERSION 3: Updated triggers for search tables to use the new casely_user_data as trigger condition
-
-            {3, @"
- CREATE INDEX casenum_casely_user_data ON casely_user_data (case_number);
+CREATE INDEX casenum_casely_user_data ON casely_user_data (case_number);
 DROP TABLE IF EXISTS fts5_path_case_evaluation_comment;
 CREATE VIRTUAL TABLE fts5_casely_user_data_evaluation_comment USING fts5(case_number, evaluation_comment);
 
-                  DROP TABLE IF EXISTS path_case;
-                  DROP TRIGGER IF EXISTS insert_path_case;
-                  DROP TRIGGER IF EXISTS update_path_case;
-                  DROP TRIGGER IF EXISTS insert_case_entry_case_number;
-                  DROP TRIGGER IF EXISTS insert_part_entry_case_number;
-                  DROP TRIGGER IF EXISTS insert_path_case_case_number;
-                  DROP TRIGGER IF EXISTS insert_service_path_case;
+-- Delete old triggers
+            DROP TRIGGER IF EXISTS insert_path_case;
+            DROP TRIGGER IF EXISTS update_path_case;
+            DROP TRIGGER IF EXISTS insert_case_entry_case_number;
+            DROP TRIGGER IF EXISTS insert_part_entry_case_number;
+            DROP TRIGGER IF EXISTS insert_path_case_case_number;
+            DROP TRIGGER IF EXISTS insert_service_path_case;
 
-
-        
--- Update triggers
+-- Create triggers for the new casely_user_data table, these are created first
+-- so that when we migrate the data, the search tables are updated
 CREATE TRIGGER insert_casely_user_data AFTER INSERT  ON casely_user_data
 BEGIN
 INSERT INTO fts5_casely_user_data_evaluation_comment(case_number, evaluation_comment)  VALUES(new.case_number, new.evaluation_comment);
@@ -242,6 +240,15 @@ CREATE TRIGGER insert_service_casely_user_data AFTER UPDATE ON casely_user_data
 BEGIN
 INSERT INTO service (service) VALUES (new.service);
 END;
+
+-- Import the old path_case table into the new casely_user_data 
+INSERT INTO casely_user_data (case_number, service, evaluation) SELECT case_number, service, evaluation
+                    FROM path_case;
+        
+  -- Delete old triggers and tables   
+
+
+            DROP TABLE IF EXISTS path_case;
 " }
         };
       
