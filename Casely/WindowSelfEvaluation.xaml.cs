@@ -26,7 +26,7 @@ namespace Casely {
         private List<CaseEntry> listAllCaseEntry = new List<CaseEntry>();
         public ObservableCollection<Staff> listStaff = new ObservableCollection<Staff>();
         private ObservableCollection<CaseEntry> listFilteredCaseEntry = new ObservableCollection<CaseEntry>();
-        
+        private bool allCasesLoaded = false; // changes to true after all cases are loaded so that the user interface can be correctly updated
 
         public WindowSelfEvaluation() {
             InitializeComponent();
@@ -48,6 +48,7 @@ namespace Casely {
             RefreshCaseListUI(listAllCaseEntry);
             cmbService.ItemsSource = suggestionService;
             cmbSelfEvaluation.ItemsSource = suggestionEvaluation;
+            allCasesLoaded = true;
             ApplyFiltersToCaseListAndRefresh();
 
             // instantiate keyboard shortcuts
@@ -119,20 +120,22 @@ namespace Casely {
         /// </summary>
         /// <param name="listCaseEntries"></param>
         private void RefreshCaseListUI(List<CaseEntry> listCaseEntries) {
-            var oldSelectedIndex = cmbCaseNumber.SelectedIndex; // store the old selected index before we reload the combobox with the new list
-            var oldCountFilteredCount = listFilteredCaseEntry.Count;
-            listFilteredCaseEntry.Clear();
-            foreach (var s in listCaseEntries) {               
-                    listFilteredCaseEntry.Add(s);
-            }
-            // select the first case if a case exists, and none is currently selected
-            if (oldSelectedIndex == -1 && cmbCaseNumber.Items.Count > 0) {
-                cmbCaseNumber.SelectedIndex = 0;
-            } else if (oldSelectedIndex < cmbCaseNumber.Items.Count) {
-                cmbCaseNumber.SelectedIndex = oldSelectedIndex;
-                // A case was completed, change the index so that the next case is correctly selected
-                if (1 == (oldCountFilteredCount - listFilteredCaseEntry.Count)) {
-                    cmbCaseNumber.SelectedIndex -= 1;
+            if (allCasesLoaded) {
+                var oldSelectedIndex = cmbCaseNumber.SelectedIndex; // store the old selected index before we reload the combobox with the new list
+                var oldCountFilteredCount = listFilteredCaseEntry.Count;
+                listFilteredCaseEntry.Clear();
+                foreach (var s in listCaseEntries) {               
+                        listFilteredCaseEntry.Add(s);
+                }
+                // select the first case if a case exists, and none is currently selected
+                if (oldSelectedIndex == -1 && cmbCaseNumber.Items.Count > 0) {
+                    cmbCaseNumber.SelectedIndex = 0;
+                } else if (oldSelectedIndex < cmbCaseNumber.Items.Count) {
+                    cmbCaseNumber.SelectedIndex = oldSelectedIndex;
+                    // A case was completed, change the index so that the next case is correctly selected
+                    if (1 == (oldCountFilteredCount - listFilteredCaseEntry.Count)) {
+                        cmbCaseNumber.SelectedIndex -= 1;
+                    }
                 }
             }
             
