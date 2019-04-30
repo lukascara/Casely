@@ -84,16 +84,17 @@ namespace CaselyData {
                 var entriesCurrentCase = listSoftData.Where(x => x.CaseNum == c).OrderBy(f => f.EnteredDateTime);
 
                 // Each row of the softpath data contains the attending final report, therefore we only need one version
-                var firstReportVersion = entriesCurrentCase.First();
+                // We have to use the last version so that when we adjust the time, the date is correct (i.e a report that was modified on multiple days by the resident)
+                var lastReportVersion = entriesCurrentCase.Last();
                 // Get the attending version of the report
                 CaseEntry attendCE = new CaseEntry() {
-                    DateTimeModifiedObject = firstReportVersion.EnteredDateTime.AddHours(1), // make the attending report added later than the resident report
-                    CaseNumber = firstReportVersion.CaseNum,
-                    Interpretation = firstReportVersion.AttendingInterpretationText,
-                    Comment = firstReportVersion.AttendingCommentText,
-                    TumorSynoptic = firstReportVersion.AttendingSynopticText,
-                    Result = firstReportVersion.AttendingResultText,    
-                    AuthorID = firstReportVersion.AttendingID
+                    DateTimeModifiedObject = lastReportVersion.EnteredDateTime.AddHours(1), // make the attending report added later than the resident report
+                    CaseNumber = lastReportVersion.CaseNum,
+                    Interpretation = lastReportVersion.AttendingInterpretationText,
+                    Comment = lastReportVersion.AttendingCommentText,
+                    TumorSynoptic = lastReportVersion.AttendingSynopticText,
+                    Result = lastReportVersion.AttendingResultText,    
+                    AuthorID = lastReportVersion.AttendingID
                 };
 
                 // Iterate through each version of the resident report

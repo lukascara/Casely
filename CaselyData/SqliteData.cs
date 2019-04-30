@@ -396,11 +396,12 @@ namespace CaselyData {
 	                    interpretation,
 	                    gross,
 	                    microscopic FROM case_entry 
-                                        ORDER BY DateModifiedString ASC,
-                                        TimeModifiedString ASC)
+                                        ORDER BY DateModifiedString DESC,
+                                        TimeModifiedString DESC,
+                                        CaseNumber DESC)
                                     GROUP BY CaseNumber
                                     ORDER BY DateModifiedString DESC,
-                                    TimeModifiedString DESC;";
+                                    TimeModifiedString DESC, CaseNumber DESC;";
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 DynamicParameters dp = new DynamicParameters();
                 var output = cn.Query<CaseEntry>(sql, new DynamicParameters()).ToList();
@@ -427,11 +428,12 @@ namespace CaselyData {
 	                    gross,
 	                    microscopic FROM case_entry 
                         WHERE date_modified >= @startDate 
-                                        ORDER BY DateModifiedString ASC,
-                                        TimeModifiedString ASC)
-                                  GROUP BY CaseNumber
-                                  ORDER BY DateModifiedString DESC,
-                                  TimeModifiedString DESC ";
+                                        ORDER BY DateModifiedString DESC,
+                                        TimeModifiedString DESC,
+                                        CaseNumber DESC)
+                                    GROUP BY CaseNumber
+                                    ORDER BY DateModifiedString DESC,
+                                    TimeModifiedString DESC, CaseNumber DESC;";
             using (var cn = new SQLiteConnection(DbConnectionString)) {
                 DynamicParameters dp = new DynamicParameters();
                 // SqlLite requires date to be in year-month-day format for sorting purposes

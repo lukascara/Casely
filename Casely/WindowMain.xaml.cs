@@ -47,7 +47,7 @@ namespace Casely {
                 ActivateButtons(true);
                 tbDBPath.Text = SqliteDataAcces.DBPath;
             }
-        }
+        } 
 
         private void ActivateButtons(bool ButtonsShouldBeActive) {
             btnSelfEvaluate.IsEnabled = ButtonsShouldBeActive;
