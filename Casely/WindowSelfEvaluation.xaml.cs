@@ -174,10 +174,10 @@ namespace Casely {
             }
             
 
-            suggestionDiagnosis = new List<string>(SqliteDataAcces.GetUniqueDiagnosis());
-            suggestionOrgan = new List<string>(SqliteDataAcces.GetListOrgan());
-            suggestionEvaluation = new ObservableCollection<string>(SqliteDataAcces.GetUniqueEvaluations());
-            suggestionService = new ObservableCollection<string>(SqliteDataAcces.GetUniqueService());
+            suggestionDiagnosis = new List<string>(SqliteDataAcces.GetUniqueDiagnosis().Where(x => x.ToString().Trim() != ""));
+            suggestionOrgan = new List<string>(SqliteDataAcces.GetListOrgan().Where(x => x.ToString().Trim() != ""));
+            suggestionEvaluation = new ObservableCollection<string>(SqliteDataAcces.GetUniqueEvaluations().Where(x => x.ToString().Trim() != ""));
+            suggestionService = new ObservableCollection<string>(SqliteDataAcces.GetUniqueService().Where(x => x.ToString().Trim() != ""));
             var listeval = new List<string>() { "NA", "1 - Style changes" ,
                 "2 - Grammar and spelling", "3 - Interpretation - Minor diagnostic alteration","3 - Microscopic - Minor diagnostic alteration",
              "4 - Interpretation - Major diagnostic alteration", "4 - Interpretation - Major diagnostic alteration", "1 - Perfect"};
@@ -234,11 +234,12 @@ namespace Casely {
         private void refreshCaseData() {
             RefreshComparison();
             var cn = cmbCaseNumber.SelectedValue;
+            var lastService = cmbService.Text; // save the last service so that we do not have to keep entering it for each eval
             if (cn != null) {
                 var caselyUserData = SqliteDataAcces.GetCaselyUserData(cn.ToString());
                 cmbSelfEvaluation.Text = caselyUserData.Evaluation != null ? caselyUserData.Evaluation : "";
                 txtSelfEvalComments.Text = caselyUserData.EvaluationComment != null ? caselyUserData.EvaluationComment : "";
-                cmbService.Text = caselyUserData.Service != null ? caselyUserData.Service : "";
+                cmbService.Text = caselyUserData.Service != null ? caselyUserData.Service : lastService;
             }
         }
 

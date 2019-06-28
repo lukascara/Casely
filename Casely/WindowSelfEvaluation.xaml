@@ -34,7 +34,7 @@
             </Grid.RowDefinitions>
             <CheckBox Grid.Column="0" Grid.Row="0" x:Name="chkOnlyShowUncompleted" Content="List uncompleted only" VerticalAlignment="Top" Click="chkFilterCompleted_Click" HorizontalAlignment="Left" IsChecked="True" Height="15" Width="137"/>
             <ComboBox Margin="0,5,0,0" MinWidth="175" Grid.Column="0" Grid.Row="1" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}" x:Name="cmbCaseNumber" HorizontalAlignment="Left" TabIndex="1" SelectionChanged="cmbCaseNumber_SelectionChanged">
-                
+
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
@@ -73,8 +73,8 @@
                 </Grid.RowDefinitions>
                 <Button x:Name="btnSubmit" Grid.Column="1" Grid.Row="0" Content="Save Evaluation" HorizontalAlignment="Right" Click="btnSubmitDiagnosis_Click" Width="110" TabIndex="5" Height="19.96" VerticalAlignment="Top"/>
 
-                <xctk:WatermarkComboBox Text="" x:Name="cmbService" Watermark="Service" HorizontalAlignment="Left"  Width="120" IsEditable="True" Grid.Row="0" TabIndex="3" Height="21.96" Margin="0,0,0,0" ToolTip="[Ctrl + r]" LostFocus="cmbService_LostFocus"/>
-                <xctk:WatermarkComboBox Text="" x:Name="cmbSelfEvaluation" Watermark="Self-evaulation" HorizontalAlignment="Left" IsEditable="True" Grid.Row="1" TabIndex="4" Height="21.96" ToolTip="[Ctrl + e]" LostFocus="cmbSelfEvaluation_LostFocus" Margin="0,1" Width="120"/>
+                <xctk:WatermarkComboBox Text="" x:Name="cmbService" Watermark="Service" HorizontalAlignment="Left"  Width="260" IsEditable="True" Grid.Row="0" TabIndex="3" Height="21.96" Margin="0,1" ToolTip="[Ctrl + r]" LostFocus="cmbService_LostFocus"/>
+                <xctk:WatermarkComboBox Text="" x:Name="cmbSelfEvaluation" Watermark="Self-evaulation" HorizontalAlignment="Left" IsEditable="True" Grid.Row="1" TabIndex="4" Height="21.96" ToolTip="[Ctrl + e]" LostFocus="cmbSelfEvaluation_LostFocus" Margin="0,1" Width="260"/>
             </Grid>
         </GroupBox>
         <GroupBox Grid.Column="1" Header="Filters">
