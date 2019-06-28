@@ -20,8 +20,8 @@ namespace Casely {
         private List<string> suggestionOrganSystem = new List<string>();
         private List<string> suggestionDiagnosis = new List<string>();
         private List<string> suggestionCategory = new List<string>();
-        private List<string> suggestionService = new List<string>();
-        private List<string> suggestionEvaluation = new List<string>();
+        private ObservableCollection<string> suggestionService = new ObservableCollection<string>();
+        private ObservableCollection<string> suggestionEvaluation = new ObservableCollection<string>();
         private List<CaselyUserData> listAllCaselyUserData = new List<CaselyUserData>();
         private List<CaseEntry> listAllCaseEntry = new List<CaseEntry>();
         public ObservableCollection<Staff> listStaff = new ObservableCollection<Staff>();
@@ -176,8 +176,8 @@ namespace Casely {
 
             suggestionDiagnosis = new List<string>(SqliteDataAcces.GetUniqueDiagnosis());
             suggestionOrgan = new List<string>(SqliteDataAcces.GetListOrgan());
-            suggestionEvaluation = new List<string>(SqliteDataAcces.GetUniqueEvaluations());
-            suggestionService = new List<string>(SqliteDataAcces.GetUniqueService());
+            suggestionEvaluation = new ObservableCollection<string>(SqliteDataAcces.GetUniqueEvaluations());
+            suggestionService = new ObservableCollection<string>(SqliteDataAcces.GetUniqueService());
             var listeval = new List<string>() { "NA", "1 - Style changes" ,
                 "2 - Grammar and spelling", "3 - Interpretation - Minor diagnostic alteration","3 - Microscopic - Minor diagnostic alteration",
              "4 - Interpretation - Major diagnostic alteration", "4 - Interpretation - Major diagnostic alteration", "1 - Perfect"};
@@ -186,7 +186,7 @@ namespace Casely {
                     suggestionEvaluation.Add(lv);
                 }
             }
-           suggestionEvaluation.Sort();
+           suggestionEvaluation = new ObservableCollection<string>(suggestionEvaluation.OrderBy(x => x.ToString()));
 
             var listService = new List<string>() { "Routine", "Frozen", "Biopsy"};
             foreach (var lv in listService) {
@@ -356,6 +356,23 @@ namespace Casely {
             txtSelfEvalComments.Focus();
         }
 
+        private void cmbService_LostFocus(object sender, RoutedEventArgs e) {
+            // Adds item in the service combobox if it does not already exists
+            // this allows user to reuse the value in the next evaluation without Casely having to recheck the database
+            if (cmbService.Text.Trim() != "" && !cmbService.Items.Contains(cmbService.Text)) {
+                suggestionService.Add(cmbService.Text);
+            }
+        }
+
+        private void cmbSelfEvaluation_LostFocus(object sender, RoutedEventArgs e) {
+            // Adds item in the service combobox if it does not already exists
+            // this allows user to reuse the value in the next evaluation without Casely having to recheck the database
+            if (cmbSelfEvaluation.Text.Trim() != "" && !cmbSelfEvaluation.Items.Contains(cmbSelfEvaluation.Text)) {
+                suggestionEvaluation.Add(cmbSelfEvaluation.Text);
+            }
+            suggestionEvaluation = new ObservableCollection<string>(suggestionEvaluation.OrderBy(x => x.ToString()));
+            cmbSelfEvaluation.ItemsSource = suggestionEvaluation;
+        }
     }
 
 }
