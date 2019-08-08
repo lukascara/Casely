@@ -43,6 +43,7 @@ namespace Casely {
             cmbCaseNumber.ItemsSource = listFilteredCaseEntry;
             cmbCaseNumber.SelectedValuePath = "CaseNumber";
             dtFilterDate.Text = "";
+            wbDiffText.Text = "<h3><b>Casely is loading! Please be patient :)</b></h3>";
             // load all the cases from the database
             listAllCaseEntry = await GetAllCaseEntryAsync();
             listAllCaselyUserData = await GetAllCaselyUserDataAsync();
