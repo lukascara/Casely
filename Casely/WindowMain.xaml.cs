@@ -5,6 +5,7 @@ using CaselyData;
 using System.IO;
 using System.Windows.Forms;
 using System.Windows.Input;
+using System.Reflection;
 
 namespace Casely {
     /// <summary>
@@ -186,7 +187,7 @@ SOFTWARE.");
         }
 
         private void MenuAbout_Click(object sender, RoutedEventArgs e) {
-            System.Windows.MessageBox.Show("Casely version is: 0.28");
+            System.Windows.MessageBox.Show($"Casely version is: {Assembly.GetEntryAssembly().GetName().Version}");
         }
     }
 }
