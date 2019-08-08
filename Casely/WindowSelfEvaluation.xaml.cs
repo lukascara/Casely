@@ -27,6 +27,7 @@ namespace Casely {
         public ObservableCollection<Staff> listStaff = new ObservableCollection<Staff>();
         private ObservableCollection<CaseEntry> listFilteredCaseEntry = new ObservableCollection<CaseEntry>();
         private bool allCasesLoaded = false; // changes to true after all cases are loaded so that the user interface can be correctly updated
+        private bool disableVersionChangeevent = true;
 
         public WindowSelfEvaluation() {
             InitializeComponent();
@@ -285,6 +286,7 @@ namespace Casely {
        
        
         private void cmbCaseNumber_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            disableVersionChangeevent = true;
             btnPreviousCase.IsEnabled = cmbCaseNumber.SelectedIndex > 0;
             btnNextCase.IsEnabled = cmbCaseNumber.SelectedIndex < cmbCaseNumber.Items.Count - 1;
             if (cmbCaseNumber.SelectedIndex == -1) {
@@ -297,6 +299,7 @@ namespace Casely {
             }
             cmbVersion.SelectedIndex = cmbVersion.Items.Count - 1;
             refreshCaseData();
+            disableVersionChangeevent = false;
         }
 
         private void dtFilterDate_LostFocus(object sender, RoutedEventArgs e) {
@@ -305,8 +308,11 @@ namespace Casely {
 
 
         private void cmbVersion_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            refreshCaseData();
+            if (disableVersionChangeevent == false){
+                refreshCaseData();
+            }
             lbReportVersion.Content = SelectedVersionFormated;
+
         }
 
         private string SelectedVersionFormated {
