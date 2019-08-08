@@ -52,7 +52,9 @@ namespace Casely {
         }
 
         private void MenuShowLicense_Click(object sender, RoutedEventArgs e) {
-            System.Windows.MessageBox.Show(@"MIT License
+            System.Windows.MessageBox.Show(@"
+Source code available at: https://github.com/lukascara/Casely
+MIT License
 
 Copyright (c) 2018-2019 Lukas Cara
 
@@ -79,9 +81,9 @@ SOFTWARE.");
             OpenFileDialog theDialog = new OpenFileDialog();
             theDialog.Title = "Open Excel File" ;
             theDialog.Filter = "Excel files (.xls)|*.xls";
+            ChangeStatusText("Importing data. Please wait...");
             if (theDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 try {
-                    ChangeStatusText("Importing data. Please wait...");
                     var softText = File.ReadAllText(theDialog.FileName);
                     CaselyData.SoftPathExcelConvert sc = new SoftPathExcelConvert();
                     var importedData = sc.importSoftPathCSVData(theDialog.FileName);
@@ -102,11 +104,12 @@ SOFTWARE.");
                    
                     
                     System.Windows.Forms.MessageBox.Show($"{casesImportedCount/2} cases imported. {casesAlreadImported} already existed in Casely.");
-                    ChangeStatusText("");
+                    
 
                 } catch (Exception ex) {
                     System.Windows.MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);
                 }
+                ChangeStatusText("");
             }
         }
 
