@@ -15,11 +15,7 @@ namespace Casely {
             InitializeComponent();
         }
 
-        private void btnGrossing_Click(object sender, RoutedEventArgs e) {
-            WindowGrossingEditor ge = new WindowGrossingEditor();
-            ge.ShowDialog();
-
-        }
+     
 
         private void btnSignout_Click(object sender, RoutedEventArgs e) {
             WindowReportEditor wn = new WindowReportEditor();
@@ -27,10 +23,7 @@ namespace Casely {
             wn.ShowDialog();
         }
 
-        private void btnCompare_Click(object sender, RoutedEventArgs e) {
-            WindowCompareReports wn = new WindowCompareReports();
-            wn.ShowDialog();
-        }
+
 
         private void btnDiagnosis_Click(object sender, RoutedEventArgs e) {
             ConnectOrUpdateDB();
