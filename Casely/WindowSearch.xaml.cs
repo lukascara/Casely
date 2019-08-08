@@ -84,9 +84,6 @@ namespace Casely {
                 foreach (var c in listFilteredCE) {
                     listFilteredCaseEntry.Add(c);
                 }
-                if (listFilteredCaseEntry.Count != 0) {
-                    lbFilteredCaseEntry.SelectedIndex = 0;
-                }
             } catch (Exception ex) {
                 System.Windows.MessageBox.Show("Error searching the database. Please check your search terms and syntax. Certain case-sensitive words are reserved (NOT, OR, AND, i.e.) and can cause and error if used incorrectly. " +
                     " Original error: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
