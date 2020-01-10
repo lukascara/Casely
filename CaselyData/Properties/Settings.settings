@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="DatabasePath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">L:\data\Casely.db</Value>
+      <Value Profile="(Default)">I:\Software\Casely.db</Value>
     </Setting>
   </Settings>
 </SettingsFile>

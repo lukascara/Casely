@@ -76,8 +76,7 @@
                         <xctk:WatermarkComboBox Text="" x:Name="cmbSelfEvaluation" Watermark="Self-evaulation" HorizontalAlignment="Left" MinWidth="100" IsEditable="True" Grid.Row="1" TabIndex="4" Height="21.96" ToolTip="[Ctrl + e]" LostFocus="cmbSelfEvaluation_LostFocus" Margin="0,1"/>
                     </StackPanel>
                     <StackPanel Orientation="Vertical">
-                        <Button x:Name="btnSubmit" Grid.Column="1" Grid.Row="0" Content="Save Evaluation" HorizontalAlignment="Right" Click="btnSubmitDiagnosis_Click" Width="110" TabIndex="5" Height="19.96" VerticalAlignment="Top"/>
-                        <Button x:Name="btnNextCase" Content="Save + Next Case" VerticalAlignment="Top" Click="btnNextCase_Click" HorizontalAlignment="Right" Width="110" ToolTip="[Ctrl + n]" Grid.Column="1" Grid.Row="1"/>
+                        <Button x:Name="btnNextCase" Content="Submit" VerticalAlignment="Top" Click="btnNextCase_Click" HorizontalAlignment="Right" Width="110" ToolTip="[Ctrl + n]" Grid.Column="1" Grid.Row="1"/>
                     </StackPanel>
 
                 </WrapPanel>
